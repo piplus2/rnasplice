@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Dev v1.0.5dev - TBD - TBD
 
 - Add first steps of leafcutter splicing quantification
+- Patch for run_drimseq_filter.R to allow sample names with special characters. See issue #140
 
 ## v1.0.4 - 2024-04-21
 
