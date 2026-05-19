@@ -31,10 +31,12 @@ process CLUSTEREVENTS {
 
     script: //  Cluster events between conditions
 
-    def clusterevents_sigthreshold  = clusterevents_sigthreshold ? "-st ${params.clusterevents_sigthreshold}" : ''
-    def clusterevents_separation = clusterevents_separation ? "-s ${params.clusterevents_separation}" : ''
+    def clust_events_sigthreshold  = clusterevents_sigthreshold ? "-st ${params.clusterevents_sigthreshold}" : ''
+    def clust_events_separation = clusterevents_separation ? "-s ${params.clusterevents_separation}" : ''
 
     """
+    touch ${cond1}-${cond2}_${prefix}_cluster
+
     suppa.py \\
         clusterEvents \\
         --dpsi $dpsi \\
@@ -45,7 +47,7 @@ process CLUSTEREVENTS {
         --min-pts $clusterevents_min_pts \\
         --groups $group_ranges \\
         --clustering $clusterevents_method \\
-        $clusterevents_sigthreshold $clusterevents_separation -o ${cond1}-${cond2}_${prefix}_cluster
+        $clust_events_sigthreshold $clust_events_separation -o ${cond1}-${cond2}_${prefix}_cluster
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
