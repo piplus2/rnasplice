@@ -21,7 +21,7 @@ workflow TX2GENE_TXIMPORT {
     // Extract archives (if necessary)
     //
 
-    salmon_results
+    salmon_results = salmon_results
     .map {
         meta, prefix ->
             tgz = prefix[0].toString().endsWith(".tar.gz") ? true : false
@@ -31,7 +31,6 @@ workflow TX2GENE_TXIMPORT {
         tar: it[0].tgz == true
         dir: it[0].tgz == false
     }
-    .set{ salmon_results }
     UNTAR ( salmon_results.tar )
     salmon_results = salmon_results.dir.mix(UNTAR.out.untar)
 

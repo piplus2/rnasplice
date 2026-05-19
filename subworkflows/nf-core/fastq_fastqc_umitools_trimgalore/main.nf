@@ -55,11 +55,10 @@ workflow FASTQ_FASTQC_UMITOOLS_TRIMGALORE {
 
         // Discard R1 / R2 if required
         if (umi_discard_read in [1, 2]) {
-            UMITOOLS_EXTRACT.out.reads
+            ch_trimmer_reads = UMITOOLS_EXTRACT.out.reads
                 .map { meta, reads_ ->
                     meta.single_end ? [meta, reads_] : [meta + ['single_end': true], reads_[umi_discard_read % 2]]
                 }
-                .set { ch_trimmer_reads }
         }
     }
 
@@ -79,7 +78,7 @@ workflow FASTQ_FASTQC_UMITOOLS_TRIMGALORE {
         //
         // Filter FastQ files based on minimum trimmed read count after adapter trimming
         //
-        TRIMGALORE.out.reads
+        ch_num_trimmed_reads = TRIMGALORE.out.reads
             .join(ch_trim_log, remainder: true)
             .map { meta, reads_, trim_log ->
                 if (trim_log) {
@@ -90,16 +89,13 @@ workflow FASTQ_FASTQC_UMITOOLS_TRIMGALORE {
                     [meta, reads_, min_trimmed_reads.toFloat() + 1]
                 }
             }
-            .set { ch_num_trimmed_reads }
 
-        ch_num_trimmed_reads
+        ch_trim_reads = ch_num_trimmed_reads
             .filter { _meta, _reads, num_reads -> num_reads >= min_trimmed_reads.toFloat() }
             .map { meta, reads_, _num_reads -> [meta, reads_] }
-            .set { ch_trim_reads }
 
-        ch_num_trimmed_reads
+        ch_trim_read_count = ch_num_trimmed_reads
             .map { meta, _reads, num_reads -> [meta, num_reads] }
-            .set { ch_trim_read_count }
     }
 
     emit:

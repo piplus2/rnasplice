@@ -139,7 +139,7 @@ workflow RNASPLICE {
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     if (params.source == 'fastq') {
-            INPUT_CHECK (
+            ch_fastq = INPUT_CHECK (
                 ch_input,
                 params.source
             )
@@ -157,34 +157,30 @@ workflow RNASPLICE {
                     multiple: fastq.size() > 1
                         return [ meta, fastq.flatten() ]
             }
-            .set { ch_fastq }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
      } else if (params.source == 'genome_bam') {
-            INPUT_CHECK (
+            ch_genome_bam = INPUT_CHECK (
                 ch_input,
                 params.source
             )
             .reads
-            .set { ch_genome_bam }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
      } else if (params.source == 'transcriptome_bam') {
-            INPUT_CHECK (
+            ch_transcriptome_bam = INPUT_CHECK (
                 ch_input,
                 params.source
             )
             .reads
-            .set { ch_transcriptome_bam }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
      } else if (params.source == 'salmon_results') {
-            INPUT_CHECK (
+            ch_salmon_results = INPUT_CHECK (
                 ch_input,
                 params.source
             )
             .reads
-            .set { ch_salmon_results }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
     }
@@ -214,12 +210,11 @@ workflow RNASPLICE {
     // MODULE: Concatenate FastQ files from same sample if required
     //
     if (params.source == 'fastq') {
-        CAT_FASTQ (
+        ch_cat_fastq = CAT_FASTQ (
             ch_fastq.multiple
         )
         .reads
         .mix(ch_fastq.single)
-        .set { ch_cat_fastq }
         ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
     }
 
@@ -245,7 +240,7 @@ workflow RNASPLICE {
         //
         // Get list of samples that failed trimming threshold for MultiQC report
         //
-        ch_trim_read_count
+        ch_fail_trimming_multiqc = ch_trim_read_count
             .map {
                 meta, num_reads ->
                     pass_trimmed_reads[meta.id] = true
@@ -260,7 +255,6 @@ workflow RNASPLICE {
                     def header = ["Sample", "Reads after trimming"]
                     multiqcTsvFromList(tsv_data, header)
             }
-            .set { ch_fail_trimming_multiqc }
 
     }
 
@@ -377,21 +371,19 @@ workflow RNASPLICE {
             // If genome bam provided, mimic channel created by ALIGN_STAR
             if (params.source == 'genome_bam') {
 
-                BAM_SORT_STATS_SAMTOOLS
+                ch_genome_bam_conditions = BAM_SORT_STATS_SAMTOOLS
                         .out
                         .bam
                         .map { meta, bam -> [meta.condition, meta, bam] }
                         .groupTuple(by:0)
-                        .set { ch_genome_bam_conditions }
 
             } else {
 
-                ALIGN_STAR
+                ch_genome_bam_conditions = ALIGN_STAR
                     .out
                     .bam
                     .map { meta, bam -> [meta.condition, meta, bam] }
                     .groupTuple(by:0)
-                    .set { ch_genome_bam_conditions }
 
             }
 

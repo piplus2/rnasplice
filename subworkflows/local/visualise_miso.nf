@@ -90,12 +90,10 @@ workflow VISUALISE_MISO {
     if (miso_genes_file && miso_genes) {
         ch_miso_genes_file = Channel.fromPath(miso_genes_file)
             .splitCsv()
-        ch_miso_genes_list.concat( ch_miso_genes_file )
-        .set{ ch_miso_genes }
+        ch_miso_genes = ch_miso_genes_list.concat( ch_miso_genes_file )
     } else if (miso_genes_file) {
-        ch_miso_genes_file = Channel.fromPath(miso_genes_file)
+        ch_miso_genes = Channel.fromPath(miso_genes_file)
             .splitCsv()
-            .set{ ch_miso_genes }
         } else {
         ch_miso_genes = ch_miso_genes_list
     }

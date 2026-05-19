@@ -10,10 +10,9 @@ workflow CONTRASTS_CHECK {
     contrastsheet // file: /path/to/contrastsheet.csv
 
     main:
-    CONTRASTSHEET_CHECK ( contrastsheet )
+    contrasts = CONTRASTSHEET_CHECK ( contrastsheet )
             .csv
             .splitCsv ( header:true, sep:',' )
-            .set { contrasts }
 
 
     emit:

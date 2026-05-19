@@ -21,7 +21,7 @@ workflow BAM_SORT_STATS_SAMTOOLS {
     SAMTOOLS_INDEX ( SAMTOOLS_SORT.out.bam )
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
-    SAMTOOLS_SORT.out.bam
+    ch_bam_bai = SAMTOOLS_SORT.out.bam
         .join(SAMTOOLS_INDEX.out.bai, by: [0], remainder: true)
         .join(SAMTOOLS_INDEX.out.csi, by: [0], remainder: true)
         .map {
@@ -32,7 +32,6 @@ workflow BAM_SORT_STATS_SAMTOOLS {
                     [ meta, bam, csi ]
                 }
         }
-        .set { ch_bam_bai }
 
     BAM_STATS_SAMTOOLS ( ch_bam_bai, ch_fasta )
     ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS.out.versions)
