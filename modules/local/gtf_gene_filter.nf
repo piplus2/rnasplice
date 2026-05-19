@@ -19,11 +19,12 @@ process GTF_GENE_FILTER {
     task.ext.when == null || task.ext.when
 
     script: // filter_gtf_for_genes_in_genome.py is bundled with the pipeline, in nf-core/rnaseq/bin/
+    prefix = task.ext.prefix ?: gtf.baseName
     """
     filter_gtf_for_genes_in_genome.py \\
-        --gtf $gtf \\
-        --fasta $fasta \\
-        -o ${fasta.baseName}_genes.gtf
+        --gtf ${gtf} \\
+        --fasta ${fasta} \\
+        -o ${prefix}_genes.gtf
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')

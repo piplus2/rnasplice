@@ -6,40 +6,6 @@
 
 include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-schema'
 
-def summary_params = paramsSummaryMap(workflow)
-
-
-// Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.contrasts) { ch_contrasts = file(params.contrasts) } else { exit 1, 'Input contrastsheet not specified!' }
-
-// Check alignment parameters
-def prepare_tool_indices  = []
-if (!params.skip_alignment) { prepare_tool_indices << params.aligner        }
-if (params.pseudo_aligner)  { prepare_tool_indices << params.pseudo_aligner }
-
-// Stage dummy file to be used as an optional input where required
-ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
-
-// Check if an AWS iGenome has been provided to use the appropriate version of STAR
-def is_aws_igenome = false
-if (params.fasta && params.gtf) {
-    if ((file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')) {
-        is_aws_igenome = true
-    }
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -55,7 +21,7 @@ include { ISOFORMSWITCHANALYZER   } from '../modules/local/isoformswitchanalyzer
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK                                          } from '../subworkflows/local/input_check'
+include { INPUT_CHECK                                           } from '../subworkflows/local/input_check'
 include { CONTRASTS_CHECK                                      } from '../subworkflows/local/contrasts_check'
 include { PREPARE_GENOME                                       } from '../subworkflows/local/prepare_genome'
 include { ALIGN_STAR                                           } from '../subworkflows/local/align_star'
@@ -74,6 +40,7 @@ include { LEAFCUTTER                                           } from '../subwor
 include { rmatsReadError                 } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { rmatsStrandednessError         } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { isSingleCondition              } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { multiqcTsvFromList             } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { paramsSummaryMultiqc           } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText         } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 /*
@@ -105,128 +72,125 @@ include { BAM_SORT_STATS_SAMTOOLS                                         } from
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// // Info required for completion email and summary
-// def multiqc_report = []
-// def pass_trimmed_reads = [:]
-
 workflow RNASPLICE {
+
+    take:
+    ch_samplesheet
+    ch_contrastsheet
+    ch_fasta
+    ch_gtf
+    ch_star_index
+    ch_salmon_index
+    ch_gff_dexseq
+    ch_suppa_tpm
+
+
+    main:
+    def summary_params = paramsSummaryMap(workflow)
+    def pass_trimmed_reads = [:]
+
+    // Check alignment parameters
+
+
+    // Stage dummy file to be used as an optional input where required
+    def ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        CONFIG FILES
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+
+    def ch_multiqc_config                     = channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    def ch_multiqc_custom_config              = params.multiqc_config ? channel.fromPath(params.multiqc_config, checkIfExists: true) : channel.empty()
+    def ch_multiqc_logo                       = params.multiqc_logo   ? channel.fromPath(params.multiqc_logo, checkIfExists: true) : channel.empty()
+    def ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
     // Create channel for software versions (will be added to throughout pipeline)
     ch_versions = channel.empty()
 
-    //
-    // SUBWORKFLOW: Uncompress and prepare reference genome files
-    //
-    PREPARE_GENOME (
-        params.fasta,
-        params.gtf,
-        params.gff,
-        params.transcript_fasta,
-        params.star_index,
-        params.salmon_index,
-        params.gff_dexseq,
-        params.suppa_tpm,
-        is_aws_igenome,
-        prepare_tool_indices,
-        params.source,
-        params.gencode
-    )
-    ch_meta_fasta = PREPARE_GENOME.out.fasta.map { [ [:], it ] }
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions)
-
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
+    ch_salmon_results = channel.empty()
+
+    ch_input = channel.empty()
     if (params.source == 'fastq') {
-            INPUT_CHECK (
-                ch_input,
-                params.source
-            )
-            .reads
-            .map {
-                meta, fastq ->
-                    new_id = meta.id - ~/_T\d+/
-                    [ meta + [id: new_id], fastq ]
-            }
-            .groupTuple()
-            .branch {
-                meta, fastq ->
-                    single  : fastq.size() == 1
-                        return [ meta, fastq.flatten() ]
-                    multiple: fastq.size() > 1
-                        return [ meta, fastq.flatten() ]
-            }
-            .set { ch_fastq }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
+        INPUT_CHECK (
+            ch_samplesheet,
+            params.source
+        )
+        .reads
+        .map {
+            meta, fastq ->
+                def new_id = meta.id - ~/_T\d+/
+                [ meta + [id: new_id], fastq ]
+        }
+        .groupTuple()
+        .branch {
+            meta, fastq ->
+                single  : fastq.size() == 1
+                    return [ meta, fastq.flatten() ]
+                multiple: fastq.size() > 1
+                    return [ meta, fastq.flatten() ]
+        }
+        .set { ch_input }
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
      } else if (params.source == 'genome_bam') {
-            INPUT_CHECK (
-                ch_input,
-                params.source
-            )
-            .reads
-            .set { ch_genome_bam }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
+        INPUT_CHECK (
+            ch_samplesheet,
+            params.source
+        )
+        .reads
+        .set { ch_input }
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
      } else if (params.source == 'transcriptome_bam') {
-            INPUT_CHECK (
-                ch_input,
-                params.source
-            )
-            .reads
-            .set { ch_transcriptome_bam }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
+        INPUT_CHECK (
+            ch_samplesheet,
+            params.source
+        )
+        .reads
+        .set { ch_input }
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
      } else if (params.source == 'salmon_results') {
-            INPUT_CHECK (
-                ch_input,
-                params.source
-            )
-            .reads
-            .set { ch_salmon_results }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
+        INPUT_CHECK (
+            ch_samplesheet,
+            params.source
+        )
+        .reads
+        .set { ch_input }
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     }
 
-    // Create samplesheet channel (after input check)
-    ch_samplesheet = Channel.fromPath(params.input)
 
     //
     // SUBWORKFLOW: Read in contrastsheet, validate and stage input files
     //
     CONTRASTS_CHECK (
-        ch_contrasts
+        ch_contrastsheet
     )
     ch_versions = ch_versions.mix(CONTRASTS_CHECK.out.versions)
 
-    // Create contrastsheet channel (after contrasts check)
-    ch_contrastsheet = Channel.fromPath(params.contrasts)
-
-
     // Check rMATS parameters specified correctly
     if (params.rmats && params.source == 'fastq') {
-            rmatsReadError(INPUT_CHECK.out.reads)
-            rmatsStrandednessError(INPUT_CHECK.out.reads)
+        rmatsReadError(ch_input)
+        rmatsStrandednessError(ch_input)
     }
 
     //
     // MODULE: Concatenate FastQ files from same sample if required
-    //
-    if (params.source == 'fastq') {
-        CAT_FASTQ (
-            ch_fastq.multiple
-        )
-        .reads
-        .mix(ch_fastq.single)
-        .set { ch_cat_fastq }
-        ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
-    }
-
-    //
     // SUBWORKFLOW: Read QC and trim adapters with TrimGalore!
     //
     if (params.source == 'fastq') {
+        CAT_FASTQ (
+            ch_input.multiple
+        )
+        .reads
+        .mix(ch_input.single)
+        .set { ch_cat_fastq }
+        ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
         FASTQ_FASTQC_UMITOOLS_TRIMGALORE (
             ch_cat_fastq,
@@ -249,7 +213,7 @@ workflow RNASPLICE {
             .map {
                 meta, num_reads ->
                     pass_trimmed_reads[meta.id] = true
-                    if (num_reads <= params.min_trimmed_reads.toFloat()) {
+                    if (num_reads <= params.min_trimmed_reads) {
                         pass_trimmed_reads[meta.id] = false
                         return [ "$meta.id\t$num_reads" ]
                     }
@@ -261,7 +225,6 @@ workflow RNASPLICE {
                     multiqcTsvFromList(tsv_data, header)
             }
             .set { ch_fail_trimming_multiqc }
-
     }
 
     //
@@ -270,7 +233,7 @@ workflow RNASPLICE {
 
     if (params.source == 'genome_bam') {
 
-        BAM_SORT_STATS_SAMTOOLS ( ch_genome_bam, ch_meta_fasta )
+        BAM_SORT_STATS_SAMTOOLS ( ch_input, ch_fasta )
 
         ch_genome_bam        = BAM_SORT_STATS_SAMTOOLS.out.bam
         ch_genome_bam_index  = BAM_SORT_STATS_SAMTOOLS.out.bai
@@ -279,11 +242,9 @@ workflow RNASPLICE {
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
         ch_versions          = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
-    }
+    } else if (params.source == 'transcriptome_bam') {
 
-    if (params.source == 'transcriptome_bam') {
-
-        BAM_SORT_STATS_SAMTOOLS ( ch_transcriptome_bam, ch_meta_fasta )
+        BAM_SORT_STATS_SAMTOOLS ( ch_input, ch_fasta )
 
         ch_transcriptome_bam        = BAM_SORT_STATS_SAMTOOLS.out.bam
         ch_transcriptome_bam_index  = BAM_SORT_STATS_SAMTOOLS.out.bai
@@ -292,9 +253,7 @@ workflow RNASPLICE {
         ch_samtools_idxstats        = BAM_SORT_STATS_SAMTOOLS.out.idxstats
         ch_versions                 = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
-    }
-
-    if ((params.source == 'fastq') && !params.skip_alignment && ( params.aligner == 'star' || params.aligner == 'star_salmon')) {
+    } else if (( params.source == 'fastq' ) && !params.skip_alignment && ( params.aligner == 'star' || params.aligner == 'star_salmon' )) {
 
         ALIGN_STAR (
             ch_trim_reads,
@@ -303,8 +262,8 @@ workflow RNASPLICE {
             params.star_ignore_sjdbgtf,
             '',
             params.seq_center ?: '',
-            is_aws_igenome,
-            ch_meta_fasta
+            params.is_aws_igenome,
+            ch_fasta
         )
 
         ch_genome_bam        = ALIGN_STAR.out.bam
@@ -322,7 +281,7 @@ workflow RNASPLICE {
         ch_versions = ch_versions.mix(ALIGN_STAR.out.versions)
     }
 
-    if ((params.source == 'genome_bam') || (params.source == 'fastq') && (!params.skip_alignment && ( params.aligner == 'star' || params.aligner == 'star_salmon'))) {
+    if (( params.source == 'genome_bam' ) || ( params.source == 'fastq' ) && ( !params.skip_alignment && ( params.aligner == 'star' || params.aligner == 'star_salmon' ) )) {
 
         //
         // SUBWORKFLOW: Run DEXSeq DEU
@@ -528,7 +487,7 @@ workflow RNASPLICE {
         if (params.suppa) {
 
             // Get Suppa tpm either from tximport or user supplied
-            ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
+            ch_suppa_tpm = ch_suppa_tpm ?: TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
 
             // Run SUPPA
             SUPPA_STAR_SALMON (
@@ -604,7 +563,7 @@ workflow RNASPLICE {
         ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_SALMON.out.versions)
 
 
-    } else if ( params.source == 'salmon_results') {
+    } else if ( params.source == 'salmon_results' ) {
 
         TX2GENE_TXIMPORT_SALMON (
             ch_salmon_results,
@@ -616,7 +575,7 @@ workflow RNASPLICE {
     }
 
 
-    if ((params.pseudo_aligner == 'salmon' && params.source == 'fastq') || (params.source == 'salmon_results')) {
+    if (( params.pseudo_aligner == 'salmon' && params.source == 'fastq' ) || ( params.source == 'salmon_results' )) {
 
         //
         // SUBWORKFLOW: Run Dexseq DTU
@@ -650,11 +609,11 @@ workflow RNASPLICE {
         if (params.suppa) {
 
             // Get Suppa tpm either from tximport or user supplied
-            ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
+            ch_suppa_tpm = ch_suppa_tpm ?: TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
 
             // Run SUPPA
             SUPPA_SALMON (
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
                 ch_contrastsheet,
@@ -698,7 +657,7 @@ workflow RNASPLICE {
 
         // Run IsoformSwitchAnalyzeR
         ISOFORMSWITCHANALYZER(
-            ch_salmon_results.collect{ it[1] },
+            ch_salmon_results.collect{ it -> it[1] },
             PREPARE_GENOME.out.gtf,
             PREPARE_GENOME.out.transcript_fasta,
             ch_samplesheet,
@@ -750,12 +709,12 @@ workflow RNASPLICE {
     //
 
     workflow_summary    = paramsSummaryMultiqc(summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+    ch_workflow_summary = channel.value(workflow_summary)
 
     methods_description    = methodsDescriptionText(ch_multiqc_custom_methods_description)
-    ch_methods_description = Channel.value(methods_description)
+    ch_methods_description = channel.value(methods_description)
 
-    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = channel.empty()
 
     ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
@@ -774,26 +733,26 @@ workflow RNASPLICE {
 
     if (params.pseudo_aligner == 'salmon' && params.source == 'fastq'){
 
-        ch_multiqc_files = ch_multiqc_files.mix(ch_salmon_results.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_salmon_results.collect{it -> it[1]}.ifEmpty([]))
 
     }
 
     if (!params.skip_alignment && params.source == 'fastq' && (params.aligner == 'star_salmon' || params.aligner == "star")){
 
-        ch_multiqc_files = ch_multiqc_files.mix(ch_star_multiqc.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_star_multiqc.collect{it -> it[1]}.ifEmpty([]))
 
     }
 
     if ((params.source == 'genome_bam' || params.source == 'transcriptome_bam') || (!params.skip_alignment && params.source == 'fastq' && (params.aligner == 'star_salmon' || params.aligner == "star"))){
 
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_stats.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_flagstat.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_idxstats.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_stats.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_flagstat.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_idxstats.collect{it -> it[1]}.ifEmpty([]))
 
 
         if (params.edger_exon && params.source != 'transcriptome_bam') {
 
-            ch_multiqc_files = ch_multiqc_files.mix(EDGER_DEU.out.featureCounts_summary.collect{it[1]}.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(EDGER_DEU.out.featureCounts_summary.collect{it -> it[1]}.ifEmpty([]))
 
         }
     }
@@ -804,10 +763,12 @@ workflow RNASPLICE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()
+    .report
+    .toList()
+    .set { ch_multiqc_report }
 
     emit:
-    final_multiqc_report = multiqc_report
+    final_multiqc_report = ch_multiqc_report
 }
 
 /*

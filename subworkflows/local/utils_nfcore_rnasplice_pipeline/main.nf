@@ -31,10 +31,10 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
- 
+
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -54,7 +54,7 @@ workflow PIPELINE_INITIALISATION {
         validate_params,
         null
     )
-  
+
     //
     // Check config provided to the pipeline
     //
@@ -91,7 +91,7 @@ workflow PIPELINE_COMPLETION {
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-  
+
     //
     // Completion email and summary
     //
@@ -203,7 +203,7 @@ def validateInputParameters() {
                 log.warn "Both --aligner=star_salmon and --pseudo_aligner=salmon specified. Downstream analyses will be performed on both salmon output files."
             }
         }
-                
+
         // Check input has been provided
         if (!params.input) {
             error("Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.csv'")

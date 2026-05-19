@@ -12,16 +12,16 @@ workflow INPUT_CHECK {
     main:
 
     if (source == 'fastq') {
-        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { create_fastq_channel(it) }.set { reads }
+        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { it -> create_fastq_channel(it) }.set { reads }
     }
     else if (source == 'genome_bam') {
-        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { create_genome_bam_channel(it) }.set { reads }
+        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { it -> create_genome_bam_channel(it) }.set { reads }
     }
     else if (source == 'transcriptome_bam') {
-        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { create_transcriptome_bam_channel(it) }.set { reads }
+        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { it -> create_transcriptome_bam_channel(it) }.set { reads }
     }
     else if (source == 'salmon_results') {
-        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { create_salmon_results_channel(it) }.set { reads }
+        SAMPLESHEET_CHECK(samplesheet, source).csv.splitCsv(header: true, sep: ',').map { it -> create_salmon_results_channel(it) }.set { reads }
     }
 
     emit:

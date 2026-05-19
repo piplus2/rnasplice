@@ -17,8 +17,9 @@ process GTF_2_GFF3 {
     task.ext.when == null || task.ext.when
 
     script:
+    prefix = task.ext.prefix ?: gtf.baseName
     """
-    gffread $gtf -L --keep-genes | awk -F'\\t' -vOFS='\\t' '{ gsub("transcript", "mRNA", \$3); print}' > ${gtf.baseName}_genes.gff3
+    gffread $gtf -L --keep-genes | awk -F'\\t' -vOFS='\\t' '{ gsub("transcript", "mRNA", \$3); print}' > ${prefix}_genes.gff3
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

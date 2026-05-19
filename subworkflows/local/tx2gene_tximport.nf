@@ -15,7 +15,7 @@ workflow TX2GENE_TXIMPORT {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Extract archives (if necessary)
@@ -24,7 +24,7 @@ workflow TX2GENE_TXIMPORT {
     salmon_results
     .map {
         meta, prefix ->
-            tgz = prefix[0].toString().endsWith(".tar.gz") ? true : false
+            def tgz = prefix[0].toString().endsWith(".tar.gz") ? true : false
             [ meta + [tgz: tgz], prefix ]
     }
     .branch{
@@ -45,7 +45,7 @@ workflow TX2GENE_TXIMPORT {
 
     tx2gene = GFFREAD_TX2GENE.out.tx2gene
 
-    TXIMPORT ( salmon_results.collect{it[1]}, tx2gene )
+    TXIMPORT ( salmon_results.collect{ it -> it[1] }, tx2gene )
 
     ch_versions = ch_versions.mix(TXIMPORT.out.versions)
 

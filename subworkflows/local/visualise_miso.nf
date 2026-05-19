@@ -24,7 +24,7 @@ workflow VISUALISE_MISO {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
    //
    // MODULE: gtf_2_gff3
@@ -68,8 +68,8 @@ workflow VISUALISE_MISO {
     // MODULE: MISO_SETTINGS
     //
 
-    ch_bams = ch_genome_bam.collect({it[1]})
-    ch_miso_run = MISO_RUN.out.miso.map{it[1]}.collect()
+    ch_bams = ch_genome_bam.collect({ it -> it[1] })
+    ch_miso_run = MISO_RUN.out.miso.map{ it -> it[1] }.collect()
 
     MISO_SETTINGS (
         ch_miso_run,
@@ -84,16 +84,16 @@ workflow VISUALISE_MISO {
     // MODULE: MISO_SASHIMI
     //
 
-    def miso_genes_list = miso_genes ? miso_genes.split(',').collect{ it.trim() } : [""]
-    ch_miso_genes_list = Channel.fromList( miso_genes_list )
+    def miso_genes_list = miso_genes ? miso_genes.split(',').collect{ it -> it.trim() } : [""]
+    ch_miso_genes_list = channel.fromList( miso_genes_list )
 
     if (miso_genes_file && miso_genes) {
-        ch_miso_genes_file = Channel.fromPath(miso_genes_file)
+        ch_miso_genes_file = channel.fromPath(miso_genes_file)
             .splitCsv()
         ch_miso_genes_list.concat( ch_miso_genes_file )
         .set{ ch_miso_genes }
     } else if (miso_genes_file) {
-        ch_miso_genes_file = Channel.fromPath(miso_genes_file)
+        ch_miso_genes_file = channel.fromPath(miso_genes_file)
             .splitCsv()
             .set{ ch_miso_genes }
         } else {
@@ -102,7 +102,7 @@ workflow VISUALISE_MISO {
     ch_miso_input = MISO_SETTINGS.out.miso_settings.combine(ch_miso_genes)
 
     ch_bam_bai = ch_bam_join
-        .map { [it[1], it[2] ] }
+        .map { it -> [it[1], it[2] ] }
         .collect()
 
     MISO_SASHIMI (

@@ -19,12 +19,15 @@ include { STAR_GENOMEGENERATE_IGENOMES      } from '../../modules/local/star_gen
 include { SALMON_INDEX                      } from '../../modules/nf-core/salmon/index/main'
 include { RSEM_PREPAREREFERENCE as MAKE_TRANSCRIPTS_FASTA } from '../../modules/nf-core/rsem/preparereference/main'
 
-include { GTF_GENE_FILTER                      } from '../../modules/local/gtf_gene_filter'
+include { INPUT_CHECK                        } from './input_check.nf'
+include { GTF_GENE_FILTER                      } from '../../modules/local/'
 include { PREPROCESS_TRANSCRIPTS_FASTA_GENCODE } from '../../modules/local/preprocess_transcripts_fasta_gencode.nf'
 
 workflow PREPARE_GENOME {
 
     take:
+    input                // path: samplesheet
+    contrasts            // path: contrastsheet
     fasta                //      file: /path/to/genome.fasta
     gtf                  //      file: /path/to/genome.gtf
     gff                  //      file: /path/to/genome.gff
@@ -33,14 +36,20 @@ workflow PREPARE_GENOME {
     salmon_index         // directory: /path/to/salmon/index/
     gff_dexseq           //      file: /path/to/dexseq/genome.gff
     suppa_tpm            //      file: /path/to/suppa/quant.tpm
-    is_aws_igenome       //   boolean: whether the genome files are from AWS iGenomes
-    prepare_tool_indices //      list: tools to prepare indices for
     step                 //     value: workflow step
     gencode              //   boolean: whether gene annotation is from gencode
 
     main:
 
     ch_versions = channel.empty()
+
+    // Check if an AWS iGenome has been provided to use the appropriate version of STAR
+    is_aws_igenome = false
+    if (fasta && gtf) {
+        if (file(fasta).getName() - ".gz" == "genome.fa" && file(gtf).getName() - ".gz" == "genes.gtf") {
+            is_aws_igenome = true
+        }
+    }
 
     //
     // Uncompress genome fasta file if required
@@ -99,7 +108,7 @@ workflow PREPARE_GENOME {
     //
     // Create chromosome sizes file
     //
-    CUSTOM_GETCHROMSIZES ( ch_fasta.map { [ [:], it ] } )
+    CUSTOM_GETCHROMSIZES ( ch_fasta.map { it -> [ [:], it ] } )
     ch_fai         = CUSTOM_GETCHROMSIZES.out.fai.map { it[1] }
     ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes.map { it[1] }
     ch_versions    = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
@@ -107,6 +116,10 @@ workflow PREPARE_GENOME {
     //
     // Uncompress STAR index or generate from scratch if required
     //
+
+    prepare_tool_indices = params.skip_alignment ? [] : [ params.aligner ]
+    prepare_tool_indices = params.pseudo_aligner ? prepare_tool_indices + [ params.pseudo_aligner ] : prepare_tool_indices
+
     ch_star_index = channel.empty()
     if (('star' in prepare_tool_indices || 'star_salmon' in prepare_tool_indices) && (step == 'fastq')) {
         if (star_index) {
@@ -174,6 +187,7 @@ workflow PREPARE_GENOME {
     }
 
     emit:
+    input            = ch_input            //    channel [ val(meta), file(s) ]
     fasta            = ch_fasta            //    path: genome.fasta
     fai              = ch_fai              //    path: genome.fai
     chrom_sizes      = ch_chrom_sizes      //    path: genome.sizes

@@ -18,8 +18,8 @@ process CREATE_BAMLIST {
 
     script:
     """
-    echo $bam1 | sed 's: :,:g' > ${cond1}_bamlist.txt
-    echo $bam2 | sed 's: :,:g' > ${cond2}_bamlist.txt
+    echo ${bam1} | sed 's: :,:g' > ${cond1}_bamlist.txt
+    echo ${bam2} | sed 's: :,:g' > ${cond2}_bamlist.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

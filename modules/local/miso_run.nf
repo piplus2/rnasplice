@@ -20,7 +20,7 @@ process MISO_RUN {
 
     script:
     """
-    miso --run ${miso_index} $bams --output-dir miso_data/${meta.id} --read-len $miso_read_len
+    miso --run ${miso_index} ${bams} --output-dir miso_data/${meta.id} --read-len ${miso_read_len}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

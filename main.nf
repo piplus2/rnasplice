@@ -39,6 +39,7 @@ params.star_index   = getGenomeAttribute('star')
 */
 
 include { RNASPLICE               } from './workflows/rnasplice'
+include { PREPARE_GENOME          } from './subworkflows/local/prepare_genome'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 
@@ -66,7 +67,34 @@ workflow NFCORE_RNASPLICE {
         params.outdir,
     )
 
-    RNASPLICE()
+    //
+    // SUBWORKFLOW: Uncompress and prepare reference genome files
+    //
+    PREPARE_GENOME (
+        params.fasta,
+        params.gtf,
+        params.gff,
+        params.transcript_fasta,
+        params.star_index,
+        params.salmon_index,
+        params.gff_dexseq,
+        params.suppa_tpm,
+        params.step,
+        params.gencode
+    )
+
+
+    RNASPLICE(
+        PREPARE_GENOME.out.samplesheet,
+        PREPARE_GENOME.out.contrastsheet,
+        PREPARE_GENOME.out.fasta,
+        PREPARE_GENOME.out.gtf,
+        PREPARE_GENOME.out.star_index,
+        PREPARE_GENOME.out.salmon_index,
+        PREPARE_GENOME.out.gff_dexseq,
+        PREPARE_GENOME.out.suppa_tpm,
+        PREPARE_GENOME.out.is_aws_igenome,
+    )
 
     //
     // SUBWORKFLOW: Run completion tasks

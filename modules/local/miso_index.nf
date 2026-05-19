@@ -19,8 +19,8 @@ process MISO_INDEX {
 
     script:
     """
-    index_gff --index $gff3 $index
-    parse_miso_index.py -p $index
+    index_gff --index ${gff3} ${index}
+    parse_miso_index.py -p ${index}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

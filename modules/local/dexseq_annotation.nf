@@ -23,10 +23,10 @@ process DEXSEQ_ANNOTATION {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "DEXSeq"
 
-    def aggregation = aggregation ? '' : '-r no'
+    def aggr = aggregation ? '' : '-r no'
 
     """
-    dexseq_prepare_annotation.py $gtf ${prefix}.gff $aggregation
+    dexseq_prepare_annotation.py $gtf ${prefix}.gff ${aggr} ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

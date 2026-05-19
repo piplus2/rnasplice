@@ -25,7 +25,7 @@ process DEXSEQ_COUNT {
 
     def read_type = meta.single_end ? '' : '-p yes'
 
-    def alignment_quality = "-a ${alignment_quality}"
+    def align_quality = "-a ${alignment_quality}"
 
     def strandedness = ''
     if (meta.strandedness == 'forward') {
@@ -37,7 +37,7 @@ process DEXSEQ_COUNT {
     }
 
     """
-    dexseq_count.py $gff $read_type -f bam $bam -r pos ${prefix}.clean.count.txt $alignment_quality $strandedness
+    dexseq_count.py $gff $read_type -f bam $bam -r pos ${prefix}.clean.count.txt $align_quality $strandedness ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

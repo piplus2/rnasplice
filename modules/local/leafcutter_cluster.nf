@@ -23,7 +23,7 @@ process LEAFCUTTER_CLUSTER {
     """
     ls *junc > test_juncfiles.txt
     leafcutter_cluster_regtools.py \\
-        $args \\
+        ${args} \\
         -j test_juncfiles.txt \\
         -o lc
 
