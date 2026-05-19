@@ -35,6 +35,8 @@ jobs:
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v2
+        with:
+          version: "24.04.2"
 
       - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5
         with:
@@ -80,4 +82,4 @@ jobs:
           path: |
             lint_log.txt
             lint_results.md
-            PR_number.txt
+          PR_number.txt
