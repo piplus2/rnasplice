@@ -19,18 +19,18 @@ nextflow.enable.dsl = 2
 
 def getGenomeAttribute(attribute) {
     if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[ params.genome ].containsKey(attribute)) {
-            return params.genomes[ params.genome ][ attribute ]
+        if (params.genomes[params.genome].containsKey(attribute)) {
+            return params.genomes[params.genome][attribute]
         }
     }
     return null
 }
 
-params.fasta         = getGenomeAttribute('fasta')
-params.gff           = getGenomeAttribute('gff')
-params.gtf           = getGenomeAttribute('gtf')
-params.salmon_index  = getGenomeAttribute('salmon')
-params.star_index    = getGenomeAttribute('star')
+params.fasta        = getGenomeAttribute('fasta')
+params.gff          = getGenomeAttribute('gff')
+params.gtf          = getGenomeAttribute('gtf')
+params.salmon_index = getGenomeAttribute('salmon')
+params.star_index   = getGenomeAttribute('star')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +38,7 @@ params.star_index    = getGenomeAttribute('star')
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNASPLICE } from './workflows/rnasplice'
+include { RNASPLICE               } from './workflows/rnasplice'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 
@@ -53,31 +53,33 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnas
 //
 workflow NFCORE_RNASPLICE {
 
+    log.info(NfcoreTemplate.logo(workflow, params.monochrome_logs))
+
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    PIPELINE_INITIALISATION (
+    PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir
+        params.outdir,
     )
 
-    RNASPLICE ()
+    RNASPLICE()
 
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
+    PIPELINE_COMPLETION(
         params.email,
         params.email_on_fail,
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        RNASPLICE.out.final_multiqc_report
-    )   
+        RNASPLICE.out.final_multiqc_report,
+    )
 }
 
 /*
@@ -91,11 +93,5 @@ workflow NFCORE_RNASPLICE {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_RNASPLICE ()
+    NFCORE_RNASPLICE()
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
