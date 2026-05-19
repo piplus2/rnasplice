@@ -23,7 +23,7 @@
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "65ad3e0b9a4099592e1102e92e10455dc661cf53",
-                        "installed_by": ["modules", "fastq_fastqc_umitools_trimgalore"]
+                        "installed_by": ["fastq_fastqc_umitools_trimgalore", "modules"]
                     },
                     "gffread": {
                         "branch": "master",
@@ -103,7 +103,7 @@
                     "trimgalore": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": ["modules", "fastq_fastqc_umitools_trimgalore"]
+                        "installed_by": ["fastq_fastqc_umitools_trimgalore", "modules"]
                     },
                     "ucsc/bedclip": {
                         "branch": "master",
@@ -146,7 +146,7 @@
                     },
                     "fastq_fastqc_umitools_trimgalore": {
                         "branch": "master",
-                        "git_sha": "dedc0e31087f3306101c38835d051bf49789445a",
+                        "git_sha": "e5777ea46cc591b519b9bb931e952e4a149cb47d",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nextflow_pipeline": {

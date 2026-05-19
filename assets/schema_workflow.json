@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/rnasplice/master/nextflow_schema.json",
+    "title": "nf-core/rnasplice pipeline parameters",
+    "description": "Parameters for the nf-core/rnasplice pipeline, as defined in the nextflow.config file",
+    "type": "object",
+    "defs": {
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome related files and options required for the workflow.",
+            "properties": {
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes refereence.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": 
+                }
+        }
+    }
+}

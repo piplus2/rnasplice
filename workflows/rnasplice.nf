@@ -8,19 +8,6 @@ include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-schema'
 
 def summary_params = paramsSummaryMap(workflow)
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [
-    params.fasta,
-    params.gff,
-    params.gtf,
-    params.input,
-    params.multiqc_config,
-    params.salmon_index,
-    params.star_index,
-    params.transcript_fasta
-]
-
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
@@ -118,14 +105,14 @@ include { BAM_SORT_STATS_SAMTOOLS                                         } from
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-def pass_trimmed_reads = [:]
+// // Info required for completion email and summary
+// def multiqc_report = []
+// def pass_trimmed_reads = [:]
 
 workflow RNASPLICE {
 
     // Create channel for software versions (will be added to throughout pipeline)
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // SUBWORKFLOW: Uncompress and prepare reference genome files
@@ -151,8 +138,7 @@ workflow RNASPLICE {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    switch (params.source) {
-        case 'fastq':
+    if (params.source == 'fastq') {
             INPUT_CHECK (
                 ch_input,
                 params.source
@@ -174,7 +160,7 @@ workflow RNASPLICE {
             .set { ch_fastq }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
-        case 'genome_bam':
+     } else if (params.source == 'genome_bam') {
             INPUT_CHECK (
                 ch_input,
                 params.source
@@ -183,7 +169,7 @@ workflow RNASPLICE {
             .set { ch_genome_bam }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
-        case 'transcriptome_bam':
+     } else if (params.source == 'transcriptome_bam') {
             INPUT_CHECK (
                 ch_input,
                 params.source
@@ -192,7 +178,7 @@ workflow RNASPLICE {
             .set { ch_transcriptome_bam }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
             break;
-        case 'salmon_results':
+     } else if (params.source == 'salmon_results') {
             INPUT_CHECK (
                 ch_input,
                 params.source
