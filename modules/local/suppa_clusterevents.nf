@@ -35,6 +35,8 @@ process CLUSTEREVENTS {
     def clusterevents_separation = clusterevents_separation ? "-s ${params.clusterevents_separation}" : ''
 
     """
+    touch ${cond1}-${cond2}_${prefix}_cluster
+
     suppa.py \\
         clusterEvents \\
         --dpsi $dpsi \\
