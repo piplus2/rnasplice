@@ -8,7 +8,7 @@ process RMATS_PREP_SINGLE {
 
     input:
     path gtf                                     // /path/to/genome.gtf
-    tuple val(contrast), val(cond1), val(meta1), path(bam1), path(bam1_text)
+    tuple val(contrast), val(cond1), val(meta1), path(bam1), path(bam1_list)
     val rmats_read_len                           // val params.rmats_read_len
     val rmats_splice_diff_cutoff                 // val params.rmats_splice_diff_cutoff
     val rmats_novel_splice_site                  // val params.rmats_novel_splice_site
@@ -57,19 +57,20 @@ process RMATS_PREP_SINGLE {
 
     """
     rmats.py \\
-        --b1 $bam_group1 \\
-        -t $read_type \\
-        --libType $strandedness \\
-        --nthread $task.cpus \\
-        --gtf $gtf \\
+        ${args} \\
+        --b1 ${bam1_list} \\
+        -t ${read_type} \\
+        --libType ${strandedness} \\
+        --nthread ${task.cpus} \\
+        --gtf ${gtf} \\
         --allow-clipping \\
-        --readLength $rmats_read_len \\
+        --readLength ${rmats_read_len} \\
         --variable-read-length \\
-        --cstat $rmats_splice_diff_cutoff \\
+        --cstat ${rmats_splice_diff_cutoff} \\
         --task prep \\
-        $novel_splice_sites \\
-        $min_intron_len \\
-        $max_exon_len \\
+        ${novel_splice_sites} \\
+        ${min_intron_len} \\
+        ${max_exon_len} \\
         --tmp rmats_temp \\
         --od rmats_prep 1> rmats_prep.log
 
