@@ -54,7 +54,7 @@ workflow RMATS {
         // Create input channels
         //
 
-        ch_bam = ch_contrasts.map { [ it.contrast, it.treatment, it.bam1 ] }
+        ch_bam = ch_contrasts.map { it -> [ it.contrast, it.treatment, it.bam1 ] }
 
         //
         // Create input bam list file
@@ -70,7 +70,7 @@ workflow RMATS {
         // Join bamlist with contrasts
         //
 
-        ch_contrasts = ch_contrasts
+        ch_contrasts_with_bamlist = ch_contrasts
             .map { it -> [it['contrast'], it] }
             .combine ( ch_bamlist, by: 0 )
             .map { it -> it[1] + ['bam1_text': it[2]] }
@@ -79,7 +79,7 @@ workflow RMATS {
         // Create input channels
         //
 
-        ch_contrasts_bamlist = ch_contrasts.map { [ it.contrast, it.treatment, it.meta1, it.bam1, it.bam1_text ] }
+        ch_prep_input = ch_contrasts_with_bamlist.map { it -> [ it.contrast, it.treatment, it.meta1, it.bam1, it.bam1_text ] }
 
         //
         // Run rMATS prep step
@@ -87,7 +87,7 @@ workflow RMATS {
 
         RMATS_PREP_SINGLE (
             gtf,
-            ch_contrasts_bamlist,
+            ch_prep_input,
             rmats_read_len,
             rmats_splice_diff_cutoff,
             rmats_novel_splice_site,
@@ -110,7 +110,12 @@ workflow RMATS {
         // Create input channels
         //
 
-        ch_contrasts_bamlist = ch_contrasts.map { [ it.contrast, it.treatment, it.meta1, it.bam1, it.bam1_text, it.rmats_temp ] }
+        ch_post_input = ch_contrasts_with_bamlist
+            .map { it -> [ it['contrast'], it] }
+            .join ( RMATS_PREP_SINGLE.out.rmats_temp, by: 0 )
+            .map { contrasts, meta, temp ->
+            [ contrasts, meta.treatment, meta.meta1, meta.bam1, meta.bam1_text, temp ]
+        }
 
         //
         // Run rMATs post step
@@ -118,7 +123,7 @@ workflow RMATS {
 
         RMATS_POST_SINGLE (
             gtf,
-            ch_contrasts_bamlist,
+            ch_post_input,
             rmats_read_len,
             rmats_splice_diff_cutoff,
             rmats_novel_splice_site,
