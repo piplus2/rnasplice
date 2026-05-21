@@ -104,7 +104,7 @@ workflow RNASPLICE {
         params.source,
         params.gencode
     )
-    ch_meta_fasta = PREPARE_GENOME.out.fasta.map { [ [:], it ] }
+    ch_meta_fasta = PREPARE_GENOME.out.fasta.map { it -> [ [:], it ] }
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions)
 
     //
@@ -428,7 +428,7 @@ workflow RNASPLICE {
 
     if (params.isoformswitchanalyzer && (params.source == 'fastq' || params.source == 'salmon_results')) {
         ISOFORMSWITCHANALYZER(
-            ch_salmon_results.collect{ it[1] }, PREPARE_GENOME.out.gtf,
+            ch_salmon_results.collect{ it -> it[1] }, PREPARE_GENOME.out.gtf,
             PREPARE_GENOME.out.transcript_fasta, ch_samplesheet, ch_contrastsheet,
             params.isoformswitchanalyzer_alpha, params.isoformswitchanalyzer_dIF
         )
@@ -490,27 +490,27 @@ workflow RNASPLICE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
     if (params.source == 'fastq') {
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.fastqc_zip.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_zip.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_log.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.fastqc_zip.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_zip.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_log.collect{it -> it[1]}.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_fail_trimming_multiqc.collectFile(name: 'fail_trimmed_samples_mqc.tsv').ifEmpty([]))
     }
 
     if (params.pseudo_aligner == 'salmon' && params.source == 'fastq') {
-        ch_multiqc_files = ch_multiqc_files.mix(ch_salmon_results.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_salmon_results.collect{it -> it[1]}.ifEmpty([]))
     }
 
     if (!params.skip_alignment && params.source == 'fastq' && (params.aligner == 'star_salmon' || params.aligner == "star")) {
-        ch_multiqc_files = ch_multiqc_files.mix(ch_star_multiqc.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_star_multiqc.collect{it -> it[1]}.ifEmpty([]))
     }
 
     if ((params.source == 'genome_bam' || params.source == 'transcriptome_bam') || (!params.skip_alignment && params.source == 'fastq' && (params.aligner == 'star_salmon' || params.aligner == "star"))) {
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_stats.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_flagstat.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_idxstats.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_stats.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_flagstat.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_idxstats.collect{it -> it[1]}.ifEmpty([]))
 
         if (params.edger_exon && params.source != 'transcriptome_bam') {
-            ch_multiqc_files = ch_multiqc_files.mix(EDGER_DEU.out.featureCounts_summary.collect{it[1]}.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(EDGER_DEU.out.featureCounts_summary.collect{it -> it[1]}.ifEmpty([]))
         }
     }
 
