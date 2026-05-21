@@ -24,7 +24,7 @@ workflow TX2GENE_TXIMPORT {
     salmon_results
     .map {
         meta, prefix ->
-            tgz = prefix[0].toString().endsWith(".tar.gz") ? true : false
+            def tgz = prefix[0].toString().endsWith(".tar.gz") ? true : false
             [ meta + [tgz: tgz], prefix ]
     }
     .branch{
