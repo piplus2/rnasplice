@@ -30,13 +30,14 @@ process DRIMSEQ_FILTER {
     def args = task.ext.args ?: ''
 
     """
-    run_drimseq_filter.R $txi $tximport_tx2gene $samplesheet \\
-        $min_samps_gene_expr \\
-        $min_samps_feature_expr \\
-        $min_samps_feature_prop \\
-        $min_feature_expr \\
-        $min_feature_prop \\
-        $min_gene_expr
+    run_drimseq_filter.R ${txi} ${tximport_tx2gene} ${samplesheet} \\
+        ${min_samps_gene_expr} \\
+        ${min_samps_feature_expr} \\
+        ${min_samps_feature_prop} \\
+        ${min_feature_expr} \\
+        ${min_feature_prop} \\
+        ${min_gene_expr} \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
