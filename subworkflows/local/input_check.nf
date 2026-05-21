@@ -10,8 +10,14 @@ workflow INPUT_CHECK {
     source      //    val: execution input format type profile [fastq, genome_bam, transcriptome_bam, salmon_results]
 
     main:
-    // Extract structured objects natively using the json validation schema rules asset
-    def raw_samplesheet_list = samplesheetToList(samplesheet, "${projectDir}/assets/schema_input.json")
+    // Select schema matching the declared source type
+    def source_schemas = [
+        fastq:             "${projectDir}/assets/schema_input.json",
+        genome_bam:        "${projectDir}/assets/schema_input_genome_bam.json",
+        transcriptome_bam: "${projectDir}/assets/schema_input_transcriptome_bam.json",
+        salmon_results:    "${projectDir}/assets/schema_input_salmon_results.json"
+    ]
+    def raw_samplesheet_list = samplesheetToList(samplesheet, source_schemas[source])
 
     channel
         .fromList(raw_samplesheet_list)
@@ -52,8 +58,9 @@ workflow INPUT_CHECK {
         }
 
     // 3. Transcript quantification profile (Transcriptome BAM)
+    // Samplesheet has both genome_bam and transcriptome_bam columns; only transcriptome_bam is used here
     ch_reads_transcriptome = ch_branched_inputs.transcriptome_bam
-        .map { meta, transcriptome_bam ->
+        .map { meta, genome_bam, transcriptome_bam ->
             def meta_map = [
                 id:        meta.id,
                 condition: meta.condition

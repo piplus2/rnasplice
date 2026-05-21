@@ -1,0 +1,39 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/rnasplice/master/assets/schema_input_transcriptome_bam.json",
+    "title": "nf-core/rnasplice pipeline - params.input schema (transcriptome_bam source)",
+    "description": "Schema for the file provided with params.input when --source transcriptome_bam",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
+            },
+            "condition": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Condition must be provided and contain syntactically valid names.",
+                "meta": ["condition"]
+            },
+            "genome_bam": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.bam$",
+                "errorMessage": "Genome BAM file must be provided, cannot contain spaces and must have extension '.bam'"
+            },
+            "transcriptome_bam": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.bam$",
+                "errorMessage": "Transcriptome BAM file must be provided, cannot contain spaces and must have extension '.bam'"
+            }
+        },
+        "required": ["sample", "condition", "genome_bam", "transcriptome_bam"]
+    }
+}
