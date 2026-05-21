@@ -48,7 +48,7 @@ workflow ALIGN_STAR {
         ch_tab            = STAR_ALIGN_IGENOMES.out.tab
         ch_versions       = ch_versions.mix(STAR_ALIGN_IGENOMES.out.versions.first())
     } else {
-        STAR_ALIGN ( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+        STAR_ALIGN ( reads, index, gtf, star_ignore_sjdbgtf )
         ch_orig_bam       = STAR_ALIGN.out.bam
         ch_log_final      = STAR_ALIGN.out.log_final
         ch_log_out        = STAR_ALIGN.out.log_out
