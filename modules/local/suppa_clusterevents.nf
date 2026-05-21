@@ -9,9 +9,7 @@ process CLUSTEREVENTS {
         'biocontainers/suppa:2.3--py36_0' }"
 
     input:
-    tuple val(cond1), val(cond2), path(dpsi)
-    tuple val(cond1), val(cond2), path(psivec)
-    tuple val(cond1), val(cond2), val(group_ranges) // e.g. 1-3,4-6
+    tuple val(cond1), val(cond2), path(dpsi), path(psivec), val(group_ranges) // e.g. 1-3,4-6
     val prefix
     val clusterevents_dpsithreshold    // val params.clusterevents_dpsithreshold
     val clusterevents_eps              // val params.clusterevents_eps
@@ -31,21 +29,23 @@ process CLUSTEREVENTS {
 
     script: //  Cluster events between conditions
 
-    def clusterevents_sigthreshold  = clusterevents_sigthreshold ? "-st ${params.clusterevents_sigthreshold}" : ''
-    def clusterevents_separation = clusterevents_separation ? "-s ${params.clusterevents_separation}" : ''
+    def thresh_arg  = clusterevents_sigthreshold ? "-st ${clusterevents_sigthreshold}" : ''
+    def separation_arg = clusterevents_separation ? "-s ${clusterevents_separation}" : ''
 
     """
+    touch ${cond1}-${cond2}_${prefix}_cluster.clustvec
+
     suppa.py \\
         clusterEvents \\
-        --dpsi $dpsi \\
-        --psivec $psivec \\
-        --dpsi-threshold $clusterevents_dpsithreshold \\
-        --eps $clusterevents_eps \\
-        --metric $clusterevents_metric \\
-        --min-pts $clusterevents_min_pts \\
-        --groups $group_ranges \\
-        --clustering $clusterevents_method \\
-        $clusterevents_sigthreshold $clusterevents_separation -o ${cond1}-${cond2}_${prefix}_cluster
+        --dpsi ${dpsi} \\
+        --psivec ${psivec} \\
+        --dpsi-threshold ${clusterevents_dpsithreshold} \\
+        --eps ${clusterevents_eps} \\
+        --metric ${clusterevents_metric} \\
+        --min-pts ${clusterevents_min_pts} \\
+        --groups ${group_ranges} \\
+        --clustering ${clusterevents_method} \\
+        ${thresh_arg} ${separation_arg} -o ${cond1}-${cond2}_${prefix}_cluster
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
