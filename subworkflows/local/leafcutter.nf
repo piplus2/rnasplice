@@ -1,7 +1,7 @@
 include { REGTOOLS_JUNCTIONSEXTRACT } from '../../modules/nf-core/regtools/junctionsextract/main'
 include { LEAFCUTTER_CLUSTER } from '../../modules/local/leafcutter_cluster'
 
-workflow LEAFCUTTER{
+workflow LEAFCUTTER {
 
     take:
     ch_genome_bam
@@ -10,12 +10,12 @@ workflow LEAFCUTTER{
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    REGTOOLS_JUNCTIONSEXTRACT(ch_genome_bam.join(ch_genome_bam_index))
+    REGTOOLS_JUNCTIONSEXTRACT(ch_genome_bam.join(ch_genome_bam_index), '')
     ch_versions = ch_versions.mix(REGTOOLS_JUNCTIONSEXTRACT.out.versions)
     ch_juncs = REGTOOLS_JUNCTIONSEXTRACT.out.junc
-        .map { it[1] }
+        .map { it -> it[1] }
         .collect()
 
     LEAFCUTTER_CLUSTER(ch_juncs, ch_gtf)
