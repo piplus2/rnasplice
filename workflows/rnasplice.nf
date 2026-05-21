@@ -39,7 +39,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rnas
 include { FASTQC                                } from '../modules/nf-core/fastqc/main'
 include { SALMON_QUANT as SALMON_QUANT_SALMON   } from '../modules/nf-core/salmon/quant/main'
 include { SALMON_QUANT as SALMON_QUANT_STAR     } from '../modules/nf-core/salmon/quant/main'
-include { MULTIQC                               } from '../modules/nf-core/multiqc/main'
+include { MULTIQC                               } from '../modules/nf-core/multiqc/'
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { CAT_FASTQ                             } from '../modules/nf-core/cat/fastq/main'
 include { FASTQ_FASTQC_UMITOOLS_TRIMGALORE      } from '../subworkflows/nf-core/fastq_fastqc_umitools_trimgalore/main'
@@ -110,8 +110,7 @@ workflow RNASPLICE {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and branch channels
     //
-    switch (params.source) {
-        case 'fastq':
+    if (params.source == 'fastq') {
             INPUT_CHECK ( ch_input, params.source )
             INPUT_CHECK.out.reads
                 .map { meta, fastq ->
@@ -127,19 +126,15 @@ workflow RNASPLICE {
                 }
                 .set { ch_fastq }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
-        case 'genome_bam':
+    } else if (params.source == 'genome_bam') {
             INPUT_CHECK ( ch_input, params.source ).reads.set { ch_genome_bam }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
-        case 'transcriptome_bam':
+    } else if (params.source == 'transcriptome_bam') {
             INPUT_CHECK ( ch_input, params.source ).reads.set { ch_transcriptome_bam }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
-        case 'salmon_results':
+    } else if (params.source == 'salmon_results') {
             INPUT_CHECK ( ch_input, params.source ).reads.set { ch_salmon_results }
             ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-            break;
     }
 
     //
