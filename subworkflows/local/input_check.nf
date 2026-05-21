@@ -13,10 +13,10 @@ workflow INPUT_CHECK {
 
     // Select schema matching the declared input source type
     def source_schemas = [
-        fastq:             '${projectDir}/assets/schema_input_fastq.json',
-        genome_bam:        '${projectDir}/assets/schema_input_genome_bam.json',
-        transcriptome_bam: '${projectDir}/assets/schema_input_transcriptome_bam.json',
-        salmon_results:    '${projectDir}/assets/schema_input_salmon_results.json'
+        fastq:             "${projectDir}/assets/schema_input_fastq.json",
+        genome_bam:        "${projectDir}/assets/schema_input_genome_bam.json",
+        transcriptome_bam: "${projectDir}/assets/schema_input_transcriptome_bam.json",
+        salmon_results:    "${projectDir}/assets/schema_input_salmon_results.json"
     ]
 
     def raw_samplesheet_list = samplesheetToList(samplesheet, source_schemas[source])
