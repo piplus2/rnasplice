@@ -10,18 +10,26 @@ workflow INPUT_CHECK {
     source      //    val: execution input format type profile [fastq, genome_bam, transcriptome_bam, salmon_results]
 
     main:
-    // Extract structured objects natively using the json validation schema rules asset
-    def raw_samplesheet_list = samplesheetToList(samplesheet, "${projectDir}/assets/schema_input.json")
+
+    // Select schema matching the declared input source type
+    def source_schemas = [
+        fastq:             '${projectDir}/assets/schema_input_fastq.json',
+        genome_bam:        '${projectDir}/assets/schema_input_genome_bam.json',
+        transcriptome_bam: '${projectDir}/assets/schema_input_transcriptome_bam.json',
+        salmon_results:    '${projectDir}/assets/schema_input_salmon_results.json'
+    ]
+
+    def raw_samplesheet_list = samplesheetToList(samplesheet, source_schemas[source])
 
     channel
         .fromList(raw_samplesheet_list)
-        .choice(
-            fastq:             { source == 'fastq' },
-            genome_bam:        { source == 'genome_bam' },
-            transcriptome_bam: { source == 'transcriptome_bam' },
-            salmon_results:    { source == 'salmon_results' },
-            none:              { true }
-        )
+        .branch {
+            fastq:             source == 'fastq'
+            genome_bam:        source == 'genome_bam'
+            transcriptome_bam: source == 'transcriptome_bam'
+            salmon_results:    source == 'salmon_results'
+            none:              true
+        }
         .set { ch_branched_inputs }
 
     // ====================================================================
@@ -32,10 +40,10 @@ workflow INPUT_CHECK {
     ch_reads_fastq = ch_branched_inputs.fastq
         .map { meta, fastq_1, fastq_2 ->
             def meta_map = [
-                id:          meta.id,
-                single_end:  meta.single_end.toBoolean(),
-                strandedness:meta.strandedness,
-                condition:   meta.condition
+                id:           meta.id,
+                single_end:   !fastq_2,
+                strandedness: meta.strandedness,
+                condition:    meta.condition
             ]
             def files = meta_map.single_end ? [ file(fastq_1) ] : [ file(fastq_1), file(fastq_2) ]
             return [ meta_map, files ]
@@ -52,8 +60,10 @@ workflow INPUT_CHECK {
         }
 
     // 3. Transcript quantification profile (Transcriptome BAM)
+    // Samplesheet has both genome_bam and transcriptome_bam columns; only
+    // transcriptome_bam is used here
     ch_reads_transcriptome = ch_branched_inputs.transcriptome_bam
-        .map { meta, transcriptome_bam ->
+        .map { meta, _genome_bam, transcriptome_bam ->
             def meta_map = [
                 id:        meta.id,
                 condition: meta.condition

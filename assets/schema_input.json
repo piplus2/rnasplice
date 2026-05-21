@@ -36,12 +36,18 @@
                     "forward",
                     "reverse",
                     "unstranded"
+                ],
+                "meta": [
+                    "strandedness"
                 ]
             },
             "condition": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Condition must be provided and contain syntactically valid names."
+                "errorMessage": "Condition must be provided and contain syntactically valid names.",
+                "meta": [
+                    "condition"
+                ]
             }
         },
         "required": [
