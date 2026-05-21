@@ -30,12 +30,12 @@ process ISOFORMSWITCHANALYZER {
     """
     mkdir -p results
 
-    run_isoformswitchanalyzer.R $gtf $transcript_sequences $samplesheet $contrastsheet $alpha $dIF
+    run_isoformswitchanalyzer.R ${gtf} ${transcript_sequences} ${samplesheet} ${contrastsheet} ${alpha} ${dIF} ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        bioconductor-stager: \$(Rscript -e "library(IsoformSwitchAnalyzeR); cat(as.character(packageVersion('IsoformSwitchAnalyzeR')))")
+        bioconductor-isoformswitchanalyzer: \$(Rscript -e "library(IsoformSwitchAnalyzeR); cat(as.character(packageVersion('IsoformSwitchAnalyzeR')))")
     END_VERSIONS
     """
 }
