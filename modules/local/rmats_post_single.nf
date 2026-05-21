@@ -62,20 +62,21 @@ process RMATS_POST_SINGLE {
 
     """
     rmats.py \\
-        --b1 $bam1 \\
-        -t $read_type \\
-        --libType $strandedness \\
-        --nthread $task.cpus \\
-        --gtf $gtf \\
+        ${args} \\
+        --b1 ${bam1} \\
+        -t ${read_type} \\
+        --libType ${strandedness} \\
+        --nthread ${task.cpus} \\
+        --gtf ${gtf} \\
         --allow-clipping \\
-        --readLength $rmats_read_len \\
+        --readLength ${rmats_read_len} \\
         --variable-read-length \\
-        --cstat $rmats_splice_diff_cutoff \\
+        --cstat ${rmats_splice_diff_cutoff} \\
         --task post \\
-        $paired_stats \\
-        $novel_splice_sites \\
-        $min_intron_len \\
-        $max_exon_len \\
+        ${paired_stats} \\
+        ${novel_splice_sites} \\
+        ${min_intron_len} \\
+        ${max_exon_len} \\
         --tmp rmats_temp \\
         --od rmats_post 1> rmats_post.log
 

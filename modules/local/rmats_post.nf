@@ -9,7 +9,7 @@ process RMATS_POST {
 
     input:
     path gtf                                     // /path/to/genome.gtf
-    tuple val(contrast), val(cond1), val(cond2), val(meta1), val(meta2), path(bam1), path(bam2), path(bam1_text), path(bam2_text), path("$cond1-$cond2/rmats_temp/*")
+    tuple val(contrast), val(cond1), val(meta1),  path(bam1), path(bam1_text),val(meta2), val(cond2), path(bam2), path(bam2_text), path(rmats_temp)
     val rmats_read_len                           // val params.rmats_read_len
     val rmats_splice_diff_cutoff                 // val params.rmats_splice_diff_cutoff
     val rmats_novel_splice_site                  // val params.rmats_novel_splice_site
@@ -18,8 +18,8 @@ process RMATS_POST {
     val rmats_paired_stats                       // val params.rmats_paired_stats
 
     output:
-    path "$cond1-$cond2/rmats_post/*"        , emit: rmats_post
-    path "$cond1-$cond2/rmats_post.log"      , emit: log
+    path "${output_dir}/rmats_post/*"        , emit: rmats_post
+    path "${output_dir}/rmats_post.log"      , emit: log
     path "versions.yml"                      , emit: versions
 
     when:
@@ -27,11 +27,15 @@ process RMATS_POST {
 
     script:
 
+    output_dir = cond2 ? "$cond1-$cond2" : '.'
+
+     // Only need to take meta1 as samples have same strand and read type info
+
     // Only need to take meta1 as samples have same strand and read type info
     // - see rnasplice.nf input check for rmats
     def meta = meta1[0]
     def args = task.ext.args ?: ''
-    prefix   = task.ext.prefix ?: "$cond1-$cond2"
+    def prefix   = task.ext.prefix ?: "${cond2 ? "$cond1-$cond2" : '.'}"
 
     // Take single/paired end information from meta
     def read_type = meta.single_end ? 'single' : 'paired'
@@ -62,29 +66,33 @@ process RMATS_POST {
         max_exon_len   = rmats_max_exon_len ? "--mel ${rmats_max_exon_len}" : '--mel 500'
     }
 
+    def b1 = bam1_text ? "--b1 ${bam1_text}" : ''
+    def b2 = bam2_text ? "--b2 ${bam2_text}" : ''
+
     """
-    mkdir -p $prefix/rmats_post
+    mkdir -p ${prefix}/rmats_post
 
     rmats.py \\
-        --gtf $gtf \\
-        --b1 $bam1_text \\
-        --b2 $bam2_text \\
-        --od $prefix/rmats_post \\
-        --tmp $prefix/rmats_temp \\
-        -t $read_type \\
-        --libType $strandedness \\
-        --readLength $rmats_read_len \\
+        ${args} \\
+        --gtf ${gtf} \\
+        ${b1} \\
+        ${b2} \\
+        --od ${prefix}/rmats_post \\
+        --tmp ${prefix}/rmats_temp \\
+        -t ${read_type} \\
+        --libType ${strandedness} \\
+        --readLength ${rmats_read_len} \\
         --variable-read-length \\
-        --nthread $task.cpus \\
-        --tstat $task.cpus \\
-        --cstat $rmats_splice_diff_cutoff \\
+        --nthread ${task.cpus} \\
+        --tstat ${task.cpus} \\
+        --cstat ${rmats_splice_diff_cutoff} \\
         --task post \\
-        $paired_stats \\
-        $novel_splice_sites \\
-        $min_intron_len \\
-        $max_exon_len \\
+        ${paired_stats} \\
+        ${novel_splice_sites} \\
+        ${min_intron_len} \\
+        ${max_exon_len} \\
         --allow-clipping \\
-        1> $prefix/rmats_post.log
+        1> ${prefix}/rmats_post.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

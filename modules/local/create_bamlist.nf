@@ -10,7 +10,8 @@ process CREATE_BAMLIST {
     tuple val(contrast), val(cond1), val(cond2), path(bam1), path(bam2)
 
     output:
-    tuple val(contrast), path("${cond1}_bamlist.txt"), path("${cond2}_bamlist.txt"), emit: bamlist
+    tuple val(contrast), path("${cond1}_bamlist.txt"), optional: true, emit: bamlist1
+    tuple val(contrast), path("${cond2}_bamlist.txt"), optional: true, emit: bamlist2
     path "versions.yml",   emit: versions
 
     when:
@@ -18,8 +19,8 @@ process CREATE_BAMLIST {
 
     script:
     """
-    echo $bam1 | sed 's: :,:g' > ${cond1}_bamlist.txt
-    echo $bam2 | sed 's: :,:g' > ${cond2}_bamlist.txt
+    echo ${bam1} | sed 's: :,:g' > ${cond1}_bamlist.txt
+    ${cond2 ? "echo ${bam2} | sed 's: :,:g' > ${cond2}_bamlist.txt" : ''}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
