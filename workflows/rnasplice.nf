@@ -40,7 +40,6 @@ include { FASTQC                                } from '../modules/nf-core/fastq
 include { SALMON_QUANT as SALMON_QUANT_SALMON   } from '../modules/nf-core/salmon/quant'
 include { SALMON_QUANT as SALMON_QUANT_STAR     } from '../modules/nf-core/salmon/quant'
 include { MULTIQC                               } from '../modules/nf-core/multiqc/'
-include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions'
 include { CAT_FASTQ                             } from '../modules/nf-core/cat/fastq'
 include { FASTQ_FASTQC_UMITOOLS_TRIMGALORE      } from '../subworkflows/nf-core/fastq_fastqc_umitools_trimgalore'
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_FORWARD } from '../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig/main'
@@ -253,7 +252,7 @@ workflow RNASPLICE {
                 PREPARE_GENOME.out.gtf,
                 ch_genome_bam,
                 ch_dexseq_gff,
-                ch_samplesheet,
+                ch_input,
                 ch_contrastsheet,
                 params.n_dexseq_plot,
                 params.aggregation,
@@ -266,7 +265,7 @@ workflow RNASPLICE {
             EDGER_DEU(
                 PREPARE_GENOME.out.gtf,
                 ch_genome_bam,
-                ch_samplesheet,
+                ch_input,
                 ch_contrastsheet,
                 params.n_edger_plot
             )
@@ -348,7 +347,7 @@ workflow RNASPLICE {
             DRIMSEQ_DEXSEQ_DTU_STAR_SALMON (
                 ch_txi,
                 TX2GENE_TXIMPORT_STAR_SALMON.out.tximport_tx2gene,
-                ch_samplesheet,
+                ch_input,
                 ch_contrastsheet,
                 params.n_dexseq_plot,
                 params.min_samps_gene_expr,
@@ -364,7 +363,7 @@ workflow RNASPLICE {
         if (params.suppa) {
             ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
             SUPPA_STAR_SALMON (
-                PREPARE_GENOME.out.gtf, ch_suppa_tpm, ch_samplesheet, ch_contrastsheet,
+                PREPARE_GENOME.out.gtf, ch_suppa_tpm, ch_input, ch_contrastsheet,
                 params.suppa_per_local_event, params.generateevents_boundary, params.generateevents_threshold,
                 params.generateevents_exon_length, params.generateevents_event_type, params.generateevents_pool_genes,
                 params.psiperevent_total_filter, params.diffsplice_local_event, params.diffsplice_method,
@@ -401,7 +400,7 @@ workflow RNASPLICE {
         if (params.dexseq_dtu) {
             ch_txi = (params.dtu_txi == "dtuScaledTPM") ? TX2GENE_TXIMPORT_SALMON.out.txi_dtu : TX2GENE_TXIMPORT_SALMON.out.txi_s
             DRIMSEQ_DEXSEQ_DTU_SALMON (
-                ch_txi, TX2GENE_TXIMPORT_SALMON.out.tximport_tx2gene, ch_samplesheet, ch_contrastsheet,
+                ch_txi, TX2GENE_TXIMPORT_SALMON.out.tximport_tx2gene, ch_input, ch_contrastsheet,
                 params.n_dexseq_plot, params.min_samps_gene_expr, params.min_samps_feature_expr,
                 params.min_samps_feature_prop, params.min_feature_expr, params.min_feature_prop, params.min_gene_expr
             )
@@ -411,7 +410,7 @@ workflow RNASPLICE {
         if (params.suppa) {
             ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
             SUPPA_SALMON (
-                PREPARE_GENOME.out.gtf, ch_suppa_tpm, ch_samplesheet, ch_contrastsheet,
+                PREPARE_GENOME.out.gtf, ch_suppa_tpm, ch_input, ch_contrastsheet,
                 params.suppa_per_local_event, params.generateevents_boundary, params.generateevents_threshold,
                 params.generateevents_exon_length, params.generateevents_event_type, params.generateevents_pool_genes,
                 params.psiperevent_total_filter, params.diffsplice_local_event, params.diffsplice_method,
@@ -429,7 +428,7 @@ workflow RNASPLICE {
     if (params.isoformswitchanalyzer && (params.source == 'fastq' || params.source == 'salmon_results')) {
         ISOFORMSWITCHANALYZER(
             ch_salmon_results.collect{ it -> it[1] }, PREPARE_GENOME.out.gtf,
-            PREPARE_GENOME.out.transcript_fasta, ch_samplesheet, ch_contrastsheet,
+            PREPARE_GENOME.out.transcript_fasta, ch_input, ch_contrastsheet,
             params.isoformswitchanalyzer_alpha, params.isoformswitchanalyzer_dIF
         )
         ch_versions = ch_versions.mix(ISOFORMSWITCHANALYZER.out.versions)

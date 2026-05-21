@@ -15,13 +15,13 @@ workflow INPUT_CHECK {
 
     channel
         .fromList(raw_samplesheet_list)
-        .choice(
-            fastq:             { source == 'fastq' },
-            genome_bam:        { source == 'genome_bam' },
-            transcriptome_bam: { source == 'transcriptome_bam' },
-            salmon_results:    { source == 'salmon_results' },
-            none:              { true }
-        )
+        .branch {
+            fastq:             source == 'fastq'
+            genome_bam:        source == 'genome_bam'
+            transcriptome_bam: source == 'transcriptome_bam'
+            salmon_results:    source == 'salmon_results'
+            none:              true
+        }
         .set { ch_branched_inputs }
 
     // ====================================================================
@@ -33,7 +33,7 @@ workflow INPUT_CHECK {
         .map { meta, fastq_1, fastq_2 ->
             def meta_map = [
                 id:          meta.id,
-                single_end:  meta.single_end.toBoolean(),
+                single_end:  !fastq_2,
                 strandedness:meta.strandedness,
                 condition:   meta.condition
             ]
