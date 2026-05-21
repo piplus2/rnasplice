@@ -70,7 +70,6 @@ workflow RNASPLICE {
     def pass_trimmed_reads = [:]
 
     // Check mandatory input files
-    def ch_input      = file(params.input)
     def ch_contrasts  = file(params.contrasts)
     def ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
@@ -107,34 +106,29 @@ workflow RNASPLICE {
     ch_meta_fasta = PREPARE_GENOME.out.fasta.map { it -> [ [:], it ] }
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions)
 
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and branch channels
-    //
+     // Branch samplesheet channel based on source type
     if (params.source == 'fastq') {
-            INPUT_CHECK ( ch_input, params.source )
-            INPUT_CHECK.out.reads
-                .map { meta, fastq ->
+        ch_samplesheet
+            .map {
+                meta, fastq ->
                     def new_id = meta.id - ~/_T\d+/
                     [ meta + [id: new_id], fastq ]
-                }
-                .groupTuple()
-                .branch { meta, fastq ->
+            }
+            .groupTuple()
+            .branch {
+                meta, fastq ->
                     single  : fastq.size() == 1
                         return [ meta, fastq.flatten() ]
                     multiple: fastq.size() > 1
                         return [ meta, fastq.flatten() ]
-                }
-                .set { ch_fastq }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+            }
+            .set { ch_fastq }
     } else if (params.source == 'genome_bam') {
-            INPUT_CHECK ( ch_input, params.source ).reads.set { ch_genome_bam }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+        ch_samplesheet.set { ch_genome_bam }
     } else if (params.source == 'transcriptome_bam') {
-            INPUT_CHECK ( ch_input, params.source ).reads.set { ch_transcriptome_bam }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+        ch_samplesheet.set { ch_transcriptome_bam }
     } else if (params.source == 'salmon_results') {
-            INPUT_CHECK ( ch_input, params.source ).reads.set { ch_salmon_results }
-            ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+        ch_samplesheet.set { ch_salmon_results }
     }
 
     //
@@ -286,7 +280,7 @@ workflow RNASPLICE {
                     .set { ch_genome_bam_conditions }
             }
 
-            is_single_condition = isSingleCondition(ch_input)
+            is_single_condition = isSingleCondition(ch_samplesheet)
             RMATS (
                 ch_contrastsheet,
                 ch_genome_bam_conditions,

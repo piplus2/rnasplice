@@ -87,7 +87,8 @@ workflow PIPELINE_INITIALISATION {
         show_hidden,
         before_text,
         after_text,
-        command
+        command,
+        null
     )
 
     //
@@ -104,24 +105,66 @@ workflow PIPELINE_INITIALISATION {
 
     //
     // Create channel from input file provided through params.input
+    // Select schema and transform based on params.source
     //
-    channel
-        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map { meta, fastq_1, fastq_2 ->
-            if (!fastq_2) {
-                return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-            } else {
-                return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+    if (params.source == "fastq") {
+        channel
+            .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
+            .map { meta, fastq_1, fastq_2 ->
+                if (!fastq_2) {
+                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+                } else {
+                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                }
             }
-        }
-        .groupTuple()
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
-        .map { meta, fastqs ->
-            return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_samplesheet }
+            .groupTuple()
+            .map { samplesheet ->
+                validateInputSamplesheet(samplesheet)
+            }
+            .map { meta, fastqs ->
+                return [ meta, fastqs.flatten() ]
+            }
+            .set { ch_samplesheet }
+
+    } else if (params.source == "genome_bam") {
+        channel
+            .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input_genome_bam.json"))
+            .map { meta, genome_bam ->
+                def meta_map = [
+                    id:        meta.id,
+                    condition: meta.condition
+                ]
+                return [ meta_map, [ genome_bam ] ]
+            }
+            .set { ch_samplesheet }
+
+    } else if (params.source == "transcriptome_bam") {
+        channel
+            .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input_transcriptome_bam.json"))
+            .map { meta, _genome_bam, transcriptome_bam ->
+                def meta_map = [
+                    id:        meta.id,
+                    condition: meta.condition
+                ]
+                return [ meta_map, [ transcriptome_bam ] ]
+            }
+            .set { ch_samplesheet }
+
+    } else if (params.source == "salmon_results") {
+        channel
+            .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input_salmon_results.json"))
+            .map { meta, salmon_results ->
+                def meta_map = [
+                    id:        meta.id,
+                    condition: meta.condition
+                ]
+                return [ meta_map, [ salmon_results ] ]
+            }
+            .set { ch_samplesheet }
+
+    } else {
+        error("Invalid --source parameter: '${params.source}'. Must be one of: fastq, genome_bam, transcriptome_bam, salmon_results")
+    }
 
     emit:
     samplesheet = ch_samplesheet
