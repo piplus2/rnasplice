@@ -213,17 +213,10 @@ workflow SUPPA {
 
                 ch_clusterevents_ioe = ch_dpsi_local.join(ch_psivec_local, by: [0, 1]).join(ch_groups_ioe, by: [0, 1])
 
-                // Splitting the joined channel back into three separate channels
-                ch_dpsi_local = ch_clusterevents_ioe.map { it -> [it[0], it[1], it[2]] }
-                ch_psivec_local = ch_clusterevents_ioe.map { it -> [it[0], it[1], it[3]] }
-                ch_groups_ioe = ch_clusterevents_ioe.map { it -> [it[0], it[1], it[4]] }
-
                 // Run Clustering
 
                 CLUSTEREVENTS_IOE(
-                    ch_dpsi_local,
-                    ch_psivec_local,
-                    ch_groups_ioe,
+                    ch_clusterevents_ioe,
                     prefix,
                     clusterevents_dpsithreshold,
                     clusterevents_eps,
@@ -373,17 +366,10 @@ workflow SUPPA {
 
                 ch_clusterevents_ioi = ch_dpsi_isoform.join(ch_psivec_isoform, by: [0, 1]).join(ch_groups_ioi, by: [0, 1])
 
-                // Splitting the joined channel back into three separate channels
-                ch_dpsi_isoform = ch_clusterevents_ioi.map { it -> [it[0], it[1], it[2]] }
-                ch_psivec_isoform = ch_clusterevents_ioi.map { it -> [it[0], it[1], it[3]] }
-                ch_groups_ioi = ch_clusterevents_ioi.map { it -> [it[0], it[1], it[4]] }
-
                 // Run Clustering
 
                 CLUSTEREVENTS_IOI(
-                    ch_dpsi_isoform,
-                    ch_psivec_isoform,
-                    ch_groups_ioi,
+                    ch_clusterevents_ioi,
                     prefix,
                     clusterevents_dpsithreshold,
                     clusterevents_eps,
