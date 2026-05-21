@@ -178,14 +178,11 @@ workflow SUPPA {
 
             // Create input channels to diffsplice process
 
-            ch_split_suppa_tpms = ch_suppa_local_contrasts.map { [ it.treatment, it.control, it.tpm1, it.tpm2 ] }
-
-            ch_split_suppa_local_psi = ch_suppa_local_contrasts.map { [ it.treatment, it.control, it.psi1, it.psi2 ] }
+            ch_split_suppa_tpms_psi = ch_suppa_local_contrasts.map { it -> [ it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2 ] }
 
             DIFFSPLICE_IOE(
                 ch_ioe_events,
-                ch_split_suppa_tpms,
-                ch_split_suppa_local_psi,
+                ch_split_suppa_tpms_psi,
                 prefix,
                 diffsplice_method,
                 diffsplice_area,
@@ -331,14 +328,11 @@ workflow SUPPA {
 
             // Create input channels to diffsplice process
 
-            ch_split_suppa_tpms = ch_suppa_isoform_contrasts.map { [ it.treatment, it.control, it.tpm1, it.tpm2 ] }
-
-            ch_split_suppa_isoform_psi = ch_suppa_isoform_contrasts.map { [ it.treatment, it.control, it.psi1, it.psi2 ] }
+            ch_split_suppa_tpms = ch_suppa_isoform_contrasts.map { it -> [ it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2 ] }
 
             DIFFSPLICE_IOI(
                 ch_ioi_events,
-                ch_split_suppa_tpms,
-                ch_split_suppa_isoform_psi,
+                ch_split_suppa_tpms_psi,
                 prefix,
                 diffsplice_method,
                 diffsplice_area,

@@ -9,8 +9,7 @@ process DIFFSPLICE {
 
     input:
     path events
-    tuple val(cond1), val(cond2), path(tpm1), path(tpm2)
-    tuple val(cond1), val(cond2), path(psi1), path(psi2)
+    tuple val(cond1), val(cond2), path(tpm1), path(tpm2), path(psi1), path(psi2)
     val prefix
     val diffsplice_method             // val params.diffsplice_method
     val diffsplice_area               // val params.diffsplice_area
