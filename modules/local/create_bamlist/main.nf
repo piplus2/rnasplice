@@ -12,19 +12,15 @@ process CREATE_BAMLIST {
     output:
     tuple val(contrast), path("${cond1}_bamlist.txt"), optional: true, emit: bamlist1
     tuple val(contrast), path("${cond2}_bamlist.txt"), optional: true, emit: bamlist2
-    path "versions.yml",   emit: versions
+    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1'), topic: versions, emit: versions_sed
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    def bam2_cmd = cond2 ? "echo ${bam2} | sed 's: :,:g' > ${cond2}_bamlist.txt" : ''
     """
     echo ${bam1} | sed 's: :,:g' > ${cond1}_bamlist.txt
-    ${cond2 ? "echo ${bam2} | sed 's: :,:g' > ${cond2}_bamlist.txt" : ''}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sed: \$(echo \$(sed --version 2>&1) | sed 's/^.*GNU sed) //; s/ .*\$//')
-    END_VERSIONS
+    ${bam2_cmd}
     """
 }

@@ -13,7 +13,7 @@ process GTF_GENE_FILTER {
 
     output:
     path "*.gtf"       , emit: gtf
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //g"'), topic: versions, emit: versions_python
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,9 +24,5 @@ process GTF_GENE_FILTER {
         --gtf $gtf \\
         --fasta $fasta \\
         -o ${fasta.baseName}_genes.gtf
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
-    END_VERSIONS
     """
 }

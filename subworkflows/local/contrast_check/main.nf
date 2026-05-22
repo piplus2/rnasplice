@@ -24,5 +24,4 @@ workflow CONTRASTS_CHECK {
 
     emit:
     contrasts = ch_contrasts                        // channel: [ val(contrast_map) ]
-    versions = channel.empty()       // channel: [ versions.yml ]
 }

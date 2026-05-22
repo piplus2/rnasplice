@@ -13,7 +13,7 @@ process PSIPERISOFORM {
 
     output:
     path "suppa_isoform.psi"  , emit: psi
-    path "versions.yml"       , emit: versions
+    tuple val("${task.process}"), val('suppa'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'suppa\').version)"'), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,10 +25,5 @@ process PSIPERISOFORM {
         -g $gtf \\
         -e $tpm \\
         -o suppa
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        suppa: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('suppa').version)")
-    END_VERSIONS
     """
 }

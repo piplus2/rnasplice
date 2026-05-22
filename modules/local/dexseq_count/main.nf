@@ -13,7 +13,7 @@ process DEXSEQ_COUNT {
 
     output:
     tuple val(meta), path("*.clean.count.txt"), emit: dexseq_clean_txt
-    path  "versions.yml", emit: versions
+    tuple val("${task.process}"), val('htseq'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\"htseq\").version)"'), topic: versions, emit: versions_htseq
 
     when:
     task.ext.when == null || task.ext.when
@@ -36,10 +36,5 @@ process DEXSEQ_COUNT {
 
     """
     dexseq_count.py ${gff} ${args} ${read_type} -f bam ${bam} -r pos ${prefix}.clean.count.txt -a ${alignment_quality} ${strandedness}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        htseq: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('htseq').version)")
-    END_VERSIONS
     """
 }

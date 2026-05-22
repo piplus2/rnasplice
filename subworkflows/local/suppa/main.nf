@@ -58,10 +58,6 @@ workflow SUPPA {
 
     main:
 
-    // define empty versions channel
-
-    ch_versions = channel.empty()
-
     // Split the tpm file (contains all samples) into individual files based on condition
 
     def output_type = ".tpm"
@@ -142,7 +138,7 @@ workflow SUPPA {
 
             // Create contrasts channel
 
-            ch_suppa_local_contrasts = ch_contrastsheet.splitCsv(header:true)
+            ch_suppa_local_contrasts_raw = ch_contrastsheet
 
             // Add TPM files to contrasts channel
 
@@ -150,12 +146,12 @@ workflow SUPPA {
                 .flatten()
                 .map { [it.baseName, it ] }
 
-            ch_suppa_local_contrasts = ch_suppa_local_contrasts
+            ch_suppa_local_contrasts_tpm1 = ch_suppa_local_contrasts_raw
                 .map { it -> [it['treatment'], it] }
                 .combine ( ch_suppa_tpm_conditions, by: 0 )
                 .map { it -> it[1] + ['tpm1': it[2]] }
 
-            ch_suppa_local_contrasts = ch_suppa_local_contrasts
+            ch_suppa_local_contrasts_tpm2 = ch_suppa_local_contrasts_tpm1
                 .map { it -> [it['control'], it] }
                 .combine ( ch_suppa_tpm_conditions, by: 0 )
                 .map { it -> it[1] + ['tpm2': it[2]] }
@@ -166,19 +162,22 @@ workflow SUPPA {
                 .flatten()
                 .map { [ it.baseName.toString().replaceAll("local_", ""), it ] }
 
-            ch_suppa_local_contrasts = ch_suppa_local_contrasts
+            ch_suppa_local_contrasts_psi1 = ch_suppa_local_contrasts_tpm2
                 .map { it -> [it['treatment'], it] }
                 .combine ( ch_suppa_psi_conditions, by: 0 )
                 .map { it -> it[1] + ['psi1': it[2]] }
 
-            ch_suppa_local_contrasts = ch_suppa_local_contrasts
+            ch_suppa_local_contrasts_psi2 = ch_suppa_local_contrasts_psi1
+                .map { it -> [it['control'], it] }
+                .combine ( ch_suppa_psi_conditions, by: 0 )
+                .map { it -> it[1] + ['psi2': it[2]] }
                 .map { it -> [it['control'], it] }
                 .combine ( ch_suppa_psi_conditions, by: 0 )
                 .map { it -> it[1] + ['psi2': it[2]] }
 
             // Create input channels to diffsplice process
 
-            ch_split_suppa_tpms_psi = ch_suppa_local_contrasts.map { it -> [ it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2 ] }
+            ch_split_suppa_tpms_psi = ch_suppa_local_contrasts_psi2.map { it -> [ it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2 ] }
 
             DIFFSPLICE_IOE(
                 ch_ioe_events,
@@ -204,7 +203,7 @@ workflow SUPPA {
 
                 CLUSTERGROUPS_IOE ( ch_psivec_local )
 
-                ch_groups_ioe = CLUSTERGROUPS_IOE.out
+                ch_groups_ioe = CLUSTERGROUPS_IOE.out[0]
 
                 // Join channels to ensure consistent order
 
@@ -292,7 +291,7 @@ workflow SUPPA {
 
             // Create contrasts channel
 
-            ch_suppa_isoform_contrasts = ch_contrastsheet.splitCsv(header:true)
+            ch_suppa_isoform_contrasts_raw = ch_contrastsheet
 
             // Add TPM files to contrasts channel
 
@@ -300,12 +299,12 @@ workflow SUPPA {
                 .flatten()
                 .map { [it.baseName, it ] }
 
-            ch_suppa_isoform_contrasts = ch_suppa_isoform_contrasts
+            ch_suppa_isoform_contrasts_tpm1 = ch_suppa_isoform_contrasts_raw
                 .map { it -> [it['treatment'], it] }
                 .combine ( ch_suppa_tpm_conditions, by: 0)
                 .map { it -> it[1] + ['tpm1': it[2]] }
 
-            ch_suppa_isoform_contrasts = ch_suppa_isoform_contrasts
+            ch_suppa_isoform_contrasts_tpm2 = ch_suppa_isoform_contrasts_tpm1
                 .map { it -> [it['control'], it] }
                 .combine ( ch_suppa_tpm_conditions, by: 0)
                 .map { it -> it[1] + ['tpm2': it[2]] }
@@ -316,19 +315,19 @@ workflow SUPPA {
                 .flatten()
                 .map { [ it.baseName.toString().replaceAll("transcript_", ""), it ] }
 
-            ch_suppa_isoform_contrasts = ch_suppa_isoform_contrasts
+            ch_suppa_isoform_contrasts_psi1 = ch_suppa_isoform_contrasts_tpm2
                 .map { it -> [it['treatment'], it] }
                 .combine ( ch_suppa_psi_conditions, by: 0 )
                 .map { it -> it[1] + ['psi1': it[2]] }
 
-            ch_suppa_isoform_contrasts = ch_suppa_isoform_contrasts
+            ch_suppa_isoform_contrasts_psi2 = ch_suppa_isoform_contrasts_psi1
                 .map { it -> [it['control'], it] }
                 .combine ( ch_suppa_psi_conditions, by: 0 )
                 .map { it -> it[1] + ['psi2': it[2]] }
 
             // Create input channels to diffsplice process
 
-            ch_split_suppa_tpms = ch_suppa_isoform_contrasts.map { it -> [ it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2 ] }
+            ch_split_suppa_tpms = ch_suppa_isoform_contrasts_psi2.map { it -> [ it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2 ] }
 
             DIFFSPLICE_IOI(
                 ch_ioi_events,
@@ -354,7 +353,7 @@ workflow SUPPA {
 
                 CLUSTERGROUPS_IOI ( ch_psivec_isoform )
 
-                ch_groups_ioi = CLUSTERGROUPS_IOI.out
+                ch_groups_ioi = CLUSTERGROUPS_IOI.out[0]
 
                 // Join channels to ensure consistent order
 
@@ -404,6 +403,4 @@ workflow SUPPA {
     cluster_log_local       = ch_cluster_log_local               //    path: local.log
     cluster_vec_isoform     = ch_cluster_vec_isoform             //    path: isoform.clustvec
     cluster_log_isoform     = ch_cluster_log_isoform             //    path: isoform.log
-
-    versions = ch_versions.ifEmpty(null)                         // channel: [ versions.yml ]
 }

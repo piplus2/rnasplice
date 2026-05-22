@@ -12,7 +12,8 @@ process GFFREAD_TX2GENE {
 
     output:
     path "*.tx2gene.tsv" , emit: tx2gene
-    path "versions.yml"  , emit: versions
+    tuple val("${task.process}"), val('gffread'), eval('gffread --version 2>&1'), topic: versions, emit: versions_gffread
+
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,10 +23,5 @@ process GFFREAD_TX2GENE {
     def prefix = task.ext.prefix ?: "${gtf.baseName}"
     """
     gffread $args $gtf | sort -u 1> ${prefix}.tx2gene.tsv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gffread: \$(gffread --version 2>&1)
-    END_VERSIONS
     """
 }

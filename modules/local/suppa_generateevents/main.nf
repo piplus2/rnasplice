@@ -18,9 +18,8 @@ process GENERATE_EVENTS {
 
     output:
     path "events.*"     , emit: events
-    path "versions.yml" , emit: versions
     path "events_*.*"   , emit: eventstype, optional : true
-    // Declaring as optional as these are produced only in local events and not transcript events
+    tuple val("${task.process}"), val('suppa'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'suppa\').version)"'), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when
@@ -45,11 +44,6 @@ process GENERATE_EVENTS {
             $poolgenes
 
         awk 'FNR==1 && NR!=1 { while (/^seqname/) getline; }  1 {print}' *.ioe > events.ioe
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            suppa: \$(pip show suppa| sed -e '/Version/!d'| sed 's/Version: //g')
-        END_VERSIONS
         """
     }
     // Calculate transcript events
@@ -61,11 +55,6 @@ process GENERATE_EVENTS {
             -f $file_type \\
             -o events \\
             $poolgenes
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            suppa: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('suppa').version)")
-        END_VERSIONS
         """
     }
 }

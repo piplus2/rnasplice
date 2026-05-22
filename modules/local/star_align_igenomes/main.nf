@@ -20,8 +20,6 @@ process STAR_ALIGN_IGENOMES {
     tuple val(meta), path('*Log.final.out'), emit: log_final
     tuple val(meta), path('*Log.out'), emit: log_out
     tuple val(meta), path('*Log.progress.out'), emit: log_progress
-    path "versions.yml", emit: versions
-
     tuple val(meta), path('*sortedByCoord.out.bam'), optional: true, emit: bam_sorted
     tuple val(meta), path('*toTranscriptome.out.bam'), optional: true, emit: bam_transcript
     tuple val(meta), path('*Aligned.unsort.out.bam'), optional: true, emit: bam_unsorted
@@ -29,6 +27,9 @@ process STAR_ALIGN_IGENOMES {
     tuple val(meta), path('*.tab'), optional: true, emit: tab
     tuple val(meta), path('*.out.junction'), optional: true, emit: junction
     tuple val(meta), path('*.out.sam'), optional: true, emit: sam
+    tuple val("${task.process}"), val('star'), eval('STAR --version 2>&1 | sed -e "s/STAR_//g"'), topic: versions, emit: versions_star
+    tuple val("${task.process}"), val('samtools'), eval('echo $(samtools --version 2>&1) | sed "s/^.*samtools //; s/Using.*$//"'), topic: versions, emit: versions_samtools
+    tuple val("${task.process}"), val('gawk'), eval('echo $(gawk --version 2>&1) | sed "s/^.*GNU Awk //; s/, .*$/\1/"'), topic: versions, emit: versions_gawk
 
     when:
     task.ext.when == null || task.ext.when
@@ -62,11 +63,5 @@ process STAR_ALIGN_IGENOMES {
         mv ${prefix}.Unmapped.out.mate2 ${prefix}.unmapped_2.fastq
         gzip ${prefix}.unmapped_2.fastq
     fi
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        star: \$(STAR --version | sed -e "s/STAR_//g")
-        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-        gawk: \$(echo \$(gawk --version 2>&1) | sed 's/^.*GNU Awk //; s/, .*\$//')
-    END_VERSIONS
     """
 }

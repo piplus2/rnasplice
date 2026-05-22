@@ -18,7 +18,7 @@ process RMATS_PREP_SINGLE {
     output:
     tuple val(contrast), path("rmats_temp/*") , emit: rmats_temp
     path "rmats_prep.log"                     , emit: log
-    path "versions.yml"                       , emit: versions
+    tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:
     task.ext.when == null || task.ext.when
@@ -73,10 +73,5 @@ process RMATS_PREP_SINGLE {
         ${max_exon_len} \\
         --tmp rmats_temp \\
         --od rmats_prep 1> rmats_prep.log
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        rmats: \$(echo \$(rmats.py --version) | sed -e "s/v//g")
-    END_VERSIONS
     """
     }

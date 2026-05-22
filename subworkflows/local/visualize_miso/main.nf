@@ -24,8 +24,6 @@ workflow VISUALISE_MISO {
 
     main:
 
-    ch_versions = channel.empty()
-
    //
    // MODULE: gtf_2_gff3
    //
@@ -33,8 +31,6 @@ workflow VISUALISE_MISO {
     GTF_2_GFF3 (
         gtf
     )
-
-    ch_versions = ch_versions.mix(GTF_2_GFF3.out.versions)
 
    //
    // MODULE: DEXSeq Annotation
@@ -46,8 +42,6 @@ workflow VISUALISE_MISO {
         GTF_2_GFF3.out.gff3,
         index_prefix
     )
-
-    ch_versions = ch_versions.mix(MISO_INDEX.out.versions)
 
     //
     // MODULE: MISO_RUN
@@ -62,8 +56,6 @@ workflow VISUALISE_MISO {
         miso_read_len
     )
 
-    ch_versions = ch_versions.mix(MISO_RUN.out.versions)
-
     //
     // MODULE: MISO_SETTINGS
     //
@@ -77,8 +69,6 @@ workflow VISUALISE_MISO {
         fig_width,
         fig_height
     )
-
-    ch_versions = ch_versions.mix(MISO_SETTINGS.out.versions)
 
     //
     // MODULE: MISO_SASHIMI
@@ -112,8 +102,6 @@ workflow VISUALISE_MISO {
         ch_miso_run
     )
 
-    ch_versions = ch_versions.mix(MISO_SASHIMI.out.versions)
-
     emit:
 
     gff3                        = GTF_2_GFF3.out.gff3               // path *.gff3
@@ -121,6 +109,4 @@ workflow VISUALISE_MISO {
     miso_data                   = ch_miso_run                       // channel: [ ch_miso_run ]
     miso_settings               = MISO_SETTINGS.out.miso_settings   // path miso_setting.txt
     miso_sashimi                = MISO_SASHIMI.out.sashimi          // path sashimi/*.pdf
-
-    versions                    = ch_versions                  // channel: [ versions.yml ]
 }

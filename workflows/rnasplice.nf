@@ -6,8 +6,6 @@
 
 include { BEDTOOLS_GENOMECOV                                              } from '../modules/local/bedtools_genomecov'
 include { ISOFORMSWITCHANALYZER                                           } from '../modules/local/isoformswitchanalyzer'
-include { INPUT_CHECK                                                     } from '../subworkflows/local/input_check'
-include { PREPARE_GENOME                                                  } from '../subworkflows/local/prepare_genome'
 include { ALIGN_STAR                                                      } from '../subworkflows/local/align_star'
 include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_SALMON                     } from '../subworkflows/local/tx2gene_tximport'
 include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_STAR_SALMON                } from '../subworkflows/local/tx2gene_tximport'
@@ -22,10 +20,9 @@ include { VISUALISE_MISO                                                  } from
 include { LEAFCUTTER                                                      } from '../subworkflows/local/leafcutter'
 
 include { validateInputSamplesheet                                        } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { validateInputContrastsheet                                        } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { validateInputContrastsheet                                      } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { rmatsReadError                                                  } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { rmatsStrandednessError                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { isSingleCondition                                               } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { multiqcTsvFromList                                              } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { paramsSummaryMultiqc                                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML                                          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -62,6 +59,12 @@ workflow RNASPLICE {
     ch_contrastsheet // channel: contrastsheet read in from initialization wrapper
     ch_fasta
     ch_gtf
+    ch_transcript_fasta
+    ch_dexseq_gff
+    ch_salmon_index
+    ch_star_index
+    ch_suppa_tpm
+    ch_chrom_sizes
     is_aws_igenome
     multiqc_config // parameter value pass-through
     multiqc_logo // parameter value pass-through
@@ -70,12 +73,8 @@ workflow RNASPLICE {
 
     main:
 
-    def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
     def pass_trimmed_reads = [:]
-
-    // Check mandatory input files
-    def ch_dummy_file = file("${projectDir}/assets/dummy_file.txt", checkIfExists: true)
 
     //
     // Create channel from input file provided through params.input
@@ -166,8 +165,8 @@ workflow RNASPLICE {
 
     // Check rMATS parameter configuration mapping checks
     if (params.rmats && params.source == 'fastq') {
-        rmatsReadError(INPUT_CHECK.out.reads)
-        rmatsStrandednessError(INPUT_CHECK.out.reads)
+        rmatsReadError(ch_samplesheet)
+        rmatsStrandednessError(ch_samplesheet)
     }
 
     //
@@ -176,7 +175,6 @@ workflow RNASPLICE {
     if (params.source == 'fastq') {
         CAT_FASTQ(ch_fastq.multiple)
         CAT_FASTQ.out.reads.mix(ch_fastq.single).set { ch_cat_fastq }
-        ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
     }
 
     //
@@ -194,7 +192,6 @@ workflow RNASPLICE {
         )
         ch_trim_reads = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.reads
         ch_trim_read_count = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_read_count
-        ch_versions = ch_versions.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.versions)
 
         // Parse custom evaluation warnings if reading maps fall below specific metric criteria
         ch_trim_read_count
@@ -223,7 +220,6 @@ workflow RNASPLICE {
         ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
         ch_samtools_flagstat = BAM_SORT_STATS_SAMTOOLS.out.flagstat
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
-        ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
     }
 
     if (params.source == 'transcriptome_bam') {
@@ -233,14 +229,13 @@ workflow RNASPLICE {
         ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
         ch_samtools_flagstat = BAM_SORT_STATS_SAMTOOLS.out.flagstat
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
-        ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
     }
 
     if ((params.source == 'fastq') && !params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')) {
         ALIGN_STAR(
             ch_trim_reads,
-            PREPARE_GENOME.out.star_index,
-            PREPARE_GENOME.out.gtf,
+            ch_star_index,
+            ch_gtf,
             params.star_ignore_sjdbgtf,
             '',
             params.seq_center ?: '',
@@ -254,11 +249,6 @@ workflow RNASPLICE {
         ch_samtools_flagstat = ALIGN_STAR.out.flagstat
         ch_samtools_idxstats = ALIGN_STAR.out.idxstats
         ch_star_multiqc = ALIGN_STAR.out.log_final
-
-        if (params.bam_csi_index) {
-            ch_genome_bam_index = ALIGN_STAR.out.csi
-        }
-        ch_versions = ch_versions.mix(ALIGN_STAR.out.versions)
     }
 
     // ====================================================================
@@ -268,9 +258,8 @@ workflow RNASPLICE {
     if ((params.source == 'genome_bam') || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon'))) {
 
         if (params.dexseq_exon) {
-            ch_dexseq_gff = params.gff_dexseq ? PREPARE_GENOME.out.dexseq_gff : ""
             DEXSEQ_DEU(
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 ch_genome_bam,
                 ch_dexseq_gff,
                 ch_samplesheet,
@@ -279,18 +268,16 @@ workflow RNASPLICE {
                 params.aggregation,
                 params.alignment_quality,
             )
-            ch_versions = ch_versions.mix(DEXSEQ_DEU.out.versions)
         }
 
         if (params.edger_exon) {
             EDGER_DEU(
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 ch_genome_bam,
                 ch_samplesheet,
                 ch_contrastsheet,
                 params.n_edger_plot,
             )
-            ch_versions = ch_versions.mix(EDGER_DEU.out.versions)
         }
 
         if (params.rmats) {
@@ -307,11 +294,20 @@ workflow RNASPLICE {
                     .set { ch_genome_bam_conditions }
             }
 
-            is_single_condition = isSingleCondition(ch_samplesheet)
+            def lines
+            if (params.input.startsWith('http')) {
+                lines = new URL(params.input).text.readLines()
+            }
+            else {
+                lines = new File(params.input).readLines()
+            }
+            def headers = lines[0].split(',')*.trim()
+            def condition_idx = headers.indexOf('condition')
+            def is_single_condition = lines[1..-1].collect { it -> it.split(',')[condition_idx].trim() }.unique().size() == 1
             RMATS(
                 ch_contrastsheet,
                 ch_genome_bam_conditions,
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 is_single_condition,
                 params.rmats_read_len,
                 params.rmats_splice_diff_cutoff,
@@ -320,12 +316,11 @@ workflow RNASPLICE {
                 params.rmats_max_exon_len,
                 params.rmats_paired_stats,
             )
-            ch_versions = ch_versions.mix(RMATS.out.versions)
         }
 
         if (params.sashimi_plot == true) {
             VISUALISE_MISO(
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 ch_genome_bam,
                 ch_genome_bam_index,
                 params.miso_read_len,
@@ -334,11 +329,10 @@ workflow RNASPLICE {
                 params.miso_genes,
                 params.miso_genes_file ?: false,
             )
-            ch_versions = ch_versions.mix(VISUALISE_MISO.out.versions)
         }
 
         if (params.leafcutter == true) {
-            LEAFCUTTER(ch_genome_bam, ch_genome_bam_index, PREPARE_GENOME.out.gtf)
+            LEAFCUTTER(ch_genome_bam, ch_genome_bam_index, ch_gtf)
         }
     }
 
@@ -348,21 +342,19 @@ workflow RNASPLICE {
 
     if ((params.source == 'transcriptome_bam') || (params.source == 'fastq' && !params.skip_alignment && params.aligner == 'star_salmon')) {
         alignment_mode = true
-        ch_salmon_index = ch_dummy_file
+        ch_dummy_salmon_index = channel.value(file("${projectDir}/assets/dummy_file.txt", checkIfExists: true))
 
         SALMON_QUANT_STAR(
             ch_transcriptome_bam,
-            ch_salmon_index,
-            PREPARE_GENOME.out.gtf,
-            PREPARE_GENOME.out.transcript_fasta,
+            ch_dummy_salmon_index,
+            ch_gtf,
+            ch_transcript_fasta,
             alignment_mode,
             params.salmon_quant_libtype ?: '',
         )
-        ch_versions = ch_versions.mix(SALMON_QUANT_STAR.out.versions)
         ch_salmon_results = SALMON_QUANT_STAR.out.results
 
-        TX2GENE_TXIMPORT_STAR_SALMON(ch_salmon_results, PREPARE_GENOME.out.gtf)
-        ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_STAR_SALMON.out.versions)
+        TX2GENE_TXIMPORT_STAR_SALMON(ch_salmon_results, ch_gtf)
 
         if (params.dexseq_dtu) {
             ch_txi = (params.dtu_txi == "dtuScaledTPM") ? TX2GENE_TXIMPORT_STAR_SALMON.out.txi_dtu : TX2GENE_TXIMPORT_STAR_SALMON.out.txi_s
@@ -379,13 +371,12 @@ workflow RNASPLICE {
                 params.min_feature_prop,
                 params.min_gene_expr,
             )
-            ch_versions = ch_versions.mix(DRIMSEQ_DEXSEQ_DTU_STAR_SALMON.out.versions)
         }
 
         if (params.suppa) {
-            ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
+            ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
             SUPPA_STAR_SALMON(
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
                 ch_contrastsheet,
@@ -416,31 +407,27 @@ workflow RNASPLICE {
                 params.clusterevents_separation ?: false,
                 params.suppa_per_isoform,
             )
-            ch_versions = ch_versions.mix(SUPPA_STAR_SALMON.out.versions)
         }
     }
 
     if (params.source == 'fastq' && params.pseudo_aligner == 'salmon') {
         alignment_mode = false
-        ch_transcript_fasta = ch_dummy_file
+        ch_transcript_fasta = channel.value(file("${projectDir}/assets/dummy_file2.txt", checkIfExists: true))
 
         SALMON_QUANT_SALMON(
             ch_trim_reads,
-            PREPARE_GENOME.out.salmon_index,
-            PREPARE_GENOME.out.gtf,
+            ch_salmon_index,
+            ch_gtf,
             ch_transcript_fasta,
             alignment_mode,
             params.salmon_quant_libtype ?: '',
         )
-        ch_versions = ch_versions.mix(SALMON_QUANT_SALMON.out.versions)
         ch_salmon_results = SALMON_QUANT_SALMON.out.results
 
-        TX2GENE_TXIMPORT_SALMON(ch_salmon_results, PREPARE_GENOME.out.gtf)
-        ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_SALMON.out.versions)
+        TX2GENE_TXIMPORT_SALMON(ch_salmon_results, ch_gtf)
     }
     else if (params.source == 'salmon_results') {
-        TX2GENE_TXIMPORT_SALMON(ch_salmon_results, PREPARE_GENOME.out.gtf)
-        ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_SALMON.out.versions)
+        TX2GENE_TXIMPORT_SALMON(ch_salmon_results, ch_gtf)
     }
 
     if ((params.pseudo_aligner == 'salmon' && params.source == 'fastq') || (params.source == 'salmon_results')) {
@@ -459,13 +446,12 @@ workflow RNASPLICE {
                 params.min_feature_prop,
                 params.min_gene_expr,
             )
-            ch_versions = ch_versions.mix(DRIMSEQ_DEXSEQ_DTU_SALMON.out.versions)
         }
 
         if (params.suppa) {
-            ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
+            ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
             SUPPA_SALMON(
-                PREPARE_GENOME.out.gtf,
+                ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
                 ch_contrastsheet,
@@ -496,31 +482,27 @@ workflow RNASPLICE {
                 params.clusterevents_separation ?: false,
                 params.suppa_per_isoform,
             )
-            ch_versions = ch_versions.mix(SUPPA_SALMON.out.versions)
         }
     }
 
     if (params.isoformswitchanalyzer && (params.source == 'fastq' || params.source == 'salmon_results')) {
         ISOFORMSWITCHANALYZER(
             ch_salmon_results.collect { it -> it[1] },
-            PREPARE_GENOME.out.gtf,
-            PREPARE_GENOME.out.transcript_fasta,
+            ch_gtf,
+            ch_transcript_fasta,
             ch_samplesheet,
             ch_contrastsheet,
             params.isoformswitchanalyzer_alpha,
             params.isoformswitchanalyzer_dIF,
         )
-        ch_versions = ch_versions.mix(ISOFORMSWITCHANALYZER.out.versions)
     }
 
     if (((params.source == 'genome_bam') && !params.skip_bigwig) || (!params.skip_alignment && !params.skip_bigwig && params.source == 'fastq')) {
         BEDTOOLS_GENOMECOV(ch_genome_bam)
-        ch_versions = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
-        BEDGRAPH_TO_BIGWIG_FORWARD(BEDTOOLS_GENOMECOV.out.bedgraph_forward, PREPARE_GENOME.out.chrom_sizes)
-        ch_versions = ch_versions.mix(BEDGRAPH_TO_BIGWIG_FORWARD.out.versions)
+        BEDGRAPH_TO_BIGWIG_FORWARD(BEDTOOLS_GENOMECOV.out.bedgraph_forward, ch_chrom_sizes)
 
-        BEDGRAPH_TO_BIGWIG_REVERSE(BEDTOOLS_GENOMECOV.out.bedgraph_reverse, PREPARE_GENOME.out.chrom_sizes)
+        BEDGRAPH_TO_BIGWIG_REVERSE(BEDTOOLS_GENOMECOV.out.bedgraph_reverse, ch_chrom_sizes)
     }
 
     // ====================================================================
@@ -544,14 +526,12 @@ workflow RNASPLICE {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
-        .mix(topic_versions_string)
-        .collectFile(
-            storeDir: "${outdir}/pipeline_info",
-            name: 'nf_core_' + 'rnasplice_software_' + 'mqc_' + 'versions.yml',
-            sort: true,
-            newLine: true,
-        )
+    def ch_collated_versions = softwareVersionsToYAML(topic_versions_string).collectFile(
+        storeDir: "${outdir}/pipeline_info",
+        name: 'nf_core_' + 'rnasplice_software_' + 'mqc_' + 'versions.yml',
+        sort: true,
+        newLine: true,
+    )
 
     // Build static summary models for MultiQC ingestion space
     def summary_params = paramsSummaryMap(workflow)
@@ -600,5 +580,4 @@ workflow RNASPLICE {
 
     emit:
     multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
-    versions       = ch_versions
 }

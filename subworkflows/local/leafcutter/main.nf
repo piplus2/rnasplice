@@ -10,21 +10,15 @@ workflow LEAFCUTTER {
 
     main:
 
-    ch_versions = channel.empty()
-
     REGTOOLS_JUNCTIONSEXTRACT(ch_genome_bam.join(ch_genome_bam_index), '')
-    ch_versions = ch_versions.mix(REGTOOLS_JUNCTIONSEXTRACT.out.versions)
     ch_juncs = REGTOOLS_JUNCTIONSEXTRACT.out.junc
         .map { it -> it[1] }
         .collect()
 
     LEAFCUTTER_CLUSTER(ch_juncs, ch_gtf)
-    ch_versions = ch_versions.mix(LEAFCUTTER_CLUSTER.out.versions)
 
     emit:
     juncs                   = REGTOOLS_JUNCTIONSEXTRACT.out.junc.collect()
     counts                  = LEAFCUTTER_CLUSTER.out.counts
     perind_couts            = LEAFCUTTER_CLUSTER.out.perind_counts
-    versions                = ch_versions
-
 }

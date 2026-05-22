@@ -24,8 +24,6 @@ workflow DRIMSEQ_DEXSEQ_DTU {
 
     main:
 
-    ch_versions = channel.empty()
-
     //
     // DEXSEQ FILTER
     //
@@ -42,8 +40,6 @@ workflow DRIMSEQ_DEXSEQ_DTU {
         min_gene_expr
     )
 
-    ch_versions = ch_versions.mix(DRIMSEQ_FILTER.out.versions)
-
     //
     // DEXSEQ DTU
     //
@@ -54,8 +50,6 @@ workflow DRIMSEQ_DEXSEQ_DTU {
         contrastsheet,
         n_dexseq_plot
     )
-
-    ch_versions = ch_versions.mix(DEXSEQ_DTU.out.versions)
 
     //
     // Join feature and gene channels by contrast value (extracted from filename)
@@ -86,8 +80,6 @@ workflow DRIMSEQ_DEXSEQ_DTU {
         analysis_type
     )
 
-    ch_versions = ch_versions.mix(STAGER.out.versions)
-
     emit:
 
     drimseq_dataset_rds      = DRIMSEQ_FILTER.out.drimseq_dataset_rds
@@ -103,6 +95,4 @@ workflow DRIMSEQ_DEXSEQ_DTU {
     stager_rds               = STAGER.out.stager_rds
     stager_padj_rds          = STAGER.out.stager_padj_rds
     stager_padj_tsv          = STAGER.out.stager_padj_tsv
-
-    versions              = ch_versions                                  // channel: [ versions.yml ]
 }

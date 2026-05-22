@@ -12,7 +12,7 @@ process SUBREAD_FLATTENGTF {
 
     output:
     path "annotation.saf", emit: saf
-    path "versions.yml"  , emit: versions
+    tuple val("${task.process}"), val('subread'), eval('flattenGTF -v 2>&1 | sed -e "s/flattenGTF v//g"'), topic: versions, emit: versions_subread
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,10 +21,5 @@ process SUBREAD_FLATTENGTF {
     def args = task.ext.args ?: ''
     """
     flattenGTF $args -a $annotation -o annotation.saf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        subread: \$( echo \$(flattenGTF -v 2>&1) | sed -e "s/flattenGTF v//g")
-    END_VERSIONS
     """
 }

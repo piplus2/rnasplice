@@ -20,7 +20,7 @@ process RMATS_POST {
     output:
     path "${output_dir}/rmats_post/*"        , emit: rmats_post
     path "${output_dir}/rmats_post.log"      , emit: log
-    path "versions.yml"                      , emit: versions
+    tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:
     task.ext.when == null || task.ext.when
@@ -93,11 +93,6 @@ process RMATS_POST {
         ${max_exon_len} \\
         --allow-clipping \\
         1> ${prefix}/rmats_post.log
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        rmats: \$(echo \$(rmats.py --version) | sed -e "s/v//g")
-    END_VERSIONS
     """
 
 }

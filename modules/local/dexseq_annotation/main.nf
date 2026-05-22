@@ -13,7 +13,7 @@ process DEXSEQ_ANNOTATION {
 
     output:
     path "*.gff"        , emit: gff
-    path "versions.yml" , emit: versions
+    tuple val("${task.process}"), val('htseq'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\"htseq\").version)"'), topic: versions, emit: versions_htseq
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,10 +27,5 @@ process DEXSEQ_ANNOTATION {
 
     """
     dexseq_prepare_annotation.py ${gtf} ${prefix}.gff ${aggregation_arg} ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        htseq: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('htseq').version)")
-    END_VERSIONS
     """
 }

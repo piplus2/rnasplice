@@ -11,7 +11,8 @@ process GTF_2_GFF3 {
 
     output:
     path "*.gff3"           , emit: gff3
-    path "versions.yml"     , emit: versions
+    tuple val("${task.process}"), val('gffread'), eval('gffread --version 2>&1'), topic: versions, emit: versions_gffread
+
 
     when:
     task.ext.when == null || task.ext.when
@@ -19,10 +20,5 @@ process GTF_2_GFF3 {
     script:
     """
     gffread $gtf -L --keep-genes | awk -F'\\t' -vOFS='\\t' '{ gsub("transcript", "mRNA", \$3); print}' > ${gtf.baseName}_genes.gff3
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gffread: \$(gffread --version 2>&1)
-    END_VERSIONS
     """
 }

@@ -22,7 +22,7 @@ process CLUSTEREVENTS {
     output:
     path "*.clustvec"   , emit: clustvec
     path "*.log"        , emit: cluster_log
-    path "versions.yml" , emit: versions
+    tuple val("${task.process}"), val('suppa'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'suppa\').version)"'), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when
@@ -46,11 +46,6 @@ process CLUSTEREVENTS {
         --groups ${group_ranges} \\
         --clustering ${clusterevents_method} \\
         ${thresh_arg} ${separation_arg} -o ${cond1}-${cond2}_${prefix}_cluster
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        suppa: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('suppa').version)")
-    END_VERSIONS
     """
 
 }

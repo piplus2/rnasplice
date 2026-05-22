@@ -21,7 +21,8 @@ process DRIMSEQ_FILTER {
     path "dmDSdata.rds"  , emit: drimseq_dataset_rds
     path "samples.tsv"   , emit: drimseq_samples_tsv
     path "counts.tsv"    , emit: drimseq_counts_tsv
-    path "versions.yml"  , emit: versions
+    tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//"'), topic: versions, emit: versions_R
+    tuple val("${task.process}"), val('bioconductor-drimseq'), eval('Rscript -e "library(DRIMSeq); cat(as.character(packageVersion(\'DRIMSeq\')))"'), topic: versions, emit: versions_drimseq
 
     when:
     task.ext.when == null || task.ext.when
@@ -38,11 +39,5 @@ process DRIMSEQ_FILTER {
         ${min_feature_prop} \\
         ${min_gene_expr} \\
         ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        bioconductor-drimseq: \$(Rscript -e "library(DRIMSeq); cat(as.character(packageVersion('DRIMSeq')))")
-    END_VERSIONS
     """
 }

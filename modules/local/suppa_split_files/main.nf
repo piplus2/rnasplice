@@ -18,7 +18,7 @@ process SPLIT_FILES {
     path "*.tpm"        , optional : true , emit: tpms
     path "*.psi"        , optional : true , emit: psis
     path "ranges.txt"   , optional : true , emit: ranges
-    path "versions.yml" , emit: versions
+    tuple val("${task.process}"), val('suppa_split_file'), eval('Rscript --version 2>&1 | sed -n "1p" | sed "s/.*version //; s/ (.*//"'), topic: versions, emit: versions_suppa_split_file
 
     when:
     task.ext.when == null || task.ext.when
@@ -31,10 +31,5 @@ process SPLIT_FILES {
         $output_type \\
         $calc_ranges \\
         $prefix
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-    END_VERSIONS
     """
 }

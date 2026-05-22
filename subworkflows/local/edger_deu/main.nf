@@ -9,7 +9,6 @@ include { EDGER_EXON            } from '../../../modules/local/edger_exon'
 workflow EDGER_DEU {
 
     take:
-
     gtf                  // path: gtf
     ch_genome_bam        // channel: [ val(meta), path(bams) ]
     ch_samplesheet       // channel.fromPath(params.input)
@@ -17,9 +16,6 @@ workflow EDGER_DEU {
     n_edger_plot         // val: integer to plot
 
     main:
-
-    ch_versions = channel.empty()
-
 
     // MODULE: SUBREAD_FLATTENGTF
 
@@ -33,8 +29,6 @@ workflow EDGER_DEU {
 
     SUBREAD_FEATURECOUNTS(ch_feature_counts)
 
-    ch_versions = ch_versions.mix(SUBREAD_FEATURECOUNTS.out.versions.first())
-
     //
     // MODULE: EDGER_COUNTS AND PLOT
     //
@@ -47,8 +41,6 @@ workflow EDGER_DEU {
 
 
     emit:
-
     featureCounts_summary  = SUBREAD_FEATURECOUNTS.out.summary  // path featureCounts.txt.summary
-    versions               = ch_versions                        // channel: [ versions.yml ]
 
 }

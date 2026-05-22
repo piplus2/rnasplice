@@ -15,10 +15,10 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNASPLICE  } from './workflows/rnasplice'
+include { RNASPLICE               } from './workflows/rnasplice'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { PREPARE_GENOME } from './subworkflows/local/prepare_genome'
+include { PREPARE_GENOME          } from './subworkflows/local/prepare_genome'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,10 +46,12 @@ workflow NFCORE_RNASPLICE {
 
     main:
 
+    def is_aws_igenome = params.fasta && params.gtf && (file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')
+
     //
     // SUBWORKFLOW: Prepare reference genome files
     //
-    PREPARE_GENOME (
+    PREPARE_GENOME(
         params.fasta,
         params.gtf,
         params.gff,
@@ -58,25 +60,32 @@ workflow NFCORE_RNASPLICE {
         params.salmon_index,
         params.gff_dexseq,
         params.suppa_tpm,
-        params.gencode
+        params.gencode,
+        is_aws_igenome,
     )
 
     ch_samplesheet = channel.value(file(params.input, checkIfExists: true))
-    ch_contrastsheet = channel.value(file(params.contrastsheet, checkIfExists: true))
+    ch_contrastsheet = channel.value(file(params.contrasts, checkIfExists: true))
 
     //
     // WORKFLOW: Run pipeline
     //
-    RNASPLICE (
+    RNASPLICE(
         ch_samplesheet,
         ch_contrastsheet,
         PREPARE_GENOME.out.fasta,
         PREPARE_GENOME.out.gtf,
-        PREPARE_GENOME.out.is_aws_igenome,
+        PREPARE_GENOME.out.transcript_fasta,
+        PREPARE_GENOME.out.dexseq_gff,
+        PREPARE_GENOME.out.salmon_index,
+        PREPARE_GENOME.out.star_index,
+        PREPARE_GENOME.out.suppa_tpm,
+        PREPARE_GENOME.out.chrom_sizes,
+        is_aws_igenome,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
-        params.outdir
+        params.outdir,
     )
 
     emit:
@@ -90,12 +99,10 @@ workflow NFCORE_RNASPLICE {
 */
 
 workflow {
-
-    main:
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    PIPELINE_INITIALISATION (
+    PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
         params.monochrome_logs,
@@ -104,7 +111,7 @@ workflow {
         params.input,
         params.help,
         params.help_full,
-        params.show_hidden
+        params.show_hidden,
     )
 
     //
@@ -115,13 +122,13 @@ workflow {
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
+    PIPELINE_COMPLETION(
         params.email,
         params.email_on_fail,
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        NFCORE_RNASPLICE.out.multiqc_report
+        NFCORE_RNASPLICE.out.multiqc_report,
     )
 }
 
@@ -142,10 +149,3 @@ def getGenomeAttribute(attribute) {
     }
     return null
 }
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/

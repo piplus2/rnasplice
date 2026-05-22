@@ -13,7 +13,8 @@ process LEAFCUTTER_CLUSTER {
     output:
     path("*perind_numers.counts.gz") , emit: counts
     path("*perind.counts.gz")        , emit: perind_counts
-    path "versions.yml"               , emit: versions
+    tuple val("${task.process}"), val('leafcutter'), eval('leafcutter_cluster_regtools.py --version 2>&1 | head -n 1 | sed "s/leafcutter_cluster_regtools.py v//g"'), topic: versions, emit: versions_leafcutter
+
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,10 +27,5 @@ process LEAFCUTTER_CLUSTER {
         $args \\
         -j test_juncfiles.txt \\
         -o lc
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        leafcutter: 0.2.9)
-    END_VERSIONS
     """
 }

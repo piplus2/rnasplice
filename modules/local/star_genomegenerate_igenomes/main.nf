@@ -15,7 +15,9 @@ process STAR_GENOMEGENERATE_IGENOMES {
 
     output:
     path "star"        , emit: index
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"), val('star'), eval('STAR --version 2>&1 | sed -e "s/STAR_//g"'), topic: versions, emit: versions_star
+    tuple val("${task.process}"), val('samtools'), eval('echo $(samtools --version 2>&1) | sed "s/^.*samtools //; s/Using.*$//"'), topic: versions, emit: versions_samtools
+    tuple val("${task.process}"), val('gawk'), eval('echo $(gawk --version 2>&1) | sed "s/^.*GNU Awk //; s/, .*$/\1/"'), topic: versions, emit: versions_gawk
 
     when:
     task.ext.when == null || task.ext.when
@@ -56,12 +58,6 @@ process STAR_GENOMEGENERATE_IGENOMES {
             --genomeSAindexNbases \$NUM_BASES \\
             $memory \\
             $args
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            star: \$(STAR --version | sed -e "s/STAR_//g")
-            samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-            gawk: \$(echo \$(gawk --version 2>&1) | sed 's/^.*GNU Awk //; s/, .*\$//')
-        END_VERSIONS
         """
     }
 }

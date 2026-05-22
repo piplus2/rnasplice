@@ -15,8 +15,6 @@ workflow TX2GENE_TXIMPORT {
 
     main:
 
-    ch_versions = channel.empty()
-
     //
     // Extract archives (if necessary)
     //
@@ -41,13 +39,9 @@ workflow TX2GENE_TXIMPORT {
 
     GFFREAD_TX2GENE ( gtf )
 
-    ch_versions = ch_versions.mix(GFFREAD_TX2GENE.out.versions)
-
     tx2gene = GFFREAD_TX2GENE.out.tx2gene
 
     TXIMPORT ( salmon_results.collect{it[1]}, tx2gene )
-
-    ch_versions = ch_versions.mix(TXIMPORT.out.versions)
 
     emit:
 
@@ -81,6 +75,4 @@ workflow TX2GENE_TXIMPORT {
     tximport_tx2gene                = TXIMPORT.out.tximport_tx2gene                 // path: tximport.tx2gene.tsv
 
     suppa_tpm                       = TXIMPORT.out.suppa_tpm                        // path: suppa_tpm.txt
-
-    versions                        = ch_versions                                   // channel: [ versions.yml ]
 }

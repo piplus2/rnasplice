@@ -20,7 +20,8 @@ process DEXSEQ_EXON {
     path "DEXSeqResults.*.csv"  , emit: dexseq_exon_results_csv
     path "perGeneQValue.*.csv"  , emit: dexseq_gene_results_csv
     path "plotDEXSeq.*.pdf"     , emit: dexseq_plot_results_pdf
-    path "versions.yml"         , emit: versions
+    tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//"'), topic: versions, emit: versions_R
+    tuple val("${task.process}"), val('bioconductor-dexseq'), eval('Rscript -e "library(DEXSeq); cat(as.character(packageVersion(\'DEXSeq\')))"'), topic: versions, emit: versions_dexseq
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,11 +29,5 @@ process DEXSEQ_EXON {
     script:
     """
     run_dexseq_exon.R dexseq_clean_counts $gff $samplesheet $contrastsheet $ntop
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        bioconductor-dexseq:  \$(Rscript -e "library(DEXSeq); cat(as.character(packageVersion('DEXSeq')))")
-    END_VERSIONS
     """
 }

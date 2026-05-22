@@ -43,7 +43,7 @@ process TXIMPORT {
 
     path "suppa_tpm.txt"                        , emit: suppa_tpm
 
-    path "versions.yml"                         , emit: versions
+    tuple val("${task.process}"), val('tximeta'), eval('Rscript -e "library(tximeta); cat(as.character(packageVersion(\'tximeta\')))"'), topic: versions, emit: versions_tximeta
 
     when:
     task.ext.when == null || task.ext.when
@@ -51,11 +51,5 @@ process TXIMPORT {
     script: // This script is bundled with the pipeline, in nf-core/rnasplice/bin/
     """
     tximport.R $tx2gene salmon salmon.merged
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        bioconductor-tximeta: \$(Rscript -e "library(tximeta); cat(as.character(packageVersion('tximeta')))")
-    END_VERSIONS
     """
 }

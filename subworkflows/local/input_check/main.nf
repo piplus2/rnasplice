@@ -90,5 +90,4 @@ workflow INPUT_CHECK {
 
     emit:
     reads    = ch_final_reads   // channel: [ val(meta), [ files ] ]
-    versions = channel.empty()  // channel: topic implicit models handle this now
 }

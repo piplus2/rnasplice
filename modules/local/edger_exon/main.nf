@@ -19,7 +19,9 @@ process EDGER_EXON {
     path "DGELRT.*.rds" , emit: edger_exon_lrt
     path "*.csv"        , emit: edger_exon_csv
     path "*.pdf"        , emit: edger_exon_pdf
-    path "versions.yml" , emit: versions
+    tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//"'), topic: versions, emit: versions_R
+    tuple val("${task.process}"), val('bioconductor-edger'), eval('Rscript -e "library(edgeR); cat(as.character(packageVersion(\'edgeR\')))"'), topic: versions, emit: versions_edger
+
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,12 +29,6 @@ process EDGER_EXON {
     script:
     """
     run_edger_exon.R featurecounts $samplesheet $contrastsheet $n_edger_plot
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        bioconductor-edger:  \$(Rscript -e "library(edgeR); cat(as.character(packageVersion('edgeR')))")
-    END_VERSIONS
     """
 
 }

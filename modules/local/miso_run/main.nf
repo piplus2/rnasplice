@@ -13,7 +13,8 @@ process MISO_RUN {
 
     output:
     tuple val(meta), path("miso_data/*")    , emit: miso
-    path "versions.yml"                     , emit: versions
+    tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //g"'), topic: versions, emit: versions_python
+    tuple val("${task.process}"), val('misopy'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'misopy\').version)"'), topic: versions, emit: versions_misopy
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,11 +22,6 @@ process MISO_RUN {
     script:
     """
     miso --run ${miso_index} $bams --output-dir miso_data/${meta.id} --read-len $miso_read_len
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        misopy: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('misopy').version)")
-    END_VERSIONS
     """
 
 }

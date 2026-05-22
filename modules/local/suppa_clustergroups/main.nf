@@ -12,6 +12,7 @@ process CLUSTERGROUPS {
 
     output:
     tuple val(cond1), val(cond2), stdout
+    tuple val("${task.process}"), val('suppa'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'suppa\').version)"'), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when

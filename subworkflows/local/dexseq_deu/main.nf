@@ -21,8 +21,6 @@ workflow DEXSEQ_DEU {
 
     main:
 
-    ch_versions = channel.empty()
-
     if (!ch_dexseq_gff) {
 
         //
@@ -33,8 +31,6 @@ workflow DEXSEQ_DEU {
             gtf,
             aggregation
         )
-
-        ch_versions = ch_versions.mix(DEXSEQ_ANNOTATION.out.versions.first())
 
         ch_dexseq_gff = DEXSEQ_ANNOTATION.out.gff
 
@@ -51,8 +47,6 @@ workflow DEXSEQ_DEU {
         alignment_quality
     )
 
-    ch_versions = ch_versions.mix(DEXSEQ_COUNT.out.versions.first())
-
     //
     // MODULE: DEXSeq DEU
     //
@@ -65,8 +59,6 @@ workflow DEXSEQ_DEU {
         n_dexseq_plot
     )
 
-    ch_versions = ch_versions.mix(DEXSEQ_EXON.out.versions)
-
     emit:
 
     dexseq_clean_txt        = DEXSEQ_COUNT.out.dexseq_clean_txt.map{ it[1] }.collect()
@@ -77,7 +69,4 @@ workflow DEXSEQ_DEU {
     dexseq_exon_results_csv = DEXSEQ_EXON.out.dexseq_exon_results_csv
     dexseq_gene_results_csv = DEXSEQ_EXON.out.dexseq_gene_results_csv
     dexseq_plot_results_pdf = DEXSEQ_EXON.out.dexseq_plot_results_pdf
-
-    versions                = ch_versions                                  // channel: [ versions.yml ]
-
 }

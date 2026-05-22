@@ -19,8 +19,10 @@ process ISOFORMSWITCHANALYZER {
     path "isoformswitchanalyzer_summary.csv"            , emit: isoformswitchanalyzer_summary
     path "isoformswitchanalyzer_isoformfeatures.csv"    , emit: isoformswitchanalyzer_isoformFeatures
     path "switchlist.rds"                               , emit: switchlist_rds
-    path "versions.yml"                                 , emit: versions
     path "results"                                      , emit: results
+    tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//"'), topic: versions, emit: versions_R
+    tuple val("${task.process}"), val('bioconductor-isoformswitchanalyzer'), eval('Rscript -e "library(IsoformSwitchAnalyzeR); cat(as.character(packageVersion(\'IsoformSwitchAnalyzeR\')))"'), topic: versions, emit: versions_isoformswitchanalyzer
+
 
     when:
     task.ext.when == null || task.ext.when
@@ -31,11 +33,5 @@ process ISOFORMSWITCHANALYZER {
     mkdir -p results
 
     run_isoformswitchanalyzer.R ${gtf} ${transcript_sequences} ${samplesheet} ${contrastsheet} ${alpha} ${dIF} ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        bioconductor-isoformswitchanalyzer: \$(Rscript -e "library(IsoformSwitchAnalyzeR); cat(as.character(packageVersion('IsoformSwitchAnalyzeR')))")
-    END_VERSIONS
     """
 }

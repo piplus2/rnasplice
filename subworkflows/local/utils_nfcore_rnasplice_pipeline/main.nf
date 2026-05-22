@@ -431,14 +431,3 @@ def rmatsStrandednessError(reads) {
             }
         }
 }
-
-//
-// Create variable to check if samples have one condition or multiple
-//
-def isSingleCondition(samplesheet) {
-    def reader = samplesheet.splitCsv(header: true)
-    def conditions = []
-    reader.each { row -> conditions << row.condition }
-    def single_condition = conditions.unique().size() == 1
-    return single_condition
-}

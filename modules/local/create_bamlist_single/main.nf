@@ -11,7 +11,7 @@ process CREATE_BAMLIST_SINGLE {
 
     output:
     tuple val(contrast), path("${cond1}_bamlist.txt"), emit: bamlist
-    path "versions.yml",   emit: versions
+    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1'), topic: versions, emit: versions_sed
 
     when:
     task.ext.when == null || task.ext.when
@@ -19,10 +19,5 @@ process CREATE_BAMLIST_SINGLE {
     script:
     """
     echo ${bam1} | sed 's: :,:g' > ${cond1}_bamlist.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sed: \$(echo \$(sed --version 2>&1) | sed 's/^.*GNU sed) //; s/ .*\$//')
-    END_VERSIONS
     """
 }

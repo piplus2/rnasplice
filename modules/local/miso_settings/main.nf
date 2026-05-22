@@ -14,7 +14,7 @@ process MISO_SETTINGS {
 
     output:
     path 'miso_settings.txt'          , emit: miso_settings
-    path "versions.yml"               , emit: versions
+    tuple val("${task.process}"), val('parsimonious'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'parsimonious\').version)"'), topic: versions, emit: versions_parsimonious
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,11 +29,6 @@ process MISO_SETTINGS {
         --width $fig_width \\
         --height $fig_height \\
         --output 'miso_settings.txt'
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        parsimonious: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('parsimonious').version)")
-    END_VERSIONS
     """
 
 }
