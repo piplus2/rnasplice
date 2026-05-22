@@ -223,7 +223,7 @@ workflow RNASPLICE {
     // SUBWORKFLOW: BAM post-processing and indexing loops
     //
     if (params.source == 'genome_bam') {
-        BAM_SORT_STATS_SAMTOOLS(ch_genome_bam, ch_meta_fasta)
+        BAM_SORT_STATS_SAMTOOLS(ch_genome_bam, ch_fasta)
         ch_genome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
         ch_genome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.bai
         ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
@@ -233,7 +233,7 @@ workflow RNASPLICE {
     }
 
     if (params.source == 'transcriptome_bam') {
-        BAM_SORT_STATS_SAMTOOLS(ch_transcriptome_bam, ch_meta_fasta)
+        BAM_SORT_STATS_SAMTOOLS(ch_transcriptome_bam, ch_fasta)
         ch_transcriptome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
         ch_transcriptome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.bai
         ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
@@ -251,7 +251,7 @@ workflow RNASPLICE {
             '',
             params.seq_center ?: '',
             is_aws_igenome,
-            ch_meta_fasta,
+            ch_fasta,
         )
         ch_genome_bam = ALIGN_STAR.out.bam
         ch_genome_bam_index = ALIGN_STAR.out.bai

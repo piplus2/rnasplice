@@ -58,7 +58,6 @@ workflow NFCORE_RNASPLICE {
         params.salmon_index,
         params.gff_dexseq,
         params.suppa_tpm,
-        params.source,
         params.gencode
     )
 

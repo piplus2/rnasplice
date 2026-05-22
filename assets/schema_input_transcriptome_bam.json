@@ -11,17 +11,13 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
-                "meta": [
-                    "id"
-                ]
+                "meta": ["id"]
             },
             "condition": {
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Condition must be provided and contain syntactically valid names.",
-                "meta": [
-                    "condition"
-                ]
+                "meta": ["condition"]
             },
             "genome_bam": {
                 "type": "string",
@@ -38,11 +34,6 @@
                 "errorMessage": "Transcriptome BAM file must be provided, cannot contain spaces and must have extension '.bam'"
             }
         },
-        "required": [
-            "sample",
-            "condition",
-            "genome_bam",
-            "transcriptome_bam"
-        ]
+        "required": ["sample", "condition", "genome_bam", "transcriptome_bam"]
     }
 }
