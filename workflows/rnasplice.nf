@@ -7,7 +7,6 @@
 include { BEDTOOLS_GENOMECOV                                              } from '../modules/local/bedtools_genomecov'
 include { ISOFORMSWITCHANALYZER                                           } from '../modules/local/isoformswitchanalyzer'
 include { INPUT_CHECK                                                     } from '../subworkflows/local/input_check'
-include { CONTRASTS_CHECK                                                 } from '../subworkflows/local/contrasts_check'
 include { PREPARE_GENOME                                                  } from '../subworkflows/local/prepare_genome'
 include { ALIGN_STAR                                                      } from '../subworkflows/local/align_star'
 include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_SALMON                     } from '../subworkflows/local/tx2gene_tximport'

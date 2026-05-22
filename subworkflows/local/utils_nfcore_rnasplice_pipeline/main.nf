@@ -16,7 +16,6 @@ include { completionEmail         } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary       } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE   } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE } from '../../nf-core/utils_nextflow_pipeline'
-include { CONTRASTS_CHECK         } from '../../local/contrasts_check.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
