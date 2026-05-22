@@ -75,7 +75,7 @@ def getWorkflowVersion() {
 }
 
 //
-// Process software versions for pipeline
+// Get software versions for pipeline
 //
 def processVersionsFromYAML(yaml_file) {
     def yaml = new org.yaml.snakeyaml.Yaml()
@@ -110,6 +110,7 @@ def paramsSummaryMultiqc(summary_params) {
         .keySet()
         .each { group ->
             def group_params = summary_params.get(group)
+            // This gets the parameters of that particular group
             if (group_params) {
                 summary_section += "    <p style=\"font-size:110%\"><b>${group}</b></p>\n"
                 summary_section += "    <dl class=\"dl-horizontal\">\n"
