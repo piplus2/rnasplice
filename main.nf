@@ -18,7 +18,7 @@
 include { RNASPLICE  } from './workflows/rnasplice'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { PREPARE_GENOME } from './subworkflows/local/prepare_genome.nf'
+include { PREPARE_GENOME } from './subworkflows/local/prepare_genome'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
