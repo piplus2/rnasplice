@@ -219,6 +219,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display full help text including descriptions of all parameters.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
@@ -292,6 +298,12 @@
                     "description": "Boolean whether to validate parameters against the schema at runtime",
                     "default": true,
                     "fa_icon": "fas fa-check-square",
+                    "hidden": true
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Show hidden parameters in help message.",
+                    "fa_icon": "fas fa-eye",
                     "hidden": true
                 }
             }

@@ -25,6 +25,7 @@
             },
             "salmon_results": {
                 "type": "string",
+                "pattern": "^\\S+\\.tar\\.gz$",
                 "format": "file-path",
                 "exists": true,
                 "errorMessage": "Salmon results path must be provided and cannot contain spaces"
