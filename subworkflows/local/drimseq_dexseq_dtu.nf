@@ -24,7 +24,7 @@ workflow DRIMSEQ_DEXSEQ_DTU {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // DEXSEQ FILTER

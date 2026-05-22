@@ -13,15 +13,15 @@ workflow DEXSEQ_DEU {
     gtf                // path gtf
     ch_genome_bam      // bam channel
     ch_dexseq_gff      // path dexseq gff
-    ch_samplesheet     // Channel.fromPath(params.input)
-    ch_contrastsheet   // Channel.fromPath()
+    ch_samplesheet     // channel.fromPath(params.input)
+    ch_contrastsheet   // channel.fromPath()
     n_dexseq_plot      // val: numeric
     aggregation        // params.aggregation
     alignment_quality  // params.alignment_quality
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     if (!ch_dexseq_gff) {
 

@@ -15,7 +15,7 @@ workflow TX2GENE_TXIMPORT {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Extract archives (if necessary)

@@ -24,7 +24,7 @@ workflow VISUALISE_MISO {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
    //
    // MODULE: gtf_2_gff3
@@ -85,15 +85,15 @@ workflow VISUALISE_MISO {
     //
 
     def miso_genes_list = miso_genes ? miso_genes.split(',').collect{ it.trim() } : [""]
-    ch_miso_genes_list = Channel.fromList( miso_genes_list )
+    ch_miso_genes_list = channel.fromList( miso_genes_list )
 
     if (miso_genes_file && miso_genes) {
-        ch_miso_genes_file = Channel.fromPath(miso_genes_file)
+        ch_miso_genes_file = channel.fromPath(miso_genes_file)
             .splitCsv()
         ch_miso_genes_list.concat( ch_miso_genes_file )
         .set{ ch_miso_genes }
     } else if (miso_genes_file) {
-        ch_miso_genes_file = Channel.fromPath(miso_genes_file)
+        ch_miso_genes_file = channel.fromPath(miso_genes_file)
             .splitCsv()
             .set{ ch_miso_genes }
         } else {

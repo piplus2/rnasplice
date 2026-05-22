@@ -60,7 +60,7 @@ workflow SUPPA {
 
     // define empty versions channel
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     // Split the tpm file (contains all samples) into individual files based on condition
 
@@ -81,16 +81,16 @@ workflow SUPPA {
 
     // If per AS local analysis:
 
-    ch_ioe_events             = Channel.empty()
-    ch_suppa_local_psi        = Channel.empty()
-    ch_split_suppa_local_psi  = Channel.empty()
+    ch_ioe_events             = channel.empty()
+    ch_suppa_local_psi        = channel.empty()
+    ch_split_suppa_local_psi  = channel.empty()
 
-    ch_dpsi_local             = Channel.empty()
-    ch_psivec_local           = Channel.empty()
+    ch_dpsi_local             = channel.empty()
+    ch_psivec_local           = channel.empty()
 
-    ch_groups_ioe             = Channel.empty()
-    ch_cluster_vec_local      = Channel.empty()
-    ch_cluster_log_local      = Channel.empty()
+    ch_groups_ioe             = channel.empty()
+    ch_cluster_vec_local      = channel.empty()
+    ch_cluster_log_local      = channel.empty()
 
     if (suppa_per_local_event) {
 
@@ -232,16 +232,16 @@ workflow SUPPA {
 
     // If per isoform analysis:
 
-    ch_ioi_events              = Channel.empty()
-    ch_suppa_isoform_psi       = Channel.empty()
-    ch_split_suppa_isoform_psi = Channel.empty()
+    ch_ioi_events              = channel.empty()
+    ch_suppa_isoform_psi       = channel.empty()
+    ch_split_suppa_isoform_psi = channel.empty()
 
-    ch_dpsi_isoform            = Channel.empty()
-    ch_psivec_isoform          = Channel.empty()
+    ch_dpsi_isoform            = channel.empty()
+    ch_psivec_isoform          = channel.empty()
 
-    ch_groups_ioi              = Channel.empty()
-    ch_cluster_vec_isoform     = Channel.empty()
-    ch_cluster_log_isoform     = Channel.empty()
+    ch_groups_ioi              = channel.empty()
+    ch_cluster_vec_isoform     = channel.empty()
+    ch_cluster_log_isoform     = channel.empty()
 
     if (suppa_per_isoform) {
 

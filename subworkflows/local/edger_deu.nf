@@ -12,13 +12,13 @@ workflow EDGER_DEU {
 
     gtf                  // path: gtf
     ch_genome_bam        // channel: [ val(meta), path(bams) ]
-    ch_samplesheet       // Channel.fromPath(params.input)
-    ch_contrastsheet     // Channel.fromPath(params.contrasts)
+    ch_samplesheet       // channel.fromPath(params.input)
+    ch_contrastsheet     // channel.fromPath(params.contrasts)
     n_edger_plot         // val: integer to plot
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     // MODULE: SUBREAD_FLATTENGTF

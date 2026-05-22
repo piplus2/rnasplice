@@ -21,11 +21,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'test', single_end:false ], // meta map
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.single_end.bam', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id:'genome' ],
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.fai', checkIfExists: true)
@@ -52,11 +52,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'test', single_end:false ], // meta map
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.bam', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id:'genome' ],
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.fai', checkIfExists: true)
@@ -85,11 +85,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'test', single_end:false ], // meta map
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.single_end.bam', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id:'genome' ],
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.fai', checkIfExists: true)
@@ -113,11 +113,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'test', single_end:false ], // meta map
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.bam', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id:'genome' ],
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true),
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.fai', checkIfExists: true)

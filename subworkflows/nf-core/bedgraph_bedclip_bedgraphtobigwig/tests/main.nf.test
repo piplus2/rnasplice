@@ -17,11 +17,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'test', single_end:false ], // meta map
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bedgraph/test.bedgraph', checkIfExists: true)
                 ])
-                input[1] = Channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.sizes', checkIfExists: true))
+                input[1] = channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.sizes', checkIfExists: true))
                 """
             }
         }
@@ -41,11 +41,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'test', single_end:false ], // meta map
                     file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bedgraph/test.bedgraph', checkIfExists: true)
                 ])
-                input[1] = Channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.sizes', checkIfExists: true))
+                input[1] = channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.sizes', checkIfExists: true))
                 """
             }
         }
