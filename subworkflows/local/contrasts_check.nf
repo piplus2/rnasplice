@@ -1,8 +1,8 @@
 //
-// Check input contrastsheet and get read channels
+// Validate and parse input contrastsheet
 //
 
-include { CONTRASTSHEET_CHECK } from '../../modules/local/contrastsheet_check'
+include { samplesheetToList } from 'plugin/nf-schema'
 
 workflow CONTRASTS_CHECK {
 
@@ -10,14 +10,19 @@ workflow CONTRASTS_CHECK {
     contrastsheet // file: /path/to/contrastsheet.csv
 
     main:
-    CONTRASTSHEET_CHECK ( contrastsheet )
-            .csv
-            .splitCsv ( header:true, sep:',' )
-            .set { contrasts }
 
+    channel
+        .fromList(samplesheetToList(contrastsheet, "${projectDir}/assets/schema_contrasts.json"))
+        .map { meta ->
+            return [
+                contrast:  meta.contrast,
+                treatment: meta.treatment,
+                control:   meta.control
+            ]
+        }
+        .set { ch_contrasts }
 
     emit:
-    contrasts
-    versions = CONTRASTSHEET_CHECK.out.versions // channel: [ versions.yml ]
-
+    contrasts = ch_contrasts                        // channel: [ val(contrast_map) ]
+    versions = channel.empty()       // channel: [ versions.yml ]
 }

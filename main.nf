@@ -18,7 +18,7 @@
 include { RNASPLICE  } from './workflows/rnasplice'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { PREPARE_GENOME } from './subworkflows/local/prepare_genome.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,16 +44,36 @@ params.star_index   = getGenomeAttribute('star')
 //
 workflow NFCORE_RNASPLICE {
 
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
     main:
+
+    //
+    // SUBWORKFLOW: Prepare reference genome files
+    //
+    PREPARE_GENOME (
+        params.fasta,
+        params.gtf,
+        params.gff,
+        params.transcript_fasta,
+        params.star_index,
+        params.salmon_index,
+        params.gff_dexseq,
+        params.suppa_tpm,
+        params.source,
+        params.gencode
+    )
+
+    ch_samplesheet = channel.value(file(params.input, checkIfExists: true))
+    ch_contrastsheet = channel.value(file(params.contrastsheet, checkIfExists: true))
 
     //
     // WORKFLOW: Run pipeline
     //
     RNASPLICE (
-        samplesheet,
+        ch_samplesheet,
+        ch_contrastsheet,
+        PREPARE_GENOME.out.fasta,
+        PREPARE_GENOME.out.gtf,
+        PREPARE_GENOME.out.is_aws_igenome,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
@@ -91,9 +111,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNASPLICE (
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
+    NFCORE_RNASPLICE()
 
     //
     // SUBWORKFLOW: Run completion tasks
@@ -107,6 +125,25 @@ workflow {
         NFCORE_RNASPLICE.out.multiqc_report
     )
 }
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    FUNCTIONS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// Get attribute from genome config file e.g. fasta
+//
+def getGenomeAttribute(attribute) {
+    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
+        if (params.genomes[params.genome].containsKey(attribute)) {
+            return params.genomes[params.genome][attribute]
+        }
+    }
+    return null
+}
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

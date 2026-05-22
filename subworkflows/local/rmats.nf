@@ -122,17 +122,14 @@ workflow RMATS {
     ch_versions = ch_versions.mix(RMATS_POST.out.versions)
 
     ch_rmats_prep = RMATS_PREP.out.rmats_temp
-    //    path: rmats_prep/*
     ch_rmats_prep_log = RMATS_PREP.out.log
-    //    path: rmats_prep.log
     ch_rmats_post = RMATS_POST.out.rmats_post
-    //    path: rmats_post/*
     ch_rmats_post_log = RMATS_POST.out.log
 
     emit:
-    rmats_prep     = ch_rmats_prep //    path: rmats_temp/*
-    rmats_prep_log = ch_rmats_prep_log //    path: rmats_prep.log
-    rmats_post     = ch_rmats_post //    path: rmats_post/*
-    rmats_post_log = ch_rmats_post_log //    path: rmats_post.log
-    versions       = ch_versions.ifEmpty(null) //    channel: [ versions.yml ]
+    rmats_prep     = ch_rmats_prep
+    rmats_prep_log = ch_rmats_prep_log
+    rmats_post     = ch_rmats_post
+    rmats_post_log = ch_rmats_post_log
+    versions       = ch_versions.ifEmpty(null)
 }

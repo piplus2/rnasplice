@@ -4,31 +4,33 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { BEDTOOLS_GENOMECOV      } from '../modules/local/bedtools_genomecov'
-include { ISOFORMSWITCHANALYZER   } from '../modules/local/isoformswitchanalyzer'
-include { INPUT_CHECK             } from '../subworkflows/local/input_check'
-include { CONTRASTS_CHECK         } from '../subworkflows/local/contrasts_check'
-include { PREPARE_GENOME          } from '../subworkflows/local/prepare_genome'
-include { ALIGN_STAR              } from '../subworkflows/local/align_star'
-include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_SALMON          } from '../subworkflows/local/tx2gene_tximport'
-include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_STAR_SALMON     } from '../subworkflows/local/tx2gene_tximport'
-include { DRIMSEQ_DEXSEQ_DTU as DRIMSEQ_DEXSEQ_DTU_SALMON      } from '../subworkflows/local/drimseq_dexseq_dtu'
-include { DRIMSEQ_DEXSEQ_DTU as DRIMSEQ_DEXSEQ_DTU_STAR_SALMON } from '../subworkflows/local/drimseq_dexseq_dtu'
-include { RMATS                                                } from '../subworkflows/local/rmats'
-include { DEXSEQ_DEU                                           } from '../subworkflows/local/dexseq_deu'
-include { EDGER_DEU                                            } from '../subworkflows/local/edger_deu'
-include { SUPPA as SUPPA_SALMON                                } from '../subworkflows/local/suppa'
-include { SUPPA as SUPPA_STAR_SALMON                           } from '../subworkflows/local/suppa'
-include { VISUALISE_MISO                                       } from '../subworkflows/local/visualise_miso'
-include { LEAFCUTTER                                           } from '../subworkflows/local/leafcutter'
+include { BEDTOOLS_GENOMECOV                                              } from '../modules/local/bedtools_genomecov'
+include { ISOFORMSWITCHANALYZER                                           } from '../modules/local/isoformswitchanalyzer'
+include { INPUT_CHECK                                                     } from '../subworkflows/local/input_check'
+include { CONTRASTS_CHECK                                                 } from '../subworkflows/local/contrasts_check'
+include { PREPARE_GENOME                                                  } from '../subworkflows/local/prepare_genome'
+include { ALIGN_STAR                                                      } from '../subworkflows/local/align_star'
+include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_SALMON                     } from '../subworkflows/local/tx2gene_tximport'
+include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_STAR_SALMON                } from '../subworkflows/local/tx2gene_tximport'
+include { DRIMSEQ_DEXSEQ_DTU as DRIMSEQ_DEXSEQ_DTU_SALMON                 } from '../subworkflows/local/drimseq_dexseq_dtu'
+include { DRIMSEQ_DEXSEQ_DTU as DRIMSEQ_DEXSEQ_DTU_STAR_SALMON            } from '../subworkflows/local/drimseq_dexseq_dtu'
+include { RMATS                                                           } from '../subworkflows/local/rmats'
+include { DEXSEQ_DEU                                                      } from '../subworkflows/local/dexseq_deu'
+include { EDGER_DEU                                                       } from '../subworkflows/local/edger_deu'
+include { SUPPA as SUPPA_SALMON                                           } from '../subworkflows/local/suppa'
+include { SUPPA as SUPPA_STAR_SALMON                                      } from '../subworkflows/local/suppa'
+include { VISUALISE_MISO                                                  } from '../subworkflows/local/visualise_miso'
+include { LEAFCUTTER                                                      } from '../subworkflows/local/leafcutter'
 
-include { rmatsReadError         } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { rmatsStrandednessError } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { isSingleCondition      } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { multiqcTsvFromList     } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { validateInputSamplesheet                                        } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { validateInputContrastsheet                                        } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { rmatsReadError                                                  } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { rmatsStrandednessError                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { isSingleCondition                                               } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { multiqcTsvFromList                                              } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { paramsSummaryMultiqc                                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML                                          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,17 +38,18 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rnas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC                                } from '../modules/nf-core/fastqc/main'
-include { SALMON_QUANT as SALMON_QUANT_SALMON   } from '../modules/nf-core/salmon/quant'
-include { SALMON_QUANT as SALMON_QUANT_STAR     } from '../modules/nf-core/salmon/quant'
-include { MULTIQC                               } from '../modules/nf-core/multiqc/'
-include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions'
-include { CAT_FASTQ                             } from '../modules/nf-core/cat/fastq'
-include { FASTQ_FASTQC_UMITOOLS_TRIMGALORE      } from '../subworkflows/nf-core/fastq_fastqc_umitools_trimgalore'
+include { samplesheetToList                                               } from 'plugin/nf-schema'
+include { FASTQC                                                          } from '../modules/nf-core/fastqc/main'
+include { SALMON_QUANT as SALMON_QUANT_SALMON                             } from '../modules/nf-core/salmon/quant'
+include { SALMON_QUANT as SALMON_QUANT_STAR                               } from '../modules/nf-core/salmon/quant'
+include { MULTIQC                                                         } from '../modules/nf-core/multiqc/'
+include { CUSTOM_DUMPSOFTWAREVERSIONS                                     } from '../modules/nf-core/custom/dumpsoftwareversions'
+include { CAT_FASTQ                                                       } from '../modules/nf-core/cat/fastq'
+include { FASTQ_FASTQC_UMITOOLS_TRIMGALORE                                } from '../subworkflows/nf-core/fastq_fastqc_umitools_trimgalore'
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_FORWARD } from '../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig/main'
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_REVERSE } from '../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig/main'
-include { BAM_SORT_STATS_SAMTOOLS               } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
-include { paramsSummaryMap                      } from 'plugin/nf-schema'
+include { BAM_SORT_STATS_SAMTOOLS                                         } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
+include { paramsSummaryMap                                                } from 'plugin/nf-schema'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,88 +58,117 @@ include { paramsSummaryMap                      } from 'plugin/nf-schema'
 */
 
 workflow RNASPLICE {
-
     take:
-    ch_samplesheet               // channel: samplesheet read in from initialization wrapper
-    multiqc_config               // parameter value pass-through
-    multiqc_logo                 // parameter value pass-through
-    multiqc_methods_description  // parameter value pass-through
-    outdir                       // parameter value pass-through
+    ch_samplesheet // channel: samplesheet read in from initialization wrapper
+    ch_contrastsheet // channel: contrastsheet read in from initialization wrapper
+    ch_fasta
+    ch_gtf
+    is_aws_igenome
+    multiqc_config // parameter value pass-through
+    multiqc_logo // parameter value pass-through
+    multiqc_methods_description // parameter value pass-through
+    outdir // parameter value pass-through
 
     main:
 
-    def ch_versions      = channel.empty()
+    def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
     def pass_trimmed_reads = [:]
 
     // Check mandatory input files
-    def ch_contrasts  = file(params.contrasts)
-    def ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
+    def ch_dummy_file = file("${projectDir}/assets/dummy_file.txt", checkIfExists: true)
 
-    // Check alignment evaluation strategies
-    def prepare_tool_indices = []
-    if (!params.skip_alignment) { prepare_tool_indices << params.aligner }
-    if (params.pseudo_aligner)  { prepare_tool_indices << params.pseudo_aligner }
-
-    // Check if an AWS iGenome has been provided to use the appropriate version of STAR
-    def is_aws_igenome = false
-    if (params.fasta && params.gtf) {
-        if ((file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')) {
-            is_aws_igenome = true
-        }
+    //
+    // Create channel from input file provided through params.input
+    //
+    if (params.source == "fastq") {
+        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+            .map { meta, fastq_1, fastq_2 ->
+                if (!fastq_2) {
+                    return [meta.id, meta + [single_end: true], [fastq_1]]
+                }
+                else {
+                    return [meta.id, meta + [single_end: false], [fastq_1, fastq_2]]
+                }
+            }
+            .groupTuple()
+            .map { samplesheet ->
+                validateInputSamplesheet(samplesheet)
+            }
+            .map { meta, fastqs ->
+                return [meta, fastqs.flatten()]
+            }
+            .set { ch_samplesheet }
+    }
+    else if (params.source == "genome_bam") {
+        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_genome_bam.json"))
+            .map { meta, genome_bam ->
+                def meta_map = [id: meta.id, condition: meta.condition]
+                return [meta_map, [genome_bam]]
+            }
+            .set { ch_samplesheet }
+    }
+    else if (params.source == "transcriptome_bam") {
+        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_transcriptome_bam.json"))
+            .map { meta, _genome_bam, transcriptome_bam ->
+                def meta_map = [id: meta.id, condition: meta.condition]
+                return [meta_map, [transcriptome_bam]]
+            }
+            .set { ch_samplesheet }
+    }
+    else if (params.source == "salmon_results") {
+        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_salmon_results.json"))
+            .map { meta, salmon_results ->
+                def meta_map = [id: meta.id, condition: meta.condition]
+                return [meta_map, [salmon_results]]
+            }
+            .set { ch_samplesheet }
+    }
+    else {
+        error("Invalid --source parameter: '${params.source}'. Must be one of: fastq, genome_bam, transcriptome_bam, salmon_results")
     }
 
     //
-    // SUBWORKFLOW: Uncompress and prepare reference genome files
+    // Create channel from contrasts file
     //
-    PREPARE_GENOME (
-        params.fasta,
-        params.gtf,
-        params.gff,
-        params.transcript_fasta,
-        params.star_index,
-        params.salmon_index,
-        params.gff_dexseq,
-        params.suppa_tpm,
-        is_aws_igenome,
-        prepare_tool_indices,
-        params.source,
-        params.gencode
-    )
-    ch_meta_fasta = PREPARE_GENOME.out.fasta.map { it -> [ [:], it ] }
-    ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions)
+    channel.fromList(samplesheetToList(params.contrasts, "${projectDir}/assets/schema_contrasts.json"))
+        .map { meta ->
+            validateInputContrastsheet([[meta]])
+            return [contrast: meta.contrast, treatment: meta.treatment, control: meta.control]
+        }
+        .set { ch_contrastsheet }
 
-     // Branch samplesheet channel based on source type
+
+    // Branch samplesheet channel based on source type
     if (params.source == 'fastq') {
         ch_samplesheet
-            .map {
-                meta, fastq ->
-                    def new_id = meta.id - ~/_T\d+/
-                    [ meta + [id: new_id], fastq ]
+            .map { meta, fastq ->
+                def new_id = meta.id - ~/_T\d+/
+                [meta + [id: new_id], fastq]
             }
             .groupTuple()
-            .branch {
-                meta, fastq ->
-                    single  : fastq.size() == 1
-                        return [ meta, fastq.flatten() ]
-                    multiple: fastq.size() > 1
-                        return [ meta, fastq.flatten() ]
+            .branch { meta, fastq ->
+                single: fastq.size() == 1
+                return [meta, fastq.flatten()]
+                multiple: fastq.size() > 1
+                return [meta, fastq.flatten()]
             }
             .set { ch_fastq }
-    } else if (params.source == 'genome_bam') {
+    }
+    else if (params.source == 'genome_bam') {
         ch_samplesheet.set { ch_genome_bam }
-    } else if (params.source == 'transcriptome_bam') {
+    }
+    else if (params.source == 'transcriptome_bam') {
         ch_samplesheet.set { ch_transcriptome_bam }
-    } else if (params.source == 'salmon_results') {
+    }
+    else if (params.source == 'salmon_results') {
         ch_samplesheet.set { ch_salmon_results }
     }
 
     //
     // SUBWORKFLOW: Read in contrastsheet, validate and stage profiles
     //
-    CONTRASTS_CHECK ( ch_contrasts )
     ch_versions = ch_versions.mix(CONTRASTS_CHECK.out.versions)
-    def ch_contrastsheet = file(params.contrasts)
 
     // Check rMATS parameter configuration mapping checks
     if (params.rmats && params.source == 'fastq') {
@@ -148,7 +180,7 @@ workflow RNASPLICE {
     // MODULE: Concatenate FastQ technical replicates if required
     //
     if (params.source == 'fastq') {
-        CAT_FASTQ ( ch_fastq.multiple )
+        CAT_FASTQ(ch_fastq.multiple)
         CAT_FASTQ.out.reads.mix(ch_fastq.single).set { ch_cat_fastq }
         ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
     }
@@ -157,18 +189,18 @@ workflow RNASPLICE {
     // SUBWORKFLOW: Read QC and trim adapters with TrimGalore!
     //
     if (params.source == 'fastq') {
-        FASTQ_FASTQC_UMITOOLS_TRIMGALORE (
+        FASTQ_FASTQC_UMITOOLS_TRIMGALORE(
             ch_cat_fastq,
             params.skip_fastqc,
             false,
             true,
             params.skip_trimming,
             0,
-            0
+            0,
         )
-        ch_trim_reads      = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.reads
+        ch_trim_reads = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.reads
         ch_trim_read_count = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_read_count
-        ch_versions        = ch_versions.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.versions)
+        ch_versions = ch_versions.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.versions)
 
         // Parse custom evaluation warnings if reading maps fall below specific metric criteria
         ch_trim_read_count
@@ -176,7 +208,7 @@ workflow RNASPLICE {
                 pass_trimmed_reads[meta.id] = true
                 if (num_reads <= params.min_trimmed_reads.toFloat()) {
                     pass_trimmed_reads[meta.id] = false
-                    return [ "$meta.id\t$num_reads" ]
+                    return ["${meta.id}\t${num_reads}"]
                 }
             }
             .collect()
@@ -191,27 +223,27 @@ workflow RNASPLICE {
     // SUBWORKFLOW: BAM post-processing and indexing loops
     //
     if (params.source == 'genome_bam') {
-        BAM_SORT_STATS_SAMTOOLS ( ch_genome_bam, ch_meta_fasta )
-        ch_genome_bam        = BAM_SORT_STATS_SAMTOOLS.out.bam
-        ch_genome_bam_index  = BAM_SORT_STATS_SAMTOOLS.out.bai
-        ch_samtools_stats    = BAM_SORT_STATS_SAMTOOLS.out.stats
+        BAM_SORT_STATS_SAMTOOLS(ch_genome_bam, ch_meta_fasta)
+        ch_genome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
+        ch_genome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.bai
+        ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
         ch_samtools_flagstat = BAM_SORT_STATS_SAMTOOLS.out.flagstat
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
-        ch_versions          = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
+        ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
     }
 
     if (params.source == 'transcriptome_bam') {
-        BAM_SORT_STATS_SAMTOOLS ( ch_transcriptome_bam, ch_meta_fasta )
-        ch_transcriptome_bam       = BAM_SORT_STATS_SAMTOOLS.out.bam
+        BAM_SORT_STATS_SAMTOOLS(ch_transcriptome_bam, ch_meta_fasta)
+        ch_transcriptome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
         ch_transcriptome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.bai
-        ch_samtools_stats          = BAM_SORT_STATS_SAMTOOLS.out.stats
-        ch_samtools_flagstat       = BAM_SORT_STATS_SAMTOOLS.out.flagstat
-        ch_samtools_idxstats       = BAM_SORT_STATS_SAMTOOLS.out.idxstats
-        ch_versions                = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
+        ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
+        ch_samtools_flagstat = BAM_SORT_STATS_SAMTOOLS.out.flagstat
+        ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
+        ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
     }
 
-    if ((params.source == 'fastq') && !params.skip_alignment && ( params.aligner == 'star' || params.aligner == 'star_salmon')) {
-        ALIGN_STAR (
+    if ((params.source == 'fastq') && !params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')) {
+        ALIGN_STAR(
             ch_trim_reads,
             PREPARE_GENOME.out.star_index,
             PREPARE_GENOME.out.gtf,
@@ -219,15 +251,15 @@ workflow RNASPLICE {
             '',
             params.seq_center ?: '',
             is_aws_igenome,
-            ch_meta_fasta
+            ch_meta_fasta,
         )
-        ch_genome_bam        = ALIGN_STAR.out.bam
-        ch_genome_bam_index  = ALIGN_STAR.out.bai
+        ch_genome_bam = ALIGN_STAR.out.bam
+        ch_genome_bam_index = ALIGN_STAR.out.bai
         ch_transcriptome_bam = ALIGN_STAR.out.bam_transcript
-        ch_samtools_stats    = ALIGN_STAR.out.stats
+        ch_samtools_stats = ALIGN_STAR.out.stats
         ch_samtools_flagstat = ALIGN_STAR.out.flagstat
         ch_samtools_idxstats = ALIGN_STAR.out.idxstats
-        ch_star_multiqc      = ALIGN_STAR.out.log_final
+        ch_star_multiqc = ALIGN_STAR.out.log_final
 
         if (params.bam_csi_index) {
             ch_genome_bam_index = ALIGN_STAR.out.csi
@@ -239,7 +271,7 @@ workflow RNASPLICE {
     // EXON SPLICING ENGINES
     // ====================================================================
 
-    if ((params.source == 'genome_bam') || (params.source == 'fastq') && (!params.skip_alignment && ( params.aligner == 'star' || params.aligner == 'star_salmon'))) {
+    if ((params.source == 'genome_bam') || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon'))) {
 
         if (params.dexseq_exon) {
             ch_dexseq_gff = params.gff_dexseq ? PREPARE_GENOME.out.dexseq_gff : ""
@@ -251,7 +283,7 @@ workflow RNASPLICE {
                 ch_contrastsheet,
                 params.n_dexseq_plot,
                 params.aggregation,
-                params.alignment_quality
+                params.alignment_quality,
             )
             ch_versions = ch_versions.mix(DEXSEQ_DEU.out.versions)
         }
@@ -262,7 +294,7 @@ workflow RNASPLICE {
                 ch_genome_bam,
                 ch_samplesheet,
                 ch_contrastsheet,
-                params.n_edger_plot
+                params.n_edger_plot,
             )
             ch_versions = ch_versions.mix(EDGER_DEU.out.versions)
         }
@@ -271,17 +303,18 @@ workflow RNASPLICE {
             if (params.source == 'genome_bam') {
                 BAM_SORT_STATS_SAMTOOLS.out.bam
                     .map { meta, bam -> [meta.condition, meta, bam] }
-                    .groupTuple(by:0)
+                    .groupTuple(by: 0)
                     .set { ch_genome_bam_conditions }
-            } else {
+            }
+            else {
                 ALIGN_STAR.out.bam
                     .map { meta, bam -> [meta.condition, meta, bam] }
-                    .groupTuple(by:0)
+                    .groupTuple(by: 0)
                     .set { ch_genome_bam_conditions }
             }
 
             is_single_condition = isSingleCondition(ch_samplesheet)
-            RMATS (
+            RMATS(
                 ch_contrastsheet,
                 ch_genome_bam_conditions,
                 PREPARE_GENOME.out.gtf,
@@ -291,13 +324,13 @@ workflow RNASPLICE {
                 params.rmats_novel_splice_site,
                 params.rmats_min_intron_len,
                 params.rmats_max_exon_len,
-                params.rmats_paired_stats
+                params.rmats_paired_stats,
             )
             ch_versions = ch_versions.mix(RMATS.out.versions)
         }
 
         if (params.sashimi_plot == true) {
-            VISUALISE_MISO (
+            VISUALISE_MISO(
                 PREPARE_GENOME.out.gtf,
                 ch_genome_bam,
                 ch_genome_bam_index,
@@ -305,13 +338,13 @@ workflow RNASPLICE {
                 params.fig_width,
                 params.fig_height,
                 params.miso_genes,
-                params.miso_genes_file ?: false
+                params.miso_genes_file ?: false,
             )
             ch_versions = ch_versions.mix(VISUALISE_MISO.out.versions)
         }
 
         if (params.leafcutter == true) {
-            LEAFCUTTER( ch_genome_bam, ch_genome_bam_index, PREPARE_GENOME.out.gtf )
+            LEAFCUTTER(ch_genome_bam, ch_genome_bam_index, PREPARE_GENOME.out.gtf)
         }
     }
 
@@ -323,23 +356,23 @@ workflow RNASPLICE {
         alignment_mode = true
         ch_salmon_index = ch_dummy_file
 
-        SALMON_QUANT_STAR (
+        SALMON_QUANT_STAR(
             ch_transcriptome_bam,
             ch_salmon_index,
             PREPARE_GENOME.out.gtf,
             PREPARE_GENOME.out.transcript_fasta,
             alignment_mode,
-            params.salmon_quant_libtype ?: ''
+            params.salmon_quant_libtype ?: '',
         )
         ch_versions = ch_versions.mix(SALMON_QUANT_STAR.out.versions)
         ch_salmon_results = SALMON_QUANT_STAR.out.results
 
-        TX2GENE_TXIMPORT_STAR_SALMON ( ch_salmon_results, PREPARE_GENOME.out.gtf )
+        TX2GENE_TXIMPORT_STAR_SALMON(ch_salmon_results, PREPARE_GENOME.out.gtf)
         ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_STAR_SALMON.out.versions)
 
         if (params.dexseq_dtu) {
             ch_txi = (params.dtu_txi == "dtuScaledTPM") ? TX2GENE_TXIMPORT_STAR_SALMON.out.txi_dtu : TX2GENE_TXIMPORT_STAR_SALMON.out.txi_s
-            DRIMSEQ_DEXSEQ_DTU_STAR_SALMON (
+            DRIMSEQ_DEXSEQ_DTU_STAR_SALMON(
                 ch_txi,
                 TX2GENE_TXIMPORT_STAR_SALMON.out.tximport_tx2gene,
                 ch_samplesheet,
@@ -350,24 +383,44 @@ workflow RNASPLICE {
                 params.min_samps_feature_prop,
                 params.min_feature_expr,
                 params.min_feature_prop,
-                params.min_gene_expr
+                params.min_gene_expr,
             )
             ch_versions = ch_versions.mix(DRIMSEQ_DEXSEQ_DTU_STAR_SALMON.out.versions)
         }
 
         if (params.suppa) {
             ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
-            SUPPA_STAR_SALMON (
-                PREPARE_GENOME.out.gtf, ch_suppa_tpm, ch_samplesheet, ch_contrastsheet,
-                params.suppa_per_local_event, params.generateevents_boundary, params.generateevents_threshold,
-                params.generateevents_exon_length, params.generateevents_event_type, params.generateevents_pool_genes,
-                params.psiperevent_total_filter, params.diffsplice_local_event, params.diffsplice_method,
-                params.diffsplice_area, params.diffsplice_lower_bound, params.diffsplice_alpha,
-                params.diffsplice_tpm_threshold, params.diffsplice_nan_threshold, params.diffsplice_gene_correction,
-                params.diffsplice_paired, params.diffsplice_median, params.clusterevents_local_event,
-                params.clusterevents_dpsithreshold, params.clusterevents_eps, params.clusterevents_metric,
-                params.clusterevents_min_pts, params.clusterevents_method, params.clusterevents_sigthreshold ?: false,
-                params.clusterevents_separation ?: false, params.suppa_per_isoform
+            SUPPA_STAR_SALMON(
+                PREPARE_GENOME.out.gtf,
+                ch_suppa_tpm,
+                ch_samplesheet,
+                ch_contrastsheet,
+                params.suppa_per_local_event,
+                params.generateevents_boundary,
+                params.generateevents_threshold,
+                params.generateevents_exon_length,
+                params.generateevents_event_type,
+                params.generateevents_pool_genes,
+                params.psiperevent_total_filter,
+                params.diffsplice_local_event,
+                params.diffsplice_method,
+                params.diffsplice_area,
+                params.diffsplice_lower_bound,
+                params.diffsplice_alpha,
+                params.diffsplice_tpm_threshold,
+                params.diffsplice_nan_threshold,
+                params.diffsplice_gene_correction,
+                params.diffsplice_paired,
+                params.diffsplice_median,
+                params.clusterevents_local_event,
+                params.clusterevents_dpsithreshold,
+                params.clusterevents_eps,
+                params.clusterevents_metric,
+                params.clusterevents_min_pts,
+                params.clusterevents_method,
+                params.clusterevents_sigthreshold ?: false,
+                params.clusterevents_separation ?: false,
+                params.suppa_per_isoform,
             )
             ch_versions = ch_versions.mix(SUPPA_STAR_SALMON.out.versions)
         }
@@ -377,44 +430,77 @@ workflow RNASPLICE {
         alignment_mode = false
         ch_transcript_fasta = ch_dummy_file
 
-        SALMON_QUANT_SALMON (
-            ch_trim_reads, PREPARE_GENOME.out.salmon_index, PREPARE_GENOME.out.gtf,
-            ch_transcript_fasta, alignment_mode, params.salmon_quant_libtype ?: ''
+        SALMON_QUANT_SALMON(
+            ch_trim_reads,
+            PREPARE_GENOME.out.salmon_index,
+            PREPARE_GENOME.out.gtf,
+            ch_transcript_fasta,
+            alignment_mode,
+            params.salmon_quant_libtype ?: '',
         )
         ch_versions = ch_versions.mix(SALMON_QUANT_SALMON.out.versions)
         ch_salmon_results = SALMON_QUANT_SALMON.out.results
 
-        TX2GENE_TXIMPORT_SALMON ( ch_salmon_results, PREPARE_GENOME.out.gtf )
+        TX2GENE_TXIMPORT_SALMON(ch_salmon_results, PREPARE_GENOME.out.gtf)
         ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_SALMON.out.versions)
-    } else if (params.source == 'salmon_results') {
-        TX2GENE_TXIMPORT_SALMON ( ch_salmon_results, PREPARE_GENOME.out.gtf )
+    }
+    else if (params.source == 'salmon_results') {
+        TX2GENE_TXIMPORT_SALMON(ch_salmon_results, PREPARE_GENOME.out.gtf)
         ch_versions = ch_versions.mix(TX2GENE_TXIMPORT_SALMON.out.versions)
     }
 
     if ((params.pseudo_aligner == 'salmon' && params.source == 'fastq') || (params.source == 'salmon_results')) {
         if (params.dexseq_dtu) {
             ch_txi = (params.dtu_txi == "dtuScaledTPM") ? TX2GENE_TXIMPORT_SALMON.out.txi_dtu : TX2GENE_TXIMPORT_SALMON.out.txi_s
-            DRIMSEQ_DEXSEQ_DTU_SALMON (
-                ch_txi, TX2GENE_TXIMPORT_SALMON.out.tximport_tx2gene, ch_samplesheet, ch_contrastsheet,
-                params.n_dexseq_plot, params.min_samps_gene_expr, params.min_samps_feature_expr,
-                params.min_samps_feature_prop, params.min_feature_expr, params.min_feature_prop, params.min_gene_expr
+            DRIMSEQ_DEXSEQ_DTU_SALMON(
+                ch_txi,
+                TX2GENE_TXIMPORT_SALMON.out.tximport_tx2gene,
+                ch_samplesheet,
+                ch_contrastsheet,
+                params.n_dexseq_plot,
+                params.min_samps_gene_expr,
+                params.min_samps_feature_expr,
+                params.min_samps_feature_prop,
+                params.min_feature_expr,
+                params.min_feature_prop,
+                params.min_gene_expr,
             )
             ch_versions = ch_versions.mix(DRIMSEQ_DEXSEQ_DTU_SALMON.out.versions)
         }
 
         if (params.suppa) {
             ch_suppa_tpm = params.suppa_tpm ? PREPARE_GENOME.out.suppa_tpm : TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
-            SUPPA_SALMON (
-                PREPARE_GENOME.out.gtf, ch_suppa_tpm, ch_samplesheet, ch_contrastsheet,
-                params.suppa_per_local_event, params.generateevents_boundary, params.generateevents_threshold,
-                params.generateevents_exon_length, params.generateevents_event_type, params.generateevents_pool_genes,
-                params.psiperevent_total_filter, params.diffsplice_local_event, params.diffsplice_method,
-                params.diffsplice_area, params.diffsplice_lower_bound, params.diffsplice_alpha,
-                params.diffsplice_tpm_threshold, params.diffsplice_nan_threshold, params.diffsplice_gene_correction,
-                params.diffsplice_paired, params.diffsplice_median, params.clusterevents_local_event,
-                params.clusterevents_dpsithreshold, params.clusterevents_eps, params.clusterevents_metric,
-                params.clusterevents_min_pts, params.clusterevents_method, params.clusterevents_sigthreshold ?: false,
-                params.clusterevents_separation ?: false, params.suppa_per_isoform
+            SUPPA_SALMON(
+                PREPARE_GENOME.out.gtf,
+                ch_suppa_tpm,
+                ch_samplesheet,
+                ch_contrastsheet,
+                params.suppa_per_local_event,
+                params.generateevents_boundary,
+                params.generateevents_threshold,
+                params.generateevents_exon_length,
+                params.generateevents_event_type,
+                params.generateevents_pool_genes,
+                params.psiperevent_total_filter,
+                params.diffsplice_local_event,
+                params.diffsplice_method,
+                params.diffsplice_area,
+                params.diffsplice_lower_bound,
+                params.diffsplice_alpha,
+                params.diffsplice_tpm_threshold,
+                params.diffsplice_nan_threshold,
+                params.diffsplice_gene_correction,
+                params.diffsplice_paired,
+                params.diffsplice_median,
+                params.clusterevents_local_event,
+                params.clusterevents_dpsithreshold,
+                params.clusterevents_eps,
+                params.clusterevents_metric,
+                params.clusterevents_min_pts,
+                params.clusterevents_method,
+                params.clusterevents_sigthreshold ?: false,
+                params.clusterevents_separation ?: false,
+                params.suppa_per_isoform,
             )
             ch_versions = ch_versions.mix(SUPPA_SALMON.out.versions)
         }
@@ -422,21 +508,25 @@ workflow RNASPLICE {
 
     if (params.isoformswitchanalyzer && (params.source == 'fastq' || params.source == 'salmon_results')) {
         ISOFORMSWITCHANALYZER(
-            ch_salmon_results.collect{ it -> it[1] }, PREPARE_GENOME.out.gtf,
-            PREPARE_GENOME.out.transcript_fasta, ch_samplesheet, ch_contrastsheet,
-            params.isoformswitchanalyzer_alpha, params.isoformswitchanalyzer_dIF
+            ch_salmon_results.collect { it -> it[1] },
+            PREPARE_GENOME.out.gtf,
+            PREPARE_GENOME.out.transcript_fasta,
+            ch_samplesheet,
+            ch_contrastsheet,
+            params.isoformswitchanalyzer_alpha,
+            params.isoformswitchanalyzer_dIF,
         )
         ch_versions = ch_versions.mix(ISOFORMSWITCHANALYZER.out.versions)
     }
 
     if (((params.source == 'genome_bam') && !params.skip_bigwig) || (!params.skip_alignment && !params.skip_bigwig && params.source == 'fastq')) {
-        BEDTOOLS_GENOMECOV ( ch_genome_bam )
+        BEDTOOLS_GENOMECOV(ch_genome_bam)
         ch_versions = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
-        BEDGRAPH_TO_BIGWIG_FORWARD ( BEDTOOLS_GENOMECOV.out.bedgraph_forward, PREPARE_GENOME.out.chrom_sizes )
+        BEDGRAPH_TO_BIGWIG_FORWARD(BEDTOOLS_GENOMECOV.out.bedgraph_forward, PREPARE_GENOME.out.chrom_sizes)
         ch_versions = ch_versions.mix(BEDGRAPH_TO_BIGWIG_FORWARD.out.versions)
 
-        BEDGRAPH_TO_BIGWIG_REVERSE ( BEDTOOLS_GENOMECOV.out.bedgraph_reverse, PREPARE_GENOME.out.chrom_sizes )
+        BEDGRAPH_TO_BIGWIG_REVERSE(BEDTOOLS_GENOMECOV.out.bedgraph_reverse, PREPARE_GENOME.out.chrom_sizes)
     }
 
     // ====================================================================
@@ -452,9 +542,9 @@ workflow RNASPLICE {
 
     def topic_versions_string = topic_versions.versions_tuple
         .map { process, tool, version ->
-            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+            [process[process.lastIndexOf(':') + 1..-1], "  ${tool}: ${version}"]
         }
-        .groupTuple(by:0)
+        .groupTuple(by: 0)
         .map { process, tool_versions ->
             tool_versions.unique().sort()
             "${process}:\n${tool_versions.join('\n')}"
@@ -466,17 +556,17 @@ workflow RNASPLICE {
             storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_' + 'rnasplice_software_' + 'mqc_' + 'versions.yml',
             sort: true,
-            newLine: true
+            newLine: true,
         )
 
     // Build static summary models for MultiQC ingestion space
-    def summary_params      = paramsSummaryMap(workflow)
-    def workflow_summary    = paramsSummaryMultiqc(summary_params)
-    ch_workflow_summary     = channel.value(workflow_summary)
+    def summary_params = paramsSummaryMap(workflow)
+    def workflow_summary = paramsSummaryMultiqc(summary_params)
+    ch_workflow_summary = channel.value(workflow_summary)
 
-    def ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    def ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
     def methods_description = methodsDescriptionText(ch_multiqc_custom_methods_description)
-    ch_methods_description  = channel.value(methods_description)
+    ch_methods_description = channel.value(methods_description)
 
     // Blend final channel maps
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
@@ -484,40 +574,33 @@ workflow RNASPLICE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
     if (params.source == 'fastq') {
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.fastqc_zip.collect{it -> it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_zip.collect{it -> it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_log.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.fastqc_zip.collect { it -> it[1] }.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_zip.collect { it -> it[1] }.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_log.collect { it -> it[1] }.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_fail_trimming_multiqc.collectFile(name: 'fail_trimmed_samples_mqc.tsv').ifEmpty([]))
     }
 
     if (params.pseudo_aligner == 'salmon' && params.source == 'fastq') {
-        ch_multiqc_files = ch_multiqc_files.mix(ch_salmon_results.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_salmon_results.collect { it -> it[1] }.ifEmpty([]))
     }
 
     if (!params.skip_alignment && params.source == 'fastq' && (params.aligner == 'star_salmon' || params.aligner == "star")) {
-        ch_multiqc_files = ch_multiqc_files.mix(ch_star_multiqc.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_star_multiqc.collect { it -> it[1] }.ifEmpty([]))
     }
 
     if ((params.source == 'genome_bam' || params.source == 'transcriptome_bam') || (!params.skip_alignment && params.source == 'fastq' && (params.aligner == 'star_salmon' || params.aligner == "star"))) {
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_stats.collect{it -> it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_flagstat.collect{it -> it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_idxstats.collect{it -> it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_stats.collect { it -> it[1] }.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_flagstat.collect { it -> it[1] }.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_samtools_idxstats.collect { it -> it[1] }.ifEmpty([]))
 
         if (params.edger_exon && params.source != 'transcriptome_bam') {
-            ch_multiqc_files = ch_multiqc_files.mix(EDGER_DEU.out.featureCounts_summary.collect{it -> it[1]}.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(EDGER_DEU.out.featureCounts_summary.collect { it -> it[1] }.ifEmpty([]))
         }
     }
 
-    MULTIQC (
+    MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
-            [
-                [id: 'rnasplice'],
-                files,
-                params.multiqc_config ? file(params.multiqc_config, checkIfExists: true) : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
-                params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
-                [],
-                []
-            ]
+            [[id: 'rnasplice'], files, params.multiqc_config ? file(params.multiqc_config, checkIfExists: true) : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true), params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [], [], []]
         }
     )
 
@@ -525,9 +608,3 @@ workflow RNASPLICE {
     multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
     versions       = ch_versions
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
