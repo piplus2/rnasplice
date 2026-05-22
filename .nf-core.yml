@@ -9,3 +9,7 @@ template:
   org: nf-core
   outdir: .
   version: 1.0.5
+lint:
+  files_unchanged:
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - docs/images/nf-core-rnaplice_logo_dark.png
