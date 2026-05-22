@@ -55,7 +55,7 @@ workflow PREPARE_GENOME {
     if (gtf) {
         if (gtf.endsWith('.gz')) {
             GUNZIP_GTF([[:], gtf])
-            ch_gtf      = GUNZIP_GTF.gunzip.map { it -> it[1] }
+            ch_gtf      = GUNZIP_GTF.out.gunzip.map { it -> it[1] }
             ch_versions = ch_versions.mix(GUNZIP_GTF.out.versions)
         } else {
             ch_gtf = channel.value(file(gtf))
@@ -63,7 +63,7 @@ workflow PREPARE_GENOME {
     } else if (gff) {
         if (gff.endsWith('.gz')) {
             GUNZIP_GFF([[:], gff])
-            ch_gff      = GUNZIP_GFF.gunzip.map { it -> it[1] }
+            ch_gff      = GUNZIP_GFF.out.gunzip.map { it -> it[1] }
             ch_versions = ch_versions.mix(GUNZIP_GFF.out.versions)
         } else {
             ch_gff = channel.value(file(gff))
@@ -78,7 +78,7 @@ workflow PREPARE_GENOME {
     if (transcript_fasta) {
         if (transcript_fasta.endsWith('.gz')) {
             GUNZIP_TRANSCRIPT_FASTA([[:], transcript_fasta])
-            ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA.gunzip.map { it -> it[1] }
+            ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA.out.gunzip.map { it -> it[1] }
             ch_versions         = ch_versions.mix(GUNZIP_TRANSCRIPT_FASTA.out.versions)
         } else {
             ch_transcript_fasta = channel.value(file(transcript_fasta))
@@ -144,7 +144,8 @@ workflow PREPARE_GENOME {
             }
         } else {
             if (params.pseudo_aligner == 'salmon') {
-                ch_salmon_index = SALMON_INDEX(ch_fasta, ch_transcript_fasta).index
+                SALMON_INDEX(ch_fasta, ch_transcript_fasta)
+                ch_salmon_index = SALMON_INDEX.out.index
                 ch_versions     = ch_versions.mix(SALMON_INDEX.out.versions)
             }
         }
@@ -156,7 +157,8 @@ workflow PREPARE_GENOME {
     ch_dexseq_gff = channel.empty()
     if (gff_dexseq) {
         if (gff_dexseq.endsWith('.gz')) {
-            ch_dexseq_gff = GUNZIP_GFF_DEXSEQ([[:], gff_dexseq]).gunzip.map { it -> it[1] }
+            GUNZIP_GFF_DEXSEQ([[:], gff_dexseq])
+            ch_dexseq_gff = GUNZIP_GFF_DEXSEQ.out.gunzip.map { it -> it[1] }
             ch_versions   = ch_versions.mix(GUNZIP_GFF_DEXSEQ.out.versions)
         } else {
             ch_dexseq_gff = channel.value(file(gff_dexseq))
@@ -169,7 +171,8 @@ workflow PREPARE_GENOME {
     ch_suppa_tpm = channel.empty()
     if (suppa_tpm) {
         if (suppa_tpm.endsWith('.gz')) {
-            ch_suppa_tpm = GUNZIP_SUPPA_TPM([[:], suppa_tpm]).gunzip.map { it -> it[1] }
+            GUNZIP_SUPPA_TPM([[:], suppa_tpm])
+            ch_suppa_tpm = GUNZIP_SUPPA_TPM.out.gunzip.map { it -> it[1] }
             ch_versions  = ch_versions.mix(GUNZIP_SUPPA_TPM.out.versions)
         } else {
             ch_suppa_tpm = channel.value(file(suppa_tpm))
