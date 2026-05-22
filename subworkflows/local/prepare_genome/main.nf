@@ -42,7 +42,8 @@ workflow PREPARE_GENOME {
     // Uncompress genome fasta file if required
     //
     if (fasta.endsWith('.gz')) {
-        ch_fasta    = GUNZIP_FASTA([[:], fasta]).gunzip.map { it -> it[1] }
+        GUNZIP_FASTA([[:], fasta])
+        ch_fasta    = GUNZIP_FASTA.gunzip.map { it -> it[1] }
         ch_versions = ch_versions.mix(GUNZIP_FASTA.out.versions)
     } else {
         ch_fasta = channel.value(file(fasta))
@@ -53,14 +54,16 @@ workflow PREPARE_GENOME {
     //
     if (gtf) {
         if (gtf.endsWith('.gz')) {
-            ch_gtf      = GUNZIP_GTF([[:], gtf]).gunzip.map { it -> it[1] }
+            GUNZIP_GTF([[:], gtf])
+            ch_gtf      = GUNZIP_GTF.gunzip.map { it -> it[1] }
             ch_versions = ch_versions.mix(GUNZIP_GTF.out.versions)
         } else {
             ch_gtf = channel.value(file(gtf))
         }
     } else if (gff) {
         if (gff.endsWith('.gz')) {
-            ch_gff      = GUNZIP_GFF([[:], gff]).gunzip.map { it -> it[1] }
+            GUNZIP_GFF([[:], gff])
+            ch_gff      = GUNZIP_GFF.gunzip.map { it -> it[1] }
             ch_versions = ch_versions.mix(GUNZIP_GFF.out.versions)
         } else {
             ch_gff = channel.value(file(gff))
@@ -74,7 +77,8 @@ workflow PREPARE_GENOME {
     //
     if (transcript_fasta) {
         if (transcript_fasta.endsWith('.gz')) {
-            ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA([[:], transcript_fasta]).gunzip.map { it -> it[1] }
+            GUNZIP_TRANSCRIPT_FASTA([[:], transcript_fasta])
+            ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA.gunzip.map { it -> it[1] }
             ch_versions         = ch_versions.mix(GUNZIP_TRANSCRIPT_FASTA.out.versions)
         } else {
             ch_transcript_fasta = channel.value(file(transcript_fasta))
