@@ -2,9 +2,9 @@
 // Dexseq DTU subworkflow
 //
 
-include { DRIMSEQ_FILTER  } from '../../modules/local/drimseq_filter'
-include { DEXSEQ_DTU      } from '../../modules/local/dexseq_dtu'
-include { STAGER          } from '../../modules/local/stager'
+include { DRIMSEQ_FILTER  } from '../../../modules/local/drimseq_filter'
+include { DEXSEQ_DTU      } from '../../../modules/local/dexseq_dtu'
+include { STAGER          } from '../../../modules/local/stager'
 
 workflow DRIMSEQ_DEXSEQ_DTU {
 

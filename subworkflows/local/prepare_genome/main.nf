@@ -2,25 +2,25 @@
 // Uncompress and prepare reference genome files
 //
 
-include { GUNZIP as GUNZIP_FASTA                          } from '../../modules/nf-core/gunzip'
-include { GUNZIP as GUNZIP_GTF                            } from '../../modules/nf-core/gunzip'
-include { GUNZIP as GUNZIP_GFF                            } from '../../modules/nf-core/gunzip'
-include { GUNZIP as GUNZIP_TRANSCRIPT_FASTA               } from '../../modules/nf-core/gunzip'
-include { GUNZIP as GUNZIP_GFF_DEXSEQ                     } from '../../modules/nf-core/gunzip'
-include { GUNZIP as GUNZIP_SUPPA_TPM                      } from '../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_FASTA                          } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_GTF                            } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_GFF                            } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_TRANSCRIPT_FASTA               } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_GFF_DEXSEQ                     } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_SUPPA_TPM                      } from '../../../modules/nf-core/gunzip'
 
-include { UNTAR as UNTAR_STAR_INDEX                       } from '../../modules/nf-core/untar'
-include { UNTAR as UNTAR_SALMON_INDEX                     } from '../../modules/nf-core/untar'
+include { UNTAR as UNTAR_STAR_INDEX                       } from '../../../modules/nf-core/untar'
+include { UNTAR as UNTAR_SALMON_INDEX                     } from '../../../modules/nf-core/untar'
 
-include { CUSTOM_GETCHROMSIZES                            } from '../../modules/nf-core/custom/getchromsizes'
-include { GFFREAD                                         } from '../../modules/nf-core/gffread'
-include { STAR_GENOMEGENERATE                             } from '../../modules/nf-core/star/genomegenerate'
-include { STAR_GENOMEGENERATE_IGENOMES                    } from '../../modules/local/star_genomegenerate_igenomes'
-include { SALMON_INDEX                                    } from '../../modules/nf-core/salmon/index'
-include { RSEM_PREPAREREFERENCE as MAKE_TRANSCRIPTS_FASTA } from '../../modules/nf-core/rsem/preparereference'
+include { CUSTOM_GETCHROMSIZES                            } from '../../../modules/nf-core/custom/getchromsizes'
+include { GFFREAD                                         } from '../../../modules/nf-core/gffread'
+include { STAR_GENOMEGENERATE                             } from '../../../modules/nf-core/star/genomegenerate'
+include { STAR_GENOMEGENERATE_IGENOMES                    } from '../../../modules/local/star_genomegenerate_igenomes'
+include { SALMON_INDEX                                    } from '../../../modules/nf-core/salmon/index'
+include { RSEM_PREPAREREFERENCE as MAKE_TRANSCRIPTS_FASTA } from '../../../modules/nf-core/rsem/preparereference'
 
-include { GTF_GENE_FILTER                                 } from '../../modules/local/gtf_gene_filter'
-include { PREPROCESS_TRANSCRIPTS_FASTA_GENCODE            } from '../../modules/local/preprocess_transcripts_fasta_gencode.nf'
+include { GTF_GENE_FILTER                                 } from '../../../modules/local/gtf_gene_filter'
+include { PREPROCESS_TRANSCRIPTS_FASTA_GENCODE            } from '../../../modules/local/preprocess_transcripts_fasta_gencode.nf'
 
 workflow PREPARE_GENOME {
     take:

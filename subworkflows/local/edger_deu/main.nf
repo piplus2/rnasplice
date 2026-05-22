@@ -2,9 +2,9 @@
 // edgeR DEU subworkflow
 //
 
-include { SUBREAD_FLATTENGTF    } from '../../modules/local/flattengtf'
-include { SUBREAD_FEATURECOUNTS } from '../../modules/nf-core/subread/featurecounts/main'
-include { EDGER_EXON            } from '../../modules/local/edger_exon'
+include { SUBREAD_FLATTENGTF    } from '../../../modules/local/flattengtf'
+include { SUBREAD_FEATURECOUNTS } from '../../../modules/nf-core/subread/featurecounts/main'
+include { EDGER_EXON            } from '../../../modules/local/edger_exon'
 
 workflow EDGER_DEU {
 

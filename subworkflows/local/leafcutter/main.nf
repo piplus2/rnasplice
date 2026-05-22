@@ -1,5 +1,5 @@
-include { REGTOOLS_JUNCTIONSEXTRACT } from '../../modules/nf-core/regtools/junctionsextract/main'
-include { LEAFCUTTER_CLUSTER } from '../../modules/local/leafcutter_cluster'
+include { REGTOOLS_JUNCTIONSEXTRACT } from '../../../modules/nf-core/regtools/junctionsextract/main'
+include { LEAFCUTTER_CLUSTER } from '../../../modules/local/leafcutter_cluster'
 
 workflow LEAFCUTTER {
 

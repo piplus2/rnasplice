@@ -2,11 +2,11 @@
 // Visualise miso subworkflow
 //
 
-include { GTF_2_GFF3    } from '../../modules/local/gtf_2_gff3'
-include { MISO_INDEX    } from '../../modules/local/miso_index'
-include { MISO_RUN      } from '../../modules/local/miso_run'
-include { MISO_SETTINGS } from '../../modules/local/miso_settings'
-include { MISO_SASHIMI  } from '../../modules/local/miso_sashimi'
+include { GTF_2_GFF3    } from '../../../modules/local/gtf_2_gff3'
+include { MISO_INDEX    } from '../../../modules/local/miso_index'
+include { MISO_RUN      } from '../../../modules/local/miso_run'
+include { MISO_SETTINGS } from '../../../modules/local/miso_settings'
+include { MISO_SASHIMI  } from '../../../modules/local/miso_sashimi'
 
 
 workflow VISUALISE_MISO {
