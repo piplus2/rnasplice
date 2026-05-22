@@ -12,4 +12,4 @@ template:
 lint:
   files_unchanged:
     - .github/PULL_REQUEST_TEMPLATE.md
-    - docs/images/nf-core-rnaplice_logo_dark.png
+    - docs/images/nf-core-rnasplice_logo_dark.png
