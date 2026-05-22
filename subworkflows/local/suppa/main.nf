@@ -2,24 +2,24 @@
 // SUPPA Subworkflow
 //
 
-include { GENERATE_EVENTS as GENERATE_EVENTS_IOE } from '../../../modules/local/suppa_generateevents.nf'
-include { GENERATE_EVENTS as GENERATE_EVENTS_IOI } from '../../../modules/local/suppa_generateevents.nf'
+include { GENERATE_EVENTS as GENERATE_EVENTS_IOE } from '../../../modules/local/suppa_generateevents'
+include { GENERATE_EVENTS as GENERATE_EVENTS_IOI } from '../../../modules/local/suppa_generateevents'
 
-include { PSIPEREVENT   } from '../../../modules/local/suppa_psiperevent.nf'
-include { PSIPERISOFORM } from '../../../modules/local/suppa_psiperisoform.nf'
+include { PSIPEREVENT   } from '../../../modules/local/suppa_psiperevent'
+include { PSIPERISOFORM } from '../../../modules/local/suppa_psiperisoform'
 
-include { SPLIT_FILES as SPLIT_FILES_TPM } from '../../../modules/local/suppa_split_files.nf'
-include { SPLIT_FILES as SPLIT_FILES_IOE } from '../../../modules/local/suppa_split_files.nf'
-include { SPLIT_FILES as SPLIT_FILES_IOI } from '../../../modules/local/suppa_split_files.nf'
+include { SPLIT_FILES as SPLIT_FILES_TPM } from '../../../modules/local/suppa_split_files'
+include { SPLIT_FILES as SPLIT_FILES_IOE } from '../../../modules/local/suppa_split_files'
+include { SPLIT_FILES as SPLIT_FILES_IOI } from '../../../modules/local/suppa_split_files'
 
-include { DIFFSPLICE as DIFFSPLICE_IOE } from '../../../modules/local/suppa_diffsplice.nf'
-include { DIFFSPLICE as DIFFSPLICE_IOI } from '../../../modules/local/suppa_diffsplice.nf'
+include { DIFFSPLICE as DIFFSPLICE_IOE } from '../../../modules/local/suppa_diffsplice'
+include { DIFFSPLICE as DIFFSPLICE_IOI } from '../../../modules/local/suppa_diffsplice'
 
-include { CLUSTERGROUPS as CLUSTERGROUPS_IOE } from '../../../modules/local/suppa_clustergroups.nf'
-include { CLUSTERGROUPS as CLUSTERGROUPS_IOI } from '../../../modules/local/suppa_clustergroups.nf'
+include { CLUSTERGROUPS as CLUSTERGROUPS_IOE } from '../../../modules/local/suppa_clustergroups'
+include { CLUSTERGROUPS as CLUSTERGROUPS_IOI } from '../../../modules/local/suppa_clustergroups'
 
-include { CLUSTEREVENTS as CLUSTEREVENTS_IOE } from '../../../modules/local/suppa_clusterevents.nf'
-include { CLUSTEREVENTS as CLUSTEREVENTS_IOI } from '../../../modules/local/suppa_clusterevents.nf'
+include { CLUSTEREVENTS as CLUSTEREVENTS_IOE } from '../../../modules/local/suppa_clusterevents'
+include { CLUSTEREVENTS as CLUSTEREVENTS_IOI } from '../../../modules/local/suppa_clusterevents'
 
 workflow SUPPA {
 

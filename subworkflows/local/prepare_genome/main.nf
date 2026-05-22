@@ -20,7 +20,7 @@ include { SALMON_INDEX                                    } from '../../../modul
 include { RSEM_PREPAREREFERENCE as MAKE_TRANSCRIPTS_FASTA } from '../../../modules/nf-core/rsem/preparereference'
 
 include { GTF_GENE_FILTER                                 } from '../../../modules/local/gtf_gene_filter'
-include { PREPROCESS_TRANSCRIPTS_FASTA_GENCODE            } from '../../../modules/local/preprocess_transcripts_fasta_gencode.nf'
+include { PREPROCESS_TRANSCRIPTS_FASTA_GENCODE            } from '../../../modules/local/preprocess_transcripts_fasta_gencode'
 
 workflow PREPARE_GENOME {
     take:

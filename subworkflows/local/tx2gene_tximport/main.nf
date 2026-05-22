@@ -2,9 +2,9 @@
 // Tx2gene and Tximport subworkflow
 //
 
-include { GFFREAD_TX2GENE  } from '../../modules/local/gffread_tx2gene'
-include { TXIMPORT         } from '../../modules/local/tximport'
-include { UNTAR            } from '../../modules/nf-core/untar'
+include { GFFREAD_TX2GENE  } from '../../../modules/local/gffread_tx2gene'
+include { TXIMPORT         } from '../../../modules/local/tximport'
+include { UNTAR            } from '../../../modules/nf-core/untar'
 
 workflow TX2GENE_TXIMPORT {
 

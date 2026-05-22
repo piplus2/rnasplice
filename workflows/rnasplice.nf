@@ -165,11 +165,6 @@ workflow RNASPLICE {
         ch_samplesheet.set { ch_salmon_results }
     }
 
-    //
-    // SUBWORKFLOW: Read in contrastsheet, validate and stage profiles
-    //
-    ch_versions = ch_versions.mix(CONTRASTS_CHECK.out.versions)
-
     // Check rMATS parameter configuration mapping checks
     if (params.rmats && params.source == 'fastq') {
         rmatsReadError(INPUT_CHECK.out.reads)

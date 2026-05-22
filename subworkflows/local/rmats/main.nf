@@ -2,12 +2,12 @@
 // Uncompress and prepare reference genome files
 //
 
-include { CREATE_BAMLIST        } from '../../../modules/local/create_bamlist.nf'
-include { RMATS_PREP            } from '../../../modules/local/rmats_prep.nf'
-include { RMATS_POST            } from '../../../modules/local/rmats_post.nf'
+include { CREATE_BAMLIST        } from '../../../modules/local/create_bamlist'
+include { RMATS_PREP            } from '../../../modules/local/rmats_prep'
+include { RMATS_POST            } from '../../../modules/local/rmats_post'
 
-include { CREATE_BAMLIST_SINGLE } from '../../../modules/local/create_bamlist_single.nf'
-include { RMATS_POST_SINGLE     } from '../../../modules/local/rmats_post_single.nf'
+include { CREATE_BAMLIST_SINGLE } from '../../../modules/local/create_bamlist_single'
+include { RMATS_POST_SINGLE     } from '../../../modules/local/rmats_post_single'
 
 workflow RMATS {
     take:
