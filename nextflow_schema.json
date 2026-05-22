@@ -54,7 +54,12 @@
                     "type": "boolean",
                     "description": "Save FastQ files after merging re-sequenced libraries in the results directory.",
                     "fa_icon": "fas fa-save"
-                }
+                },
+                "pipelines_testing": {
+                    "type": "boolean",
+                    "description": "Use this option when testing the pipeline to save time and resources. This will run the pipeline with a small subset of the data and with reduced resource requirements.",
+                    "fa_icon": "fas fa-vials",
+                    "hidden": true
             }
         },
         "reference_genome_options": {
