@@ -60,7 +60,7 @@ workflow ALIGN_STAR {
     //
 
     BAM_SORT_STATS_SAMTOOLS(
-        ch_orig_bam.map { _meta, bam -> bam },
+        ch_orig_bam,
         fasta,
     )
 
