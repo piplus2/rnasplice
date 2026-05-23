@@ -80,7 +80,7 @@ workflow PREPARE_GENOME {
             ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA.out.gunzip
         }
         else {
-            ch_transcript_fasta =  channel.value([[:],file(transcript_fasta)])
+            ch_transcript_fasta = channel.value([[:], file(transcript_fasta)])
         }
         if (gencode) {
             PREPROCESS_TRANSCRIPTS_FASTA_GENCODE(ch_transcript_fasta)
@@ -89,14 +89,16 @@ workflow PREPARE_GENOME {
     }
     else {
         ch_filter_gtf = GTF_GENE_FILTER(ch_fasta, ch_gtf).gtf
-        ch_transcript_fasta = MAKE_TRANSCRIPTS_FASTA(ch_fasta.map { _meta, fa -> fa }, ch_filter_gtf.map { _meta, filter_gtf -> filter_gtf }).transcript_fasta
-        .map { fa -> [ [:], fa ] }
+        ch_transcript_fasta = MAKE_TRANSCRIPTS_FASTA(
+            ch_fasta.map { _meta, fa -> fa },
+            ch_filter_gtf.map { _meta, filter_gtf -> filter_gtf },
+        ).transcript_fasta.map { fa -> [[:], fa] }
     }
 
     //
     // Create chromosome sizes file
     //
-    SAMTOOLS_FAIDX(ch_fasta.map { meta, fa -> [ meta, fa, [] ] }, true)
+    SAMTOOLS_FAIDX(ch_fasta.map { meta, fa -> [meta, fa, []] }, true)
     ch_fai = SAMTOOLS_FAIDX.out.fai
     ch_chrom_sizes = SAMTOOLS_FAIDX.out.sizes
 
@@ -140,7 +142,8 @@ workflow PREPARE_GENOME {
             if (params.pseudo_aligner == 'salmon') {
                 SALMON_INDEX(
                     ch_fasta.map { _meta, fa -> fa },
-                    ch_transcript_fasta.map { _meta, tr -> tr })
+                    ch_transcript_fasta.map { _meta, tr -> tr },
+                )
                 ch_salmon_index = SALMON_INDEX.out.index
             }
         }
@@ -175,13 +178,13 @@ workflow PREPARE_GENOME {
     }
 
     emit:
-    fasta            = ch_fasta.map { _meta, fa -> fa }              //    path: genome.fasta
-    fai              = ch_fai                //    path: genome.fai
-    chrom_sizes      = ch_chrom_sizes        //    path: genome.sizes
-    gtf              = ch_gtf.map { _meta, out_gtf -> out_gtf }                //    path: genome.gtf
-    transcript_fasta = ch_transcript_fasta.map { _meta, fa -> fa }   //    path: transcript.fasta
-    star_index       = ch_star_index.map { _meta, index -> index }         //    path: star/index/
-    salmon_index     = ch_salmon_index       //    path: salmon/index/
-    dexseq_gff       = ch_dexseq_gff.map {_meta, dexseq_gff -> dexseq_gff }         //    path: dexseq.gff
-    suppa_tpm        = ch_suppa_tpm          //    path: suppa.tpm
+    fasta            = ch_fasta.map { _meta, fa -> fa } //    path: genome.fasta
+    fai              = ch_fai //    path: genome.fai
+    chrom_sizes      = ch_chrom_sizes //    path: genome.sizes
+    gtf              = ch_gtf.map { _meta, out_gtf -> out_gtf } //    path: genome.gtf
+    transcript_fasta = ch_transcript_fasta.map { _meta, fa -> fa } //    path: transcript.fasta
+    star_index       = ch_star_index.map { _meta, index -> index } //    path: star/index/
+    salmon_index     = ch_salmon_index //    path: salmon/index/
+    dexseq_gff       = ch_dexseq_gff.map { _meta, dexseq_gff -> dexseq_gff } //    path: dexseq.gff
+    suppa_tpm        = ch_suppa_tpm //    path: suppa.tpm
 }

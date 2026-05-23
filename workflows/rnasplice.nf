@@ -57,12 +57,12 @@ workflow RNASPLICE {
     take:
     ch_samplesheet // channel: samplesheet read in from initialization wrapper
     ch_contrastsheet // channel: contrastsheet read in from initialization wrapper
-    ch_fasta
-    ch_gtf
-    ch_transcript_fasta
+    ch_fasta // channel: /path/to/genome fasta
+    ch_gtf // channel: /path/to/genome gtf
+    ch_transcript_fasta // channel: /path/to/transcript fasta
     ch_dexseq_gff
-    ch_salmon_index
-    ch_star_index
+    ch_salmon_index // channel: /path/to/salmon index/
+    ch_star_index // channel: /path/to/star/index/
     ch_suppa_tpm
     ch_chrom_sizes
     is_aws_igenome
@@ -234,8 +234,8 @@ workflow RNASPLICE {
     if ((params.source == 'fastq') && !params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')) {
         ALIGN_STAR(
             ch_trim_reads,
-            ch_star_index,
-            ch_gtf,
+            ch_star_index.map { index -> [[:], index] },
+            ch_gtf.map { gtf -> [[:], gtf] },
             params.star_ignore_sjdbgtf,
             '',
             params.seq_center ?: '',
