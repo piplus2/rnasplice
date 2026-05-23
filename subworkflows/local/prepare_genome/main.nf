@@ -89,7 +89,7 @@ workflow PREPARE_GENOME {
     }
     else {
         ch_filter_gtf = GTF_GENE_FILTER(ch_fasta, ch_gtf).gtf
-        ch_transcript_fasta = MAKE_TRANSCRIPTS_FASTA(ch_fasta, ch_filter_gtf).transcript_fasta
+        ch_transcript_fasta = MAKE_TRANSCRIPTS_FASTA(ch_fasta.map { _meta, fa -> fa }, ch_filter_gtf.map { _meta, filter_gtf -> filter_gtf }).transcript_fasta
     }
 
     //
