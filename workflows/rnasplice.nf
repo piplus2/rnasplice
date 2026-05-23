@@ -216,7 +216,7 @@ workflow RNASPLICE {
     if (params.source == 'genome_bam') {
         BAM_SORT_STATS_SAMTOOLS(ch_genome_bam, ch_fasta)
         ch_genome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
-        ch_genome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.bai
+        ch_genome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.index
         ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
         ch_samtools_flagstat = BAM_SORT_STATS_SAMTOOLS.out.flagstat
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
@@ -225,7 +225,7 @@ workflow RNASPLICE {
     if (params.source == 'transcriptome_bam') {
         BAM_SORT_STATS_SAMTOOLS(ch_transcriptome_bam, ch_fasta)
         ch_transcriptome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
-        ch_transcriptome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.bai
+        ch_transcriptome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.index
         ch_samtools_stats = BAM_SORT_STATS_SAMTOOLS.out.stats
         ch_samtools_flagstat = BAM_SORT_STATS_SAMTOOLS.out.flagstat
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
@@ -243,7 +243,7 @@ workflow RNASPLICE {
             ch_fasta,
         )
         ch_genome_bam = ALIGN_STAR.out.bam
-        ch_genome_bam_index = ALIGN_STAR.out.bai
+        ch_genome_bam_index = ALIGN_STAR.out.index
         ch_transcriptome_bam = ALIGN_STAR.out.bam_transcript
         ch_samtools_stats = ALIGN_STAR.out.stats
         ch_samtools_flagstat = ALIGN_STAR.out.flagstat
