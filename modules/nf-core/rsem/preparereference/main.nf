@@ -8,8 +8,8 @@ process RSEM_PREPAREREFERENCE {
         'community.wave.seqera.io/library/rsem_star:5acb4e8c03239c32' }"
 
     input:
-    tuple val(meta), path(fasta), stageAs: "rsem/*"
-    tuple val(meta2), path(gtf)
+    path fasta, stageAs: "rsem/*"
+    path gtf
 
     output:
     path "rsem"           , emit: index
