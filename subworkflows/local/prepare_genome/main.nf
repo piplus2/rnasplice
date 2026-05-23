@@ -177,7 +177,7 @@ workflow PREPARE_GENOME {
     fasta            = ch_fasta.map { _meta, fa -> fa }              //    path: genome.fasta
     fai              = ch_fai                //    path: genome.fai
     chrom_sizes      = ch_chrom_sizes        //    path: genome.sizes
-    gtf              = ch_gtf                //    path: genome.gtf
+    gtf              = ch_gtf.map { _meta, out_gtf -> out_gtf }                //    path: genome.gtf
     transcript_fasta = ch_transcript_fasta.map { _meta, fa -> fa }   //    path: transcript.fasta
     star_index       = ch_star_index.map { _meta, index -> index }         //    path: star/index/
     salmon_index     = ch_salmon_index       //    path: salmon/index/
