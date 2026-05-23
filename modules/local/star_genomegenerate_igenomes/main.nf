@@ -10,11 +10,11 @@ process STAR_GENOMEGENERATE_IGENOMES {
         'biocontainers/mulled-v2-1fa26d1ce03c295fe2fdcf85831a92fbcbd7e8c2:59cdd445419f14abac76b31dd0d71217994cbcc9-0' }"
 
     input:
-    path fasta
-    path gtf
+    tuple val(meta), path(fasta)
+    tuple val(meta2), path(gtf)
 
     output:
-    path "star"        , emit: index
+    tuple val(meta), path("star"), emit: index
     tuple val("${task.process}"), val('star'), eval('STAR --version 2>&1 | sed -e "s/STAR_//g"'), topic: versions, emit: versions_star
     tuple val("${task.process}"), val('samtools'), eval('echo $(samtools --version 2>&1) | sed "s/^.*samtools //; s/Using.*$//"'), topic: versions, emit: versions_samtools
     tuple val("${task.process}"), val('gawk'), eval('echo $(gawk --version 2>&1) | sed "s/^.*GNU Awk //; s/, .*$/\1/"'), topic: versions, emit: versions_gawk

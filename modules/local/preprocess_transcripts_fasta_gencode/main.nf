@@ -7,7 +7,7 @@ process PREPROCESS_TRANSCRIPTS_FASTA_GENCODE {
         'nf-core/ubuntu:20.04' }"
 
     input:
-    path fasta
+    tuple val(meta), path(fasta)
 
     output:
     path "*.fa"        , emit: fasta

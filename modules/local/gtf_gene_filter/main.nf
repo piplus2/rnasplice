@@ -8,11 +8,11 @@ process GTF_GENE_FILTER {
         'biocontainers/python:3.9--1' }"
 
     input:
-    path fasta
-    path gtf
+    tuple val(meta), path(fasta)
+    tuple val(meta2), path(gtf)
 
     output:
-    path "*.gtf"       , emit: gtf
+    tuple val(meta2), path("*.gtf")       , emit: gtf
     tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //g"'), topic: versions, emit: versions_python
 
     when:
