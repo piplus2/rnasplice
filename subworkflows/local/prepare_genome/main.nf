@@ -95,7 +95,7 @@ workflow PREPARE_GENOME {
     //
     // Create chromosome sizes file
     //
-    SAMTOOLS_FAIDX(ch_fasta.map { meta, fa -> [meta, [fa, '']] }, true)
+    SAMTOOLS_FAIDX(ch_fasta.map { meta, fa -> [ meta, fa, [] ] }, true)
     ch_fai = SAMTOOLS_FAIDX.out.fai
     ch_chrom_sizes = SAMTOOLS_FAIDX.out.sizes
 
