@@ -80,7 +80,7 @@ workflow PREPARE_GENOME {
             ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA.out.gunzip
         }
         else {
-            ch_transcript_fasta = [[:], channel.value(file(transcript_fasta))]
+            ch_transcript_fasta =  channel.value([[:],file(transcript_fasta)])
         }
         if (gencode) {
             PREPROCESS_TRANSCRIPTS_FASTA_GENCODE(ch_transcript_fasta)
