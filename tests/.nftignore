@@ -10,5 +10,5 @@ multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
 multiqc/multiqc_report.html
 fastqc/*_fastqc.{html,zip}
 pipeline_info/*.{html,json,txt,yml}
-multiqc_salmon.txt
-salmon_plot.txt
+multiqc/multiqc_data/multiqc_salmon.txt
+multiqc/multiqc_data/salmon_plot.txt
