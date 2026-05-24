@@ -11,4 +11,4 @@ multiqc/multiqc_report.html
 fastqc/*_fastqc.{html,zip}
 pipeline_info/*.{html,json,txt,yml}
 multiqc_salmon.txt
-multiqc_plot.txt
+salmon_plot.txt
