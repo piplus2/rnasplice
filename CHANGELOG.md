@@ -3,6 +3,31 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Dev v1.0.6dev - TBD
+
+### Added
+
+- Add first steps of leafcutter splicing quantification
+
+### Changed
+
+- Synced pipeline with nf-core template 4.0.2
+- Migrated samplesheet and contrastsheet validation from Python scripts to nf-schema
+- Replaced deprecated `CUSTOM_GETCHROMSIZES` module with `SAMTOOLS_FAIDX`
+- Migrated all modules to use `topic: versions` pattern for software version tracking
+- Migrated local modules to `TOOL/SUBTOOL/main.nf` directory structure
+- Updated `PIPELINE_INITIALISATION` to handle all 4 input source types (fastq, genome_bam, transcriptome_bam, salmon_results)
+
+### Fixed
+
+- Fixed Nextflow 26+ compatibility: removed deprecated `if/else` blocks from `nextflow.config`
+- Fixed Nextflow 26+ compatibility: migrated `conf/modules.config` from `if` blocks to `ext.when` closures
+- Fixed Nextflow 26+ compatibility: replaced `switch/case` statements with `if/else if` chains
+- Fixed channel reuse bugs in SUPPA subworkflow
+- Fixed `CREATE_BAMLIST` null path handling for single-condition rMATS runs
+- Fixed `SUBREAD_FLATTENGTF` multi-line version output breaking YAML parsing
+- Fixed `STAR_ALIGN` deprecated `--quantTranscriptomeBan` parameter renamed to `--quantTranscriptomeSAMoutput`
+
 ## v1.0.5 - 2024-11-03
 
 - Added IsoformSwitchAnalyzeR to pipeline.
