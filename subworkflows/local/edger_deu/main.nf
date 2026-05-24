@@ -7,13 +7,12 @@ include { SUBREAD_FEATURECOUNTS } from '../../../modules/nf-core/subread/feature
 include { EDGER_EXON            } from '../../../modules/local/edger_exon'
 
 workflow EDGER_DEU {
-
     take:
-    gtf                  // path: gtf
-    ch_genome_bam        // channel: [ val(meta), path(bams) ]
-    ch_samplesheet       // channel.fromPath(params.input)
-    ch_contrastsheet     // channel.fromPath(params.contrasts)
-    n_edger_plot         // val: integer to plot
+    gtf // path: gtf
+    ch_genome_bam // channel: [ val(meta), path(bams) ]
+    ch_samplesheet // channel.fromPath(params.input)
+    ch_contrastsheet // channel.fromPath(params.contrasts)
+    n_edger_plot // val: integer to plot
 
     main:
 
@@ -32,15 +31,13 @@ workflow EDGER_DEU {
     //
     // MODULE: EDGER_COUNTS AND PLOT
     //
-    EDGER_EXON (
-        SUBREAD_FEATURECOUNTS.out.counts.collect({it[1]}),
+    EDGER_EXON(
+        SUBREAD_FEATURECOUNTS.out.counts.collect { it -> it[1] },
         ch_samplesheet,
         ch_contrastsheet,
-        n_edger_plot
+        n_edger_plot,
     )
 
-
     emit:
-    featureCounts_summary  = SUBREAD_FEATURECOUNTS.out.summary  // path featureCounts.txt.summary
-
+    featureCounts_summary = SUBREAD_FEATURECOUNTS.out.summary // path featureCounts.txt.summary
 }
