@@ -55,14 +55,14 @@ include { paramsSummaryMap                                                } from
 
 workflow RNASPLICE {
     take:
-    ch_samplesheet // channel: samplesheet read in from initialization wrapper
-    ch_contrastsheet // channel: contrastsheet read in from initialization wrapper
-    ch_fasta // channel: /path/to/genome fasta
-    ch_gtf // channel: /path/to/genome gtf
-    ch_transcript_fasta // channel: /path/to/transcript fasta
+    ch_samplesheet // channel: file(samplesheet)
+    ch_contrastsheet // channel: file(contrastsheet)
+    ch_fasta // channel: path of genome fasta
+    ch_gtf // channel: path of genome gtf
+    ch_transcript_fasta // channel: path of transcript fasta
     ch_dexseq_gff
-    ch_salmon_index // channel: /path/to/salmon index/
-    ch_star_index // channel: /path/to/star/index/
+    ch_salmon_index // channel: path of salmon index
+    ch_star_index // channel: path of star index
     ch_suppa_tpm
     ch_chrom_sizes
     is_aws_igenome
@@ -412,13 +412,13 @@ workflow RNASPLICE {
 
     if (params.source == 'fastq' && params.pseudo_aligner == 'salmon') {
         alignment_mode = false
-        ch_transcript_fasta = channel.value(file("${projectDir}/assets/dummy_file2.txt", checkIfExists: true))
+        ch_dummy_transcript_fasta = channel.value(file("${projectDir}/assets/dummy_file2.txt", checkIfExists: true))
 
         SALMON_QUANT_SALMON(
             ch_trim_reads,
             ch_salmon_index,
             ch_gtf,
-            ch_transcript_fasta,
+            ch_dummy_transcript_fasta,
             alignment_mode,
             params.salmon_quant_libtype ?: '',
         )
