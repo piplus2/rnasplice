@@ -96,7 +96,7 @@ workflow RNASPLICE {
             .map { meta, fastqs ->
                 return [meta, fastqs.flatten()]
             }
-            .set { ch_samplesheet }
+            .set { ch_reads }
     }
     else if (params.source == "genome_bam") {
         channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_genome_bam.json"))
@@ -104,7 +104,7 @@ workflow RNASPLICE {
                 def meta_map = [id: meta.id, condition: meta.condition]
                 return [meta_map, [genome_bam]]
             }
-            .set { ch_samplesheet }
+            .set { ch_reads }
     }
     else if (params.source == "transcriptome_bam") {
         channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_transcriptome_bam.json"))
@@ -112,7 +112,7 @@ workflow RNASPLICE {
                 def meta_map = [id: meta.id, condition: meta.condition]
                 return [meta_map, [transcriptome_bam]]
             }
-            .set { ch_samplesheet }
+            .set { ch_reads }
     }
     else if (params.source == "salmon_results") {
         channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_salmon_results.json"))
@@ -120,7 +120,7 @@ workflow RNASPLICE {
                 def meta_map = [id: meta.id, condition: meta.condition]
                 return [meta_map, [salmon_results]]
             }
-            .set { ch_samplesheet }
+            .set { ch_reads }
     }
     else {
         error("Invalid --source parameter: '${params.source}'. Must be one of: fastq, genome_bam, transcriptome_bam, salmon_results")
@@ -134,12 +134,12 @@ workflow RNASPLICE {
             validateInputContrastsheet([[meta]])
             return [contrast: meta.contrast, treatment: meta.treatment, control: meta.control]
         }
-        .set { ch_contrastsheet }
+        .set { ch_contrasts }
 
 
     // Branch samplesheet channel based on source type
     if (params.source == 'fastq') {
-        ch_samplesheet
+        ch_reads
             .map { meta, fastq ->
                 def new_id = meta.id - ~/_T\d+/
                 [meta + [id: new_id], fastq]
@@ -154,19 +154,19 @@ workflow RNASPLICE {
             .set { ch_fastq }
     }
     else if (params.source == 'genome_bam') {
-        ch_samplesheet.set { ch_genome_bam }
+        ch_reads.set { ch_genome_bam }
     }
     else if (params.source == 'transcriptome_bam') {
-        ch_samplesheet.set { ch_transcriptome_bam }
+        ch_reads.set { ch_transcriptome_bam }
     }
     else if (params.source == 'salmon_results') {
-        ch_samplesheet.set { ch_salmon_results }
+        ch_reads.set { ch_salmon_results }
     }
 
     // Check rMATS parameter configuration mapping checks
     if (params.rmats && params.source == 'fastq') {
-        rmatsReadError(ch_samplesheet)
-        rmatsStrandednessError(ch_samplesheet)
+        rmatsReadError(ch_reads)
+        rmatsStrandednessError(ch_reads)
     }
 
     //
