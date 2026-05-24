@@ -288,12 +288,10 @@
                 "multiqc_fastqc.txt:md5,baa845d1263a8920143e4b178445074d",
                 "multiqc_featurecounts.txt:md5,872f55880714569134284d1b0ec93039",
                 "multiqc_general_stats.txt:md5,bd60bab8e82b22151399fbd44fe78e39",
-                "multiqc_salmon.txt:md5,c9b8228e5c43299c3966032291d80c05",
                 "multiqc_samtools_flagstat.txt:md5,80c91de0a84ef7e4e9c3bf68db27380f",
                 "multiqc_samtools_idxstats.txt:md5,f236314609feed5efb7008202ddb4ede",
                 "multiqc_samtools_stats.txt:md5,70f74ff025c51775ed69ea5279d42755",
                 "multiqc_star.txt:md5,73720409023c7c54cc6c9cb76cd47dc0",
-                "salmon_plot.txt:md5,30284116d5c36677c8d3b2158eac2060",
                 "samtools-flagstat-pct-table.txt:md5,77a3f66b89ca57f135ff2f8ceffd674c",
                 "samtools-flagstat-table.txt:md5,f87448dee05f710085bd593dfba0d261",
                 "samtools-idxstats-mapped-reads-plot_Normalised_Counts.txt:md5,f6c105b6817be33d1f0f5dcc460033b3",
@@ -308,7 +306,7 @@
                 "X.fa.sizes:md5,a78c1db8960ac1331abba8152b28962f"
             ]
         ],
-        "timestamp": "2026-05-24T11:33:33.094881614",
+        "timestamp": "2026-05-24T13:49:02.090084372",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.1"
