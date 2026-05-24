@@ -242,7 +242,7 @@ workflow RNASPLICE {
             is_aws_igenome,
             ch_fasta.map { fasta -> [[:], fasta, []] },
         )
-        ch_genome_bam = ALIGN_STAR.out.bam
+        ch_genome_bam = ALIGN_STAR.out.bam           // [meta, bam]
         ch_genome_bam_index = ALIGN_STAR.out.index
         ch_transcriptome_bam = ALIGN_STAR.out.bam_transcript
         ch_samtools_stats = ALIGN_STAR.out.stats
