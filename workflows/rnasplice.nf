@@ -223,6 +223,7 @@ workflow RNASPLICE {
     }
 
     if (params.source == 'transcriptome_bam') {
+        ch_transcriptome_bam_for_salmon = ch_transcriptome_bam
         BAM_SORT_STATS_SAMTOOLS(ch_transcriptome_bam, ch_fasta)
         ch_transcriptome_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
         ch_transcriptome_bam_index = BAM_SORT_STATS_SAMTOOLS.out.index
@@ -345,7 +346,7 @@ workflow RNASPLICE {
         ch_dummy_salmon_index = channel.value(file("${projectDir}/assets/dummy_file.txt", checkIfExists: true))
 
         SALMON_QUANT_STAR(
-            ch_transcriptome_bam,
+            ch_transcriptome_bam_for_salmon,
             ch_dummy_salmon_index,
             ch_gtf,
             ch_transcript_fasta,
