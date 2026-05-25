@@ -131,4 +131,3 @@ for (cond in conditions) {
 
 # Print sessioninfo to standard out
 sessionInfo()
-

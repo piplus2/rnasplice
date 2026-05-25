@@ -9,7 +9,16 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { RNASPLICE               } from './workflows/rnasplice'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { PREPARE_GENOME          } from './subworkflows/local/prepare_genome'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,85 +26,126 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-def getGenomeAttribute(attribute) {
-    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[ params.genome ].containsKey(attribute)) {
-            return params.genomes[ params.genome ][ attribute ]
-        }
-    }
-    return null
-}
-
-params.fasta         = getGenomeAttribute('fasta')
-params.gff           = getGenomeAttribute('gff')
-params.gtf           = getGenomeAttribute('gtf')
-params.salmon_index  = getGenomeAttribute('salmon')
-params.star_index    = getGenomeAttribute('star')
+// Explicitly populate structural genome references from institutional profiles using strict syntax attributes
+params.fasta        = getGenomeAttribute('fasta')
+params.gff          = getGenomeAttribute('gff')
+params.gtf          = getGenomeAttribute('gtf')
+params.salmon_index = getGenomeAttribute('salmon')
+params.star_index   = getGenomeAttribute('star')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { RNASPLICE } from './workflows/rnasplice'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOW FOR PIPELINE
+    NAMED WORKFLOWS FOR PIPELINE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 //
-// WORKFLOW: Run main nf-core/rnasplice analysis pipeline
+// WORKFLOW: Run main analysis pipeline depending on type of input
 //
 workflow NFCORE_RNASPLICE {
 
+    main:
+
+    def is_aws_igenome = params.fasta && params.gtf && (file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')
+
+    //
+    // SUBWORKFLOW: Prepare reference genome files
+    //
+    PREPARE_GENOME(
+        params.fasta,
+        params.gtf,
+        params.gff,
+        params.transcript_fasta,
+        params.star_index,
+        params.salmon_index,
+        params.gff_dexseq,
+        params.suppa_tpm,
+        params.gencode,
+        is_aws_igenome,
+    )
+
+    ch_samplesheet = channel.value(file(params.input, checkIfExists: true))
+    ch_contrastsheet = channel.value(file(params.contrasts, checkIfExists: true))
+
+    //
+    // WORKFLOW: Run pipeline
+    //
+    RNASPLICE(
+        ch_samplesheet,
+        ch_contrastsheet,
+        PREPARE_GENOME.out.fasta,
+        PREPARE_GENOME.out.gtf,
+        PREPARE_GENOME.out.transcript_fasta,
+        PREPARE_GENOME.out.dexseq_gff,
+        PREPARE_GENOME.out.salmon_index,
+        PREPARE_GENOME.out.star_index,
+        PREPARE_GENOME.out.suppa_tpm,
+        PREPARE_GENOME.out.chrom_sizes,
+        is_aws_igenome,
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description,
+        params.outdir,
+    )
+
+    emit:
+    multiqc_report = RNASPLICE.out.multiqc_report // channel: /path/to/multiqc_report.html
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RUN MAIN WORKFLOW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+workflow {
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    PIPELINE_INITIALISATION (
+    PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir
+        params.outdir,
+        params.input,
+        params.help,
+        params.help_full,
+        params.show_hidden,
     )
 
-    RNASPLICE ()
+    //
+    // WORKFLOW: Run main workflow
+    //
+    NFCORE_RNASPLICE()
 
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
+    PIPELINE_COMPLETION(
         params.email,
         params.email_on_fail,
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
-        RNASPLICE.out.final_multiqc_report
-    )   
+        NFCORE_RNASPLICE.out.multiqc_report,
+    )
 }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN ALL WORKFLOWS
+    FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 //
-// WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
+// Get attribute from genome config file e.g. fasta
 //
-workflow {
-    NFCORE_RNASPLICE ()
+def getGenomeAttribute(attribute) {
+    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
+        if (params.genomes[params.genome].containsKey(attribute)) {
+            return params.genomes[params.genome][attribute]
+        }
+    }
+    return null
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/

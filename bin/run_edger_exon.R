@@ -44,7 +44,7 @@ contrasts <- contrasts[, c("contrast", "treatment", "control"), drop = FALSE]
 
 # Read featureCounts files
 
-files <- paste0(featurecounts, "/", samples$sample, ".featureCounts.txt")
+files <- paste0(featurecounts, "/", samples$sample, ".featureCounts.tsv")
 
 data <- lapply(files, read.delim, comment.char = "#")
 
