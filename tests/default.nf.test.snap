@@ -266,10 +266,7 @@
                 "multiqc/multiqc_plots/svg/star_summary_table.svg",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
-                "pipeline_info/nf_core_rnasplice_software_mqc_versions.yml",
-                "samtools",
-                "samtools/X.fa.fai",
-                "samtools/X.fa.sizes"
+                "pipeline_info/nf_core_rnasplice_software_mqc_versions.yml"
             ],
             [
                 "fastqc-status-check-heatmap.txt:md5,0655e5d81cb527cf1f705bd8f0fc34d4",
@@ -301,12 +298,10 @@
                 "samtools_alignment_plot.txt:md5,c3d99edae64d23f5caeb544a2c46af95",
                 "samtools_insert_size.txt:md5,4d096c1cfb58969da075741f287324f4",
                 "star_alignment_plot.txt:md5,b3fed42d3d30e9199c918f4827ff2466",
-                "star_summary_table.txt:md5,948576f0cf86214adc637e55c8f28508",
-                "X.fa.fai:md5,2e5265e8adba223be160a2ada6be6b09",
-                "X.fa.sizes:md5,a78c1db8960ac1331abba8152b28962f"
+                "star_summary_table.txt:md5,948576f0cf86214adc637e55c8f28508"
             ]
         ],
-        "timestamp": "2026-05-24T13:49:02.090084372",
+        "timestamp": "2026-05-25T11:45:40.965459522",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.1"
