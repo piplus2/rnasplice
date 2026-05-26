@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `CREATE_BAMLIST` null path handling for single-condition rMATS runs
 - Fixed `SUBREAD_FLATTENGTF` multi-line version output breaking YAML parsing
 - Fixed `STAR_ALIGN` deprecated `--quantTranscriptomeBan` parameter renamed to `--quantTranscriptomeSAMoutput`
+- Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping
 
 ## v1.0.5 - 2024-11-03
 
