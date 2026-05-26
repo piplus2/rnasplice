@@ -617,6 +617,14 @@
                     "type": "number",
                     "default": 0.1,
                     "description": "Minimal proportion for feature expression. This value should be between 0 and 1."
+                },
+                "ignore_tx_version": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Ignore transcript version numbers when matching Salmon quantification output to tx2gene file.",
+                    "help_text": "When enable, version suffixed (e.g., '.1' in ENST00000335137.1) transcript IDs will be matched to the same ID without version suffix (e.g., ENST00000335137) in the tx2gene file. This is useful when tx2gene file does not contain version numbers but the Salmon quantification output does, which is common when using GENCODE annotation files.",
+                    "fa_icon": "fas fa-hashtag",
+                    "hidden": true
                 }
             },
             "fa_icon": "far fa-chart-bar"

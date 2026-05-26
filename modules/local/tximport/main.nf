@@ -49,7 +49,8 @@ process TXIMPORT {
     task.ext.when == null || task.ext.when
 
     script: // This script is bundled with the pipeline, in nf-core/rnasplice/bin/
+    def args = task.ext.args ?: "true"  // default ignore tx version to true
     """
-    tximport.R $tx2gene salmon salmon.merged
+    tximport.R $tx2gene salmon salmon.merged ${args}
     """
 }
