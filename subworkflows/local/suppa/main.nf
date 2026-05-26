@@ -28,7 +28,7 @@ workflow SUPPA {
     ch_gtf
     ch_tpm
     ch_samplesheet
-    ch_contrastsheet
+    ch_contrasts
     suppa_per_local_event       // params.suppa_per_local_event
     generateevents_boundary     // params.generateevents_boundary
     generateevents_threshold    // params.generateevents_threshold
@@ -138,7 +138,7 @@ workflow SUPPA {
 
             // Create contrasts channel
 
-            ch_suppa_local_contrasts_raw = ch_contrastsheet
+            ch_suppa_local_contrasts_raw = ch_contrasts
 
             // Add TPM files to contrasts channel
 
@@ -291,7 +291,7 @@ workflow SUPPA {
 
             // Create contrasts channel
 
-            ch_suppa_isoform_contrasts_raw = ch_contrastsheet
+            ch_suppa_isoform_contrasts_raw = ch_contrasts
 
             // Add TPM files to contrasts channel
 
