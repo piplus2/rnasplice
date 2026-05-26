@@ -8,7 +8,7 @@ include { RMATS_POST     } from '../../../modules/local/rmats_post'
 
 workflow RMATS {
     take:
-    ch_contrasts // channel: contrastsheet
+    ch_contrasts // channel: contrasts = [ contrast, treatment, control ]
     ch_genome_bam_conditions // channel: genome_bam_conditions
     gtf // channel: /path/to/genome.gtf
     is_single_condition // channel: true/false

@@ -306,7 +306,7 @@ workflow RNASPLICE {
             def condition_idx = headers.indexOf('condition')
             def is_single_condition = lines[1..-1].collect { it -> it.split(',')[condition_idx].trim() }.unique().size() == 1
             RMATS(
-                ch_contrastsheet,
+                ch_contrasts,
                 ch_genome_bam_conditions,
                 ch_gtf,
                 is_single_condition,
@@ -380,7 +380,7 @@ workflow RNASPLICE {
                 ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
-                ch_contrastsheet,
+                ch_contrasts,
                 params.suppa_per_local_event,
                 params.generateevents_boundary,
                 params.generateevents_threshold,
@@ -455,7 +455,7 @@ workflow RNASPLICE {
                 ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
-                ch_contrastsheet,
+                ch_contrasts,
                 params.suppa_per_local_event,
                 params.generateevents_boundary,
                 params.generateevents_threshold,
