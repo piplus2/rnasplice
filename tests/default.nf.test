@@ -13,21 +13,39 @@ nextflow_pipeline {
         }
 
         then {
-            // stable_path: All files + folders in ${params.outdir}/ with a stable path (including file name)
-            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path
+            // CRITICAL: We pass the ignoreFile here so MISO timestamped directories are NOT collected
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'misopy/miso_data/*/batch-logs/*.{log,txt}', 'misopy/miso_data/*/logs/*.{log,txt}'])
+
             // stable_content: All files in ${params.outdir}/ with stable content
+            // We pass the ignoreFile here so non-deterministic files are NOT hashed
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+
             assert workflow.success
+
             assertAll(
                 { assert snapshot(
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    // Remove Nextflow version to prevent cross-version testing failures
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_rnasplice_software_mqc_versions.yml"),
-                    // All stable path name, with a relative path
+
+                    // Snapshot the clean directory structure
                     stable_path,
-                    // All files with stable contents
+
+                    // Snapshot the deterministic data file contents
                     stable_content
                 ).match() }
             )
+        }
+
+        cleanup {
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
+            }
         }
     }
 }
