@@ -6744,25 +6744,6 @@
                 "genes_to_filenames.shelve.dat:md5,ffe53ee3bdc8942b62d31a0e69ac55e4",
                 "genes_to_filenames.shelve.dir:md5,99fdc39917b4a421833ac627e0b81f28",
                 "miso_settings.txt:md5,982af0d2a2d3c9a1d12f8c141cbeb1d4",
-                "fastqc-status-check-heatmap.txt:md5,0655e5d81cb527cf1f705bd8f0fc34d4",
-                "fastqc_adapter_content_plot.txt:md5,c6601816569fd79b5d2a4eee5a657aec",
-                "fastqc_overrepresented_sequences_plot.txt:md5,1b69a03c9bccbdc3da962cf8a802391b",
-                "fastqc_per_base_n_content_plot.txt:md5,6200be78c26613b9ebdb4ec7f26f70f7",
-                "fastqc_per_base_sequence_quality_plot.txt:md5,a3c0cd47a38639828fe7b8e293346e80",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,bf2edadc0f4171771f29f2486bfefc47",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,f8775896853be30f056cdf2cabe4a942",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,78311d5f66421053ece7d9c7c487ec37",
-                "fastqc_sequence_counts_plot.txt:md5,c6d0497a8f3aec0049e7d2f5409e60c1",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,54dfdef2e6d3ba22996c1ae97aba51a5",
-                "featureCounts_assignment_plot.txt:md5,8e74fa73c0d5d65eab01fa388b29dd0f",
-                "multiqc_citations.txt:md5,409afbafd1f7123b3971590778df6f0f",
-                "multiqc_fastqc.txt:md5,baa845d1263a8920143e4b178445074d",
-                "multiqc_featurecounts.txt:md5,872f55880714569134284d1b0ec93039",
-                "multiqc_samtools_idxstats.txt:md5,f236314609feed5efb7008202ddb4ede",
-                "samtools-idxstats-mapped-reads-plot_Normalised_Counts.txt:md5,f6c105b6817be33d1f0f5dcc460033b3",
-                "samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.txt:md5,f6c105b6817be33d1f0f5dcc460033b3",
-                "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,d6994c820f3eb549ae1b98a909d3c46e",
-                "samtools_insert_size.txt:md5,4d096c1cfb58969da075741f287324f4",
                 "events.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
                 "events_A3_strict.gtf:md5,3899af4485ce55143c57755e5e8ec064",
                 "events_A5_strict.gtf:md5,b8176a54b2033ca9931b4cc3d7577ec5",
@@ -6816,9 +6797,9 @@
                 "events_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453"
             ]
         ],
-        "timestamp": "2026-05-27T18:15:40.002678863",
+        "timestamp": "2026-05-29T10:53:03.894077964",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.1"
         }
     }
