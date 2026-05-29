@@ -99,3 +99,8 @@ trimgalore/*fastq.gz_trimming_report.txt
 {salmon,star_salmon}/salmon.merged.transcript_counts.tsv
 {salmon,star_salmon}/salmon.merged.transcript_lengths.tsv
 {salmon,star_salmon}/salmon.merged.transcript_tpm.tsv
+
+# rMATS
+{salmon,star_salmon}/rmats/**/rMATS_result_*.txt
+{salmon,star_salmon}/rmats/**/pairadise_*.txt
+{salmon,star_salmon}/rmats/**/*.rmats
