@@ -3,12 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Dev v1.0.6dev - TBD
+## Dev v1.1.0dev - TBD
 
 ### Added
 
 - Add first steps of leafcutter splicing quantification
 - Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired.
+- Improve documentation for `--rmats_paired_stats`.
 
 ### Changed
 
