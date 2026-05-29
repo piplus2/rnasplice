@@ -477,7 +477,9 @@
                 "rmats_paired_stats": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Use paired statistical model."
+                    "description": "Use paired statistical model. It requires that the same individuals are measured in both conditions.",
+                    "help_text": "Use the paired statistical model in rMATS. This is appropriate when the same individuals are measured in both conditions, for example in a case-control study design. If your study design is not paired, set this to false to use the unpaired model.",
+                    "fa_icon": "fas fa-link"
                 },
                 "rmats_read_len": {
                     "type": "integer",
