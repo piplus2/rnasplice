@@ -1,5 +1,4 @@
-process RMATS_PREP {
-    tag "$cond1-$cond2"
+process RMATS_POST_SINGLE {
     label 'process_high'
 
     conda 'bioconda::r-pairadise=1.0.0 bioconda::rmats=4.1.2'
@@ -9,30 +8,28 @@ process RMATS_PREP {
 
     input:
     path gtf                                     // /path/to/genome.gtf
-    tuple val(contrast), val(cond1), val(cond2), val(meta1), val(meta2), path(bam1), path(bam2), path(bam1_text), path(bam2_text)
+    tuple val(contrast), val(cond1), val(meta1), path(bam1), path(bam1_text), path(rmats_temp)
     val rmats_read_len                           // val params.rmats_read_len
     val rmats_splice_diff_cutoff                 // val params.rmats_splice_diff_cutoff
     val rmats_novel_splice_site                  // val params.rmats_novel_splice_site
     val rmats_min_intron_len                     // val params.rmats_min_intron_len
     val rmats_max_exon_len                       // val params.rmats_max_exon_len
+    val rmats_paired_stats                       // val params.rmats_paired_stats
 
     output:
-    tuple val(contrast), path(temp_dir), emit: rmats_temp
-    path "${output_dir}/rmats_prep.log"                     , emit: log
+    path "rmats_post/*"    , emit: rmats_post
+    path "rmats_post.log"  , emit: log
     tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | head -1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    output_dir = cond2 ? "$cond1-$cond2" : '.'
 
-     // Only need to take meta1 as samples have same strand and read type info
     // Only need to take meta1 as samples have same strand and read type info
     // - see rnasplice.nf input check for rmats
     def meta = meta1[0]
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${cond2 ? "$cond1-$cond2" : '.'}"
 
     // Take single/paired end information from meta
     def read_type = meta.single_end ? 'single' : 'paired'
@@ -47,6 +44,10 @@ process RMATS_PREP {
         strandedness  = 'fr-firststrand'
     }
 
+    // User defined label if samples are paired and paired stats required
+    // Rmats uses bioconductor-pairadise Rscript downstream
+    def paired_stats = rmats_paired_stats ? '--paired-stats' : ''
+
     // Whether user wants to run with novel splice sites flag
     def novel_splice_sites = rmats_novel_splice_site ? '--novelSS' : ''
 
@@ -59,35 +60,23 @@ process RMATS_PREP {
         max_exon_len   = rmats_max_exon_len ? "--mel ${rmats_max_exon_len}" : '--mel 500'
     }
 
-    def b1 = bam1_text ? "--b1 ${bam1_text}" : ''
-    def b2 = bam2_text ? "--b2 ${bam2_text}" : ''
-
-    temp_dir = "${prefix}/rmats_temp"
-
     """
-    mkdir -p ${temp_dir}
-
-    mkdir -p $prefix/rmats_prep
-
     rmats.py \\
-        ${args} \\
-        ${b1} \\
-        ${b2} \\
-        -t ${read_type} \\
-        --libType ${strandedness} \\
-        --nthread ${task.cpus} \\
-        --tstat ${task.cpus} \\
-        --gtf ${gtf} \\
+        --b1 $bam1 \\
+        -t $read_type \\
+        --libType $strandedness \\
+        --nthread $task.cpus \\
+        --gtf $gtf \\
         --allow-clipping \\
-        --readLength ${rmats_read_len} \\
+        --readLength $rmats_read_len \\
         --variable-read-length \\
-        --cstat ${rmats_splice_diff_cutoff} \\
-        --task prep \\
-        ${novel_splice_sites} \\
-        ${min_intron_len} \\
-        ${max_exon_len} \\
-        --od ${prefix}/rmats_prep \\
-        --tmp ${temp_dir} 1> ${prefix}/rmats_prep.log
+        --cstat $rmats_splice_diff_cutoff \\
+        --task post \\
+        $paired_stats \\
+        $novel_splice_sites \\
+        $min_intron_len \\
+        $max_exon_len \\
+        --tmp rmats_temp \\
+        --od rmats_post 1> rmats_post.log
     """
-
 }

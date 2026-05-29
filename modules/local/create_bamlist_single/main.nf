@@ -11,7 +11,8 @@ process CREATE_BAMLIST_SINGLE {
 
     output:
     tuple val(contrast), path("${cond1}_bamlist.txt"), emit: bamlist
-    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1'), topic: versions, emit: versions_sed
+    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1 | head -1 | sed "s/sed (GNU sed) //g"')
+, topic: versions, emit: versions_sed
 
     when:
     task.ext.when == null || task.ext.when
