@@ -2,12 +2,40 @@
     "-profile test": {
         "content": [
             {
+                "CLUSTEREVENTS_IOE": {
+                    "suppa": 2.4
+                },
+                "CLUSTEREVENTS_IOI": {
+                    "suppa": 2.4
+                },
+                "CLUSTERGROUPS_IOE": {
+                    "suppa": 2.4
+                },
+                "CLUSTERGROUPS_IOI": {
+                    "suppa": 2.4
+                },
                 "CREATE_BAMLIST": {
                     "sed": 4.7
                 },
+                "DEXSEQ_ANNOTATION": {
+                    "htseq": "2.1.2"
+                },
+                "DEXSEQ_COUNT": {
+                    "htseq": "2.1.2"
+                },
                 "DEXSEQ_DTU": {
-                    "bioconductor-dexseq": "1.36.0",
-                    "r-base": "4.0.3"
+                    "bioconductor-dexseq": "1.56.0",
+                    "r-base": "4.5.3"
+                },
+                "DEXSEQ_EXON": {
+                    "bioconductor-dexseq": "1.56.0",
+                    "r-base": "4.5.3"
+                },
+                "DIFFSPLICE_IOE": {
+                    "suppa": 2.4
+                },
+                "DIFFSPLICE_IOI": {
+                    "suppa": 2.4
                 },
                 "DRIMSEQ_FILTER": {
                     "bioconductor-drimseq": "1.18.0",
@@ -21,10 +49,10 @@
                     "fastqc": "0.12.1"
                 },
                 "GENERATE_EVENTS_IOE": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "GENERATE_EVENTS_IOI": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "GFFREAD_TX2GENE": {
                     "gffread": "0.12.1"
@@ -58,10 +86,10 @@
                     "parsimonious": "0.10.0"
                 },
                 "PSIPEREVENT": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "PSIPERISOFORM": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "RMATS_POST": {
                     "rmats": "4.1.2"
@@ -106,7 +134,7 @@
                     "suppa_split_file": "3.4.2"
                 },
                 "STAGER": {
-                    "stageR": "1.12.0"
+                    "stageR": "1.32.0"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -135,6 +163,9 @@
                 }
             },
             [
+                "clustergroups",
+                "clustergroups/GBR-YRI_groups.txt",
+                "clustergroups/YRI-GBR_groups.txt",
                 "fastqc",
                 "fastqc/ERR188383_1_fastqc.html",
                 "fastqc/ERR188383_1_fastqc.zip",
@@ -4052,6 +4083,28 @@
                 "salmon/dexseq_dtu/results/stager/stageRTx.GBR-YRI.rds",
                 "salmon/dexseq_dtu/results/stager/stageRTx.YRI-GBR.rds",
                 "salmon/suppa",
+                "salmon/suppa/clusterevents",
+                "salmon/suppa/clusterevents/per_isoform",
+                "salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster_scores.log",
+                "salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster_scores.log",
+                "salmon/suppa/clusterevents/per_local_event",
+                "salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster_scores.log",
+                "salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster_scores.log",
+                "salmon/suppa/diffsplice",
+                "salmon/suppa/diffsplice/per_isoform",
+                "salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.psivec",
+                "salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.psivec",
+                "salmon/suppa/diffsplice/per_local_event",
+                "salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.psivec",
+                "salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.psivec",
                 "salmon/suppa/generate_events",
                 "salmon/suppa/generate_events/per_isoform",
                 "salmon/suppa/generate_events/per_isoform/events.ioi",
@@ -4141,6 +4194,26 @@
                 "star_salmon/dexseq_dtu/results/stager/getAdjustedPValues.YRI-GBR.tsv",
                 "star_salmon/dexseq_dtu/results/stager/stageRTx.GBR-YRI.rds",
                 "star_salmon/dexseq_dtu/results/stager/stageRTx.YRI-GBR.rds",
+                "star_salmon/dexseq_exon",
+                "star_salmon/dexseq_exon/annotation",
+                "star_salmon/dexseq_exon/counts",
+                "star_salmon/dexseq_exon/counts/ERR188383.clean.count.txt",
+                "star_salmon/dexseq_exon/counts/ERR188428.clean.count.txt",
+                "star_salmon/dexseq_exon/counts/ERR188454.clean.count.txt",
+                "star_salmon/dexseq_exon/counts/ERR204916.clean.count.txt",
+                "star_salmon/dexseq_exon/results",
+                "star_salmon/dexseq_exon/results/DEXSeqDataSet.GBR-YRI.rds",
+                "star_salmon/dexseq_exon/results/DEXSeqDataSet.YRI-GBR.rds",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.GBR-YRI.csv",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.GBR-YRI.rds",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.YRI-GBR.csv",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.YRI-GBR.rds",
+                "star_salmon/dexseq_exon/results/perGeneQValue.GBR-YRI.csv",
+                "star_salmon/dexseq_exon/results/perGeneQValue.GBR-YRI.rds",
+                "star_salmon/dexseq_exon/results/perGeneQValue.YRI-GBR.csv",
+                "star_salmon/dexseq_exon/results/perGeneQValue.YRI-GBR.rds",
+                "star_salmon/dexseq_exon/results/plotDEXSeq.GBR-YRI.pdf",
+                "star_salmon/dexseq_exon/results/plotDEXSeq.YRI-GBR.pdf",
                 "star_salmon/edger",
                 "star_salmon/edger/DGEGLM.rds",
                 "star_salmon/edger/DGELRT.exprs.rds",
@@ -4514,6 +4587,28 @@
                 "star_salmon/samtools_stats/ERR204916.idxstats",
                 "star_salmon/samtools_stats/ERR204916.stats",
                 "star_salmon/suppa",
+                "star_salmon/suppa/clusterevents",
+                "star_salmon/suppa/clusterevents/per_isoform",
+                "star_salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster_scores.log",
+                "star_salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster_scores.log",
+                "star_salmon/suppa/clusterevents/per_local_event",
+                "star_salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster_scores.log",
+                "star_salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster_scores.log",
+                "star_salmon/suppa/diffsplice",
+                "star_salmon/suppa/diffsplice/per_isoform",
+                "star_salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.psivec",
+                "star_salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.psivec",
+                "star_salmon/suppa/diffsplice/per_local_event",
+                "star_salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.psivec",
+                "star_salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.psivec",
                 "star_salmon/suppa/generate_events",
                 "star_salmon/suppa/generate_events/per_isoform",
                 "star_salmon/suppa/generate_events/per_isoform/events.ioi",
@@ -4600,6 +4695,8 @@
                 "trimgalore/fastqc/ERR204916_2_val_2_fastqc.zip"
             ],
             [
+                "GBR-YRI_groups.txt:md5,7c4e4b8e31b53e91f5db0db731c9103f",
+                "YRI-GBR_groups.txt:md5,7c4e4b8e31b53e91f5db0db731c9103f",
                 "genes_chrX_genes.gff3:md5,1c1ece4ee637e317c0ae6528a253a83f",
                 "ENSG00000000003.pickle:md5,73dabdba86428782405161551e63ce38",
                 "ENSG00000000005.pickle:md5,3cfbce2ccfa122e992e81ccbf3ef2f10",
@@ -7001,6 +7098,18 @@
                 "genes_to_filenames.shelve.dat:md5,ffe53ee3bdc8942b62d31a0e69ac55e4",
                 "genes_to_filenames.shelve.dir:md5,99fdc39917b4a421833ac627e0b81f28",
                 "miso_settings.txt:md5,982af0d2a2d3c9a1d12f8c141cbeb1d4",
+                "GBR-YRI_transcript_cluster.clustvec:md5,0ad2a8af45901d88dfaec40c3b505d84",
+                "YRI-GBR_transcript_cluster.clustvec:md5,c8e49724327885492fd3dfbe6755a06d",
+                "GBR-YRI_local_cluster.clustvec:md5,4921c7f1c106b46a7992d7c2c0d78e81",
+                "YRI-GBR_local_cluster.clustvec:md5,f2a6e4f68480578bb9b0cf0608930961",
+                "GBR-YRI_transcript_diffsplice.dpsi:md5,56b70d9aa0b457becb9a5a0573366c84",
+                "GBR-YRI_transcript_diffsplice.psivec:md5,b481c508f92459424f4121209a78bb95",
+                "YRI-GBR_transcript_diffsplice.dpsi:md5,89b95fea464764d91d73fa6aaa7f9988",
+                "YRI-GBR_transcript_diffsplice.psivec:md5,f77635e661d035fff2b5c1f7462597e8",
+                "GBR-YRI_local_diffsplice.dpsi:md5,088ba8218abed943234dd3278da0de8b",
+                "GBR-YRI_local_diffsplice.psivec:md5,fe6ac0e360fe04ca2ebe2d29be786be7",
+                "YRI-GBR_local_diffsplice.dpsi:md5,f5840cde0c522aa6f7ef13ba1a0951bb",
+                "YRI-GBR_local_diffsplice.psivec:md5,ec758fa38ac2ea4dadde9396a34808dd",
                 "events.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
                 "events_A3_strict.gtf:md5,3899af4485ce55143c57755e5e8ec064",
                 "events_A5_strict.gtf:md5,b8176a54b2033ca9931b4cc3d7577ec5",
@@ -7016,6 +7125,14 @@
                 "ERR188454_sorted.bam.bai:md5,ce9bc391c8641b2be08f49fd71a156e0",
                 "ERR204916_sorted.bam:md5,1a4a993f8bbedcf3b2d937a087929c2d",
                 "ERR204916_sorted.bam.bai:md5,6f11ff9b416b68344f1186af4a53778e",
+                "ERR188383.clean.count.txt:md5,862e185e60ad469612f214cceaa5dae0",
+                "ERR188428.clean.count.txt:md5,5e6a5b4215fca17cf38371ccb77d805b",
+                "ERR188454.clean.count.txt:md5,89ca347d1ecb03220b1703f194b7afdf",
+                "ERR204916.clean.count.txt:md5,62435ef365c3299c6e9a173ed1e0798b",
+                "DEXSeqResults.GBR-YRI.csv:md5,86a11084bcbc3bdd1773c111980a9779",
+                "DEXSeqResults.YRI-GBR.csv:md5,ccdf5d4d396ce9ccd4005fc1ccc6410d",
+                "perGeneQValue.GBR-YRI.csv:md5,656634afee7aba1b1ee5d8f6e407c6d3",
+                "perGeneQValue.YRI-GBR.csv:md5,843a65abe5e65a68aa3058ee3aafc827",
                 "contrast_GBR-YRI.exprs.csv:md5,b091c7556033b165f942cbfb43407aa0",
                 "contrast_GBR-YRI.usage.exon.csv:md5,90c732efe7f3ce4e68fb8f46ec2c3bf9",
                 "contrast_GBR-YRI.usage.gene.csv:md5,e8a84ad7c6c24cf3f024498648f91281",
@@ -7045,6 +7162,18 @@
                 "ERR204916.flagstat:md5,77bbb66e375c4f9083d4aab0d55ddcdd",
                 "ERR204916.idxstats:md5,21ed2e992e836e620991e9a24078f1b6",
                 "ERR204916.stats:md5,afe41925bb20e1679cf8c05f5c52e001",
+                "GBR-YRI_transcript_cluster.clustvec:md5,0ad2a8af45901d88dfaec40c3b505d84",
+                "YRI-GBR_transcript_cluster.clustvec:md5,c8e49724327885492fd3dfbe6755a06d",
+                "GBR-YRI_local_cluster.clustvec:md5,4921c7f1c106b46a7992d7c2c0d78e81",
+                "YRI-GBR_local_cluster.clustvec:md5,f2a6e4f68480578bb9b0cf0608930961",
+                "GBR-YRI_transcript_diffsplice.dpsi:md5,56b70d9aa0b457becb9a5a0573366c84",
+                "GBR-YRI_transcript_diffsplice.psivec:md5,b481c508f92459424f4121209a78bb95",
+                "YRI-GBR_transcript_diffsplice.dpsi:md5,89b95fea464764d91d73fa6aaa7f9988",
+                "YRI-GBR_transcript_diffsplice.psivec:md5,f77635e661d035fff2b5c1f7462597e8",
+                "GBR-YRI_local_diffsplice.dpsi:md5,088ba8218abed943234dd3278da0de8b",
+                "GBR-YRI_local_diffsplice.psivec:md5,c22d59c4d20f0e595dfe6a81a4b42248",
+                "YRI-GBR_local_diffsplice.dpsi:md5,f5840cde0c522aa6f7ef13ba1a0951bb",
+                "YRI-GBR_local_diffsplice.psivec:md5,3a34208b488393eafb684d71ffaf12b1",
                 "events.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
                 "events_A3_strict.gtf:md5,3899af4485ce55143c57755e5e8ec064",
                 "events_A5_strict.gtf:md5,b8176a54b2033ca9931b4cc3d7577ec5",
@@ -7054,7 +7183,7 @@
                 "events_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453"
             ]
         ],
-        "timestamp": "2026-05-29T20:25:26.945154122",
+        "timestamp": "2026-06-01T19:02:00.244956276",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.1"

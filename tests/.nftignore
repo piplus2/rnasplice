@@ -85,6 +85,10 @@ trimgalore/*fastq.gz_trimming_report.txt
 */salmon/*/quant.sf
 **/*_trimming_report.txt
 
+# SUPPA
+{salmon,star_salmon}/suppa/clusterevents/*/*.clusterevents
+{salmon,star_salmon}/suppa/diffsplice/*.{dpsi,psivec}
+
 {salmon,star_salmon}/*/aux_info/fld.gz
 {salmon,star_salmon}/*/aux_info/meta_info.json
 {salmon,star_salmon}/*/libParams/flenDist.txt

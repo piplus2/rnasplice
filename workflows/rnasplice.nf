@@ -259,6 +259,7 @@ workflow RNASPLICE {
 
     if (params.source == 'genome_bam' || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')))
     {
+        ch_dexseq_gff = params.dexseq_gff ?: ''
 
         if (params.dexseq_exon) {
             DEXSEQ_DEU(
@@ -379,7 +380,7 @@ workflow RNASPLICE {
                 ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
-                ch_contrasts,
+                ch_contrastsheet,
                 params.suppa_per_local_event,
                 params.generateevents_boundary,
                 params.generateevents_threshold,
@@ -388,6 +389,7 @@ workflow RNASPLICE {
                 params.generateevents_pool_genes,
                 params.psiperevent_total_filter,
                 params.diffsplice_local_event,
+                params.diffsplice_isoform,
                 params.diffsplice_method,
                 params.diffsplice_area,
                 params.diffsplice_lower_bound,
@@ -398,6 +400,7 @@ workflow RNASPLICE {
                 params.diffsplice_paired,
                 params.diffsplice_median,
                 params.clusterevents_local_event,
+                params.clusterevents_isoform,
                 params.clusterevents_dpsithreshold,
                 params.clusterevents_eps,
                 params.clusterevents_metric,
@@ -454,7 +457,7 @@ workflow RNASPLICE {
                 ch_gtf,
                 ch_suppa_tpm,
                 ch_samplesheet,
-                ch_contrasts,
+                ch_contrastsheet,
                 params.suppa_per_local_event,
                 params.generateevents_boundary,
                 params.generateevents_threshold,
@@ -463,6 +466,7 @@ workflow RNASPLICE {
                 params.generateevents_pool_genes,
                 params.psiperevent_total_filter,
                 params.diffsplice_local_event,
+                params.diffsplice_isoform,
                 params.diffsplice_method,
                 params.diffsplice_area,
                 params.diffsplice_lower_bound,
@@ -473,6 +477,7 @@ workflow RNASPLICE {
                 params.diffsplice_paired,
                 params.diffsplice_median,
                 params.clusterevents_local_event,
+                params.clusterevents_isoform,
                 params.clusterevents_dpsithreshold,
                 params.clusterevents_eps,
                 params.clusterevents_metric,

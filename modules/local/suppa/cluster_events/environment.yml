@@ -1,0 +1,5 @@
+channels:
+  - bioconda
+  - conda-forge
+depenencies:
+  - bioconda::suppa=2.4
