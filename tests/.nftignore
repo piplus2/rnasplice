@@ -86,7 +86,7 @@ trimgalore/*fastq.gz_trimming_report.txt
 **/*_trimming_report.txt
 
 # SUPPA
-{salmon,star_salmon}/suppa/clusterevents/*/*.clusterevents
+{salmon,star_salmon}/suppa/clusterevents/*/*.{log,clustvec}
 {salmon,star_salmon}/suppa/diffsplice/*.{dpsi,psivec}
 
 {salmon,star_salmon}/*/aux_info/fld.gz
