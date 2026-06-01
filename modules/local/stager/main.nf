@@ -1,10 +1,10 @@
 process STAGER {
     label 'process_medium'
 
-    conda "bioconda::bioconductor-stager=1.12.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-stager:1.12.0--r40_0' :
-        'biocontainers/bioconductor-stager:1.12.0--r40_0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/41/41a73be6620eaa0bb67220f2b3e71168e4724c09556c76b65c2ad88f383d7bd4/data' :
+        'community.wave.seqera.io/library/bioconductor-stager:1.32.0--854b4a08a81d122d' }"
 
     input:
     tuple val(contrast), path(feature_tsv), path(gene_tsv)
