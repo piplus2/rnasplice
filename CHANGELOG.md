@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `STAR_ALIGN` deprecated `--quantTranscriptomeBan` parameter renamed to `--quantTranscriptomeSAMoutput`
 - Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping
 - Pass the correct contrasts channel instead of the samplesheet channel `RMATS` and `SUPPA`
+- Fixed missing output directories and not creating unnecessary ones
 
 ## v1.0.5 - 2024-11-03
 

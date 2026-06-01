@@ -11,7 +11,7 @@ process PREPROCESS_TRANSCRIPTS_FASTA_GENCODE {
 
     output:
     path "*.fa"        , emit: fasta
-    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1'), topic: versions, emit: versions_sed
+    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1 | head -1 | sed "s/sed (GNU sed) //g"'), topic: versions, emit: versions_sed
 
     when:
     task.ext.when == null || task.ext.when

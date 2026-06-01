@@ -134,8 +134,9 @@ workflow RNASPLICE {
             validateInputContrastsheet([[meta]])
             return [contrast: meta.contrast, treatment: meta.treatment, control: meta.control]
         }
+        .collect()
+        .flatMap { it }
         .set { ch_contrasts }
-
 
     // Branch samplesheet channel based on source type
     if (params.source == 'fastq') {
@@ -232,7 +233,7 @@ workflow RNASPLICE {
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
     }
 
-    if ((params.source == 'fastq') && !params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')) {
+    if ((params.source == 'fastq' && !params.skip_alignment && params.aligner == 'star') || (params.aligner == 'star_salmon')) {
         ALIGN_STAR(
             ch_trim_reads,
             ch_star_index.map { index -> [[:], index] },
@@ -256,7 +257,8 @@ workflow RNASPLICE {
     // EXON SPLICING ENGINES
     // ====================================================================
 
-    if ((params.source == 'genome_bam') || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon'))) {
+    if (params.source == 'genome_bam' || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')))
+    {
 
         if (params.dexseq_exon) {
             DEXSEQ_DEU(
@@ -282,18 +284,10 @@ workflow RNASPLICE {
         }
 
         if (params.rmats) {
-            if (params.source == 'genome_bam') {
-                BAM_SORT_STATS_SAMTOOLS.out.bam
-                    .map { meta, bam -> [meta.condition, meta, bam] }
-                    .groupTuple(by: 0)
-                    .set { ch_genome_bam_conditions }
-            }
-            else {
-                ALIGN_STAR.out.bam
-                    .map { meta, bam -> [meta.condition, meta, bam] }
-                    .groupTuple(by: 0)
-                    .set { ch_genome_bam_conditions }
-            }
+            ch_genome_bam
+                .map { meta, bam -> [meta.condition, meta, bam] }
+                .groupTuple(by: 0)
+                .set { ch_genome_bam_conditions }
 
             def lines
             if (params.input.startsWith('http')) {
@@ -305,8 +299,9 @@ workflow RNASPLICE {
             def headers = lines[0].split(',')*.trim()
             def condition_idx = headers.indexOf('condition')
             def is_single_condition = lines[1..-1].collect { it -> it.split(',')[condition_idx].trim() }.unique().size() == 1
+
             RMATS(
-                ch_contrasts,
+                ch_contrastsheet,
                 ch_genome_bam_conditions,
                 ch_gtf,
                 is_single_condition,
@@ -341,7 +336,7 @@ workflow RNASPLICE {
     // TRANSCRIPT ALIGNMENT & QUANTIFICATION ENGINES (SALMON)
     // ====================================================================
 
-    if ((params.source == 'transcriptome_bam') || (params.source == 'fastq' && !params.skip_alignment && params.aligner == 'star_salmon')) {
+    if (params.source == 'transcriptome_bam' || ((params.source == 'fastq' && !params.skip_alignment && params.aligner == 'star_salmon'))) {
         alignment_mode = true
         ch_dummy_salmon_index = channel.value(file("${projectDir}/assets/dummy_file.txt", checkIfExists: true))
 
@@ -356,12 +351,16 @@ workflow RNASPLICE {
         ch_salmon_results = SALMON_QUANT_STAR.out.results
 
         TX2GENE_TXIMPORT_STAR_SALMON(ch_salmon_results, ch_gtf)
+        ch_tximport_tx2gene = TX2GENE_TXIMPORT_STAR_SALMON.out.tximport_tx2gene
+        ch_txi_s = TX2GENE_TXIMPORT_STAR_SALMON.out.txi_s
+        ch_txi_dtu = TX2GENE_TXIMPORT_STAR_SALMON.out.txi_dtu
+        ch_txi_suppa_tpm = TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
 
         if (params.dexseq_dtu) {
-            ch_txi = (params.dtu_txi == "dtuScaledTPM") ? TX2GENE_TXIMPORT_STAR_SALMON.out.txi_dtu : TX2GENE_TXIMPORT_STAR_SALMON.out.txi_s
+            ch_txi = (params.dtu_txi == "dtuScaledTPM") ? ch_txi_dtu : ch_txi_s
             DRIMSEQ_DEXSEQ_DTU_STAR_SALMON(
                 ch_txi,
-                TX2GENE_TXIMPORT_STAR_SALMON.out.tximport_tx2gene,
+                ch_tximport_tx2gene,
                 ch_samplesheet,
                 ch_contrastsheet,
                 params.n_dexseq_plot,
@@ -375,7 +374,7 @@ workflow RNASPLICE {
         }
 
         if (params.suppa) {
-            ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : TX2GENE_TXIMPORT_STAR_SALMON.out.suppa_tpm
+            ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : ch_txi_suppa_tpm
             SUPPA_STAR_SALMON(
                 ch_gtf,
                 ch_suppa_tpm,
@@ -450,7 +449,7 @@ workflow RNASPLICE {
         }
 
         if (params.suppa) {
-            ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : TX2GENE_TXIMPORT_SALMON.out.suppa_tpm
+            ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : ch_txi_suppa_tpm
             SUPPA_SALMON(
                 ch_gtf,
                 ch_suppa_tpm,
@@ -498,7 +497,7 @@ workflow RNASPLICE {
         )
     }
 
-    if (((params.source == 'genome_bam') && !params.skip_bigwig) || (!params.skip_alignment && !params.skip_bigwig && params.source == 'fastq')) {
+    if ((params.source == 'genome_bam' && !params.skip_bigwig) || (!params.skip_alignment && !params.skip_bigwig && params.source == 'fastq')) {
         BEDTOOLS_GENOMECOV(ch_genome_bam)
 
         BEDGRAPH_TO_BIGWIG_FORWARD(BEDTOOLS_GENOMECOV.out.bedgraph_forward, ch_chrom_sizes)

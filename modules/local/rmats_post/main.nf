@@ -9,7 +9,7 @@ process RMATS_POST {
 
     input:
     path gtf                                     // /path/to/genome.gtf
-    tuple val(contrast), val(cond1), val(meta1),  path(bam1), path(bam1_text),val(meta2), val(cond2), path(bam2), path(bam2_text), path(rmats_temp)
+    tuple val(contrast), val(cond1), val(cond2), val(meta1), val(meta2), path(bam1), path(bam2), path(bam1_text), path(bam2_text), path(rmats_temp)
     val rmats_read_len                           // val params.rmats_read_len
     val rmats_splice_diff_cutoff                 // val params.rmats_splice_diff_cutoff
     val rmats_novel_splice_site                  // val params.rmats_novel_splice_site
@@ -20,14 +20,14 @@ process RMATS_POST {
     output:
     path "${output_dir}/rmats_post/*"        , emit: rmats_post
     path "${output_dir}/rmats_post.log"      , emit: log
-    tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
+    tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | head -1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
 
-    output_dir = cond2 ? "$cond1-$cond2" : '.'
+    output_dir = "$cond1-$cond2"
 
      // Only need to take meta1 as samples have same strand and read type info
 
@@ -78,7 +78,7 @@ process RMATS_POST {
         ${b1} \\
         ${b2} \\
         --od ${prefix}/rmats_post \\
-        --tmp ${prefix}/rmats_temp \\
+        --tmp ${rmats_temp} \\
         -t ${read_type} \\
         --libType ${strandedness} \\
         --readLength ${rmats_read_len} \\
