@@ -18,6 +18,7 @@ include { SUPPA as SUPPA_SALMON                                           } from
 include { SUPPA as SUPPA_STAR_SALMON                                      } from '../subworkflows/local/suppa'
 include { VISUALISE_MISO                                                  } from '../subworkflows/local/visualize_miso'
 include { LEAFCUTTER                                                      } from '../subworkflows/local/leafcutter'
+include { MQC_RMATS                                                       } from '../modules/local/rmats_mqc'
 
 include { validateInputSamplesheet                                        } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { validateInputContrastsheet                                      } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
@@ -25,8 +26,8 @@ include { rmatsReadError                                                  } from
 include { rmatsStrandednessError                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { multiqcTsvFromList                                              } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { paramsSummaryMultiqc                                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML                                          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +47,7 @@ include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_FORWARD } from
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_REVERSE } from '../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig/main'
 include { BAM_SORT_STATS_SAMTOOLS                                         } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
 include { paramsSummaryMap                                                } from 'plugin/nf-schema'
+include { softwareVersionsToYAML                                          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -259,7 +261,7 @@ workflow RNASPLICE {
 
     if (params.source == 'genome_bam' || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')))
     {
-        ch_dexseq_gff = params.dexseq_gff ?: ''
+        ch_dexseq_gff = params.gff_dexseq ?: ''
 
         if (params.dexseq_exon) {
             DEXSEQ_DEU(
@@ -313,6 +315,8 @@ workflow RNASPLICE {
                 params.rmats_max_exon_len,
                 params.rmats_paired_stats,
             )
+
+            ch_rmats_mqc = MQC_RMATS(RMATS.out.rmats_post_summary)
         }
 
         if (params.sashimi_plot == true) {
@@ -549,6 +553,7 @@ workflow RNASPLICE {
 
     // Blend final channel maps
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(ch_rmats_mqc.collect())
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 

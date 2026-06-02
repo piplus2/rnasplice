@@ -21,7 +21,7 @@ workflow DEXSEQ_DEU {
 
     main:
 
-    if (!params.dexseq_gff) {
+    if (!params.gff_dexseq) {
 
         //
         // MODULE: DEXSeq Annotation
