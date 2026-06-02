@@ -1,11 +1,11 @@
 process DEXSEQ_COUNT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
-    conda "bioconda::htseq=2.0.2"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/htseq:2.0.2--py310ha14a713_0' :
-        'biocontainers/htseq:2.0.2--py310ha14a713_0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f8/f894c18bfa323285c7a15ff518a8747ef5309d9c846afa81597688363c663dd3/data' :
+        'community.wave.seqera.io/library/htseq:2.1.2--66d3f470b150ca54' }"
 
     input:
     tuple val(meta), path(bam), path (gff)
@@ -13,7 +13,7 @@ process DEXSEQ_COUNT {
 
     output:
     tuple val(meta), path("*.clean.count.txt"), emit: dexseq_clean_txt
-    tuple val("${task.process}"), val('htseq'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\"htseq\").version)"'), topic: versions, emit: versions_htseq
+    tuple val("${task.process}"), val('htseq'), eval('python -c "import HTSeq; print(HTSeq.__version__)"'), topic: versions, emit: versions_htseq
 
     when:
     task.ext.when == null || task.ext.when

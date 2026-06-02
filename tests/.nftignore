@@ -85,6 +85,18 @@ trimgalore/*fastq.gz_trimming_report.txt
 */salmon/*/quant.sf
 **/*_trimming_report.txt
 
+# DEXSeq
+{salmon,star_salmon}/dexseq_exon/counts/*.count.txt
+{salmon,star_salmon}/dexseq_exon/results/{perGeneQValue,DEXSeqResults}.*.csv
+{salmon,star_salmon}/dexseq_exon/results/dexseq/{perGeneQValue,DEXSeqResults}.rds
+{salmon,star_salmon}/dexseq_exon/results/dexseq/{perGeneQValue,DEXSeqResults}.tsv
+{salmon,star_salmon}/dexseq_dtu/results/dexseq/{perGeneQValue,DEXSeqResults}.rds
+{salmon,star_salmon}/dexseq_dtu/results/dexseq/{perGeneQValue,DEXSeqResults}.tsv
+
+# SUPPA
+{salmon,star_salmon}/suppa/clusterevents/*/*.{log,clustvec}
+{salmon,star_salmon}/suppa/diffsplice/*/*.{dpsi,psivec}
+
 {salmon,star_salmon}/*/aux_info/fld.gz
 {salmon,star_salmon}/*/aux_info/meta_info.json
 {salmon,star_salmon}/*/libParams/flenDist.txt

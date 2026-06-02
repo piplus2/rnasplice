@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrated all modules to use `topic: versions` pattern for software version tracking
 - Migrated local modules to `TOOL/SUBTOOL/main.nf` directory structure
 - Updated `PIPELINE_INITIALISATION` to handle all 4 input source types (fastq, genome_bam, transcriptome_bam, salmon_results)
+- Updated `StageR` to version 1.32.0 for improved performance and bug fixes.
+- Updated `HTSeq` to version 2.1.2 for improved performance and bug fixes.
+- Updated `DEXSeq` to version 1.56.0 for improved performance and bug fixes.
+- Update `Suppa` to version 2.4 for improved performance and bug fixes.
 
 ### Fixed
 

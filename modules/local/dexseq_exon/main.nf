@@ -1,10 +1,10 @@
 process DEXSEQ_EXON {
     label 'process_high'
 
-    conda "bioconda::bioconductor-dexseq=1.36.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dexseq:1.36.0--r40_0' :
-        'biocontainers/bioconductor-dexseq:1.36.0--r40_0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/67/673dc7e5ec7cbb244b3464de0b78558cec773fb24184c60980aaae6bbfeadbcf/data' :
+        'community.wave.seqera.io/library/bioconductor-dexseq:1.56.0--52df10363b3f1635' }"
 
     input:
     path ("dexseq_clean_counts/*")    // path: dexseq_clean_counts

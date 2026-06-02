@@ -2,12 +2,40 @@
     "-profile test": {
         "content": [
             {
+                "CLUSTEREVENTS_IOE": {
+                    "suppa": 2.4
+                },
+                "CLUSTEREVENTS_IOI": {
+                    "suppa": 2.4
+                },
+                "CLUSTERGROUPS_IOE": {
+                    "suppa": 2.4
+                },
+                "CLUSTERGROUPS_IOI": {
+                    "suppa": 2.4
+                },
                 "CREATE_BAMLIST": {
                     "sed": 4.7
                 },
+                "DEXSEQ_ANNOTATION": {
+                    "htseq": "2.1.2"
+                },
+                "DEXSEQ_COUNT": {
+                    "htseq": "2.1.2"
+                },
                 "DEXSEQ_DTU": {
-                    "bioconductor-dexseq": "1.36.0",
-                    "r-base": "4.0.3"
+                    "bioconductor-dexseq": "1.56.0",
+                    "r-base": "4.5.3"
+                },
+                "DEXSEQ_EXON": {
+                    "bioconductor-dexseq": "1.56.0",
+                    "r-base": "4.5.3"
+                },
+                "DIFFSPLICE_IOE": {
+                    "suppa": 2.4
+                },
+                "DIFFSPLICE_IOI": {
+                    "suppa": 2.4
                 },
                 "DRIMSEQ_FILTER": {
                     "bioconductor-drimseq": "1.18.0",
@@ -21,10 +49,10 @@
                     "fastqc": "0.12.1"
                 },
                 "GENERATE_EVENTS_IOE": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "GENERATE_EVENTS_IOI": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "GFFREAD_TX2GENE": {
                     "gffread": "0.12.1"
@@ -37,6 +65,10 @@
                 },
                 "GUNZIP_FASTA": {
                     "gunzip": 1.13
+                },
+                "ISOFORMSWITCHANALYZER": {
+                    "bioconductor-isoformswitchanalyzer": "2.2.0",
+                    "r-base": "4.3.2"
                 },
                 "MAKE_TRANSCRIPTS_FASTA": {
                     "rsem": "1.3.1",
@@ -58,10 +90,10 @@
                     "parsimonious": "0.10.0"
                 },
                 "PSIPEREVENT": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "PSIPERISOFORM": {
-                    "suppa": 2.3
+                    "suppa": 2.4
                 },
                 "RMATS_POST": {
                     "rmats": "4.1.2"
@@ -106,7 +138,7 @@
                     "suppa_split_file": "3.4.2"
                 },
                 "STAGER": {
-                    "stageR": "1.12.0"
+                    "stageR": "1.32.0"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -135,6 +167,9 @@
                 }
             },
             [
+                "clustergroups",
+                "clustergroups/GBR-YRI_groups.txt",
+                "clustergroups/YRI-GBR_groups.txt",
                 "fastqc",
                 "fastqc/ERR188383_1_fastqc.html",
                 "fastqc/ERR188383_1_fastqc.zip",
@@ -154,6 +189,11 @@
                 "fastqc/ERR204916_2_fastqc.zip",
                 "genome",
                 "genome/index",
+                "isoformswitchanalyzer",
+                "isoformswitchanalyzer/isoformswitchanalyzer_isoformfeatures.csv",
+                "isoformswitchanalyzer/isoformswitchanalyzer_summary.csv",
+                "isoformswitchanalyzer/results",
+                "isoformswitchanalyzer/switchlist.rds",
                 "misopy",
                 "misopy/genes_chrX_genes.gff3",
                 "misopy/index",
@@ -4052,6 +4092,28 @@
                 "salmon/dexseq_dtu/results/stager/stageRTx.GBR-YRI.rds",
                 "salmon/dexseq_dtu/results/stager/stageRTx.YRI-GBR.rds",
                 "salmon/suppa",
+                "salmon/suppa/clusterevents",
+                "salmon/suppa/clusterevents/per_isoform",
+                "salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster_scores.log",
+                "salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster_scores.log",
+                "salmon/suppa/clusterevents/per_local_event",
+                "salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster_scores.log",
+                "salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster.clustvec",
+                "salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster_scores.log",
+                "salmon/suppa/diffsplice",
+                "salmon/suppa/diffsplice/per_isoform",
+                "salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.psivec",
+                "salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.psivec",
+                "salmon/suppa/diffsplice/per_local_event",
+                "salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.psivec",
+                "salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.dpsi",
+                "salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.psivec",
                 "salmon/suppa/generate_events",
                 "salmon/suppa/generate_events/per_isoform",
                 "salmon/suppa/generate_events/per_isoform/events.ioi",
@@ -4141,6 +4203,26 @@
                 "star_salmon/dexseq_dtu/results/stager/getAdjustedPValues.YRI-GBR.tsv",
                 "star_salmon/dexseq_dtu/results/stager/stageRTx.GBR-YRI.rds",
                 "star_salmon/dexseq_dtu/results/stager/stageRTx.YRI-GBR.rds",
+                "star_salmon/dexseq_exon",
+                "star_salmon/dexseq_exon/annotation",
+                "star_salmon/dexseq_exon/counts",
+                "star_salmon/dexseq_exon/counts/ERR188383.clean.count.txt",
+                "star_salmon/dexseq_exon/counts/ERR188428.clean.count.txt",
+                "star_salmon/dexseq_exon/counts/ERR188454.clean.count.txt",
+                "star_salmon/dexseq_exon/counts/ERR204916.clean.count.txt",
+                "star_salmon/dexseq_exon/results",
+                "star_salmon/dexseq_exon/results/DEXSeqDataSet.GBR-YRI.rds",
+                "star_salmon/dexseq_exon/results/DEXSeqDataSet.YRI-GBR.rds",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.GBR-YRI.csv",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.GBR-YRI.rds",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.YRI-GBR.csv",
+                "star_salmon/dexseq_exon/results/DEXSeqResults.YRI-GBR.rds",
+                "star_salmon/dexseq_exon/results/perGeneQValue.GBR-YRI.csv",
+                "star_salmon/dexseq_exon/results/perGeneQValue.GBR-YRI.rds",
+                "star_salmon/dexseq_exon/results/perGeneQValue.YRI-GBR.csv",
+                "star_salmon/dexseq_exon/results/perGeneQValue.YRI-GBR.rds",
+                "star_salmon/dexseq_exon/results/plotDEXSeq.GBR-YRI.pdf",
+                "star_salmon/dexseq_exon/results/plotDEXSeq.YRI-GBR.pdf",
                 "star_salmon/edger",
                 "star_salmon/edger/DGEGLM.rds",
                 "star_salmon/edger/DGELRT.exprs.rds",
@@ -4514,6 +4596,28 @@
                 "star_salmon/samtools_stats/ERR204916.idxstats",
                 "star_salmon/samtools_stats/ERR204916.stats",
                 "star_salmon/suppa",
+                "star_salmon/suppa/clusterevents",
+                "star_salmon/suppa/clusterevents/per_isoform",
+                "star_salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_isoform/GBR-YRI_transcript_cluster_scores.log",
+                "star_salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_isoform/YRI-GBR_transcript_cluster_scores.log",
+                "star_salmon/suppa/clusterevents/per_local_event",
+                "star_salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_local_event/GBR-YRI_local_cluster_scores.log",
+                "star_salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster.clustvec",
+                "star_salmon/suppa/clusterevents/per_local_event/YRI-GBR_local_cluster_scores.log",
+                "star_salmon/suppa/diffsplice",
+                "star_salmon/suppa/diffsplice/per_isoform",
+                "star_salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_isoform/GBR-YRI_transcript_diffsplice.psivec",
+                "star_salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_isoform/YRI-GBR_transcript_diffsplice.psivec",
+                "star_salmon/suppa/diffsplice/per_local_event",
+                "star_salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_local_event/GBR-YRI_local_diffsplice.psivec",
+                "star_salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.dpsi",
+                "star_salmon/suppa/diffsplice/per_local_event/YRI-GBR_local_diffsplice.psivec",
                 "star_salmon/suppa/generate_events",
                 "star_salmon/suppa/generate_events/per_isoform",
                 "star_salmon/suppa/generate_events/per_isoform/events.ioi",
@@ -4600,6 +4704,10 @@
                 "trimgalore/fastqc/ERR204916_2_val_2_fastqc.zip"
             ],
             [
+                "GBR-YRI_groups.txt:md5,7c4e4b8e31b53e91f5db0db731c9103f",
+                "YRI-GBR_groups.txt:md5,7c4e4b8e31b53e91f5db0db731c9103f",
+                "isoformswitchanalyzer_isoformfeatures.csv:md5,a227d42afbcc590b4e949075cde4a5b6",
+                "isoformswitchanalyzer_summary.csv:md5,4b2ab1b387ded8f479d7cfa96893e93b",
                 "genes_chrX_genes.gff3:md5,1c1ece4ee637e317c0ae6528a253a83f",
                 "ENSG00000000003.pickle:md5,73dabdba86428782405161551e63ce38",
                 "ENSG00000000005.pickle:md5,3cfbce2ccfa122e992e81ccbf3ef2f10",
@@ -7008,14 +7116,14 @@
                 "events_AL_strict.gtf:md5,d899db71cc9b0161e5af786594417779",
                 "events_MX_strict.gtf:md5,4719c9700e8774153f4a8106c5b180f0",
                 "events_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453",
-                "ERR188383_sorted.bam:md5,54d48846afbb29997231a5d99eb37d87",
-                "ERR188383_sorted.bam.bai:md5,cd4c0f701009fa44e0cd1425cf0dba9d",
-                "ERR188428_sorted.bam:md5,9fdd5c91bcb9c36efbaf0a9442417952",
-                "ERR188428_sorted.bam.bai:md5,25eeb9a15262870367132ab0596c5356",
-                "ERR188454_sorted.bam:md5,9c8e6fb0a3878945b59d7731e2796b7b",
-                "ERR188454_sorted.bam.bai:md5,ce9bc391c8641b2be08f49fd71a156e0",
-                "ERR204916_sorted.bam:md5,1a4a993f8bbedcf3b2d937a087929c2d",
-                "ERR204916_sorted.bam.bai:md5,6f11ff9b416b68344f1186af4a53778e",
+                "ERR188383_sorted.bam:md5,1bff4b478016421fd0f0eb5df75f3c2c",
+                "ERR188383_sorted.bam.bai:md5,662f7faef48faebfab0dae435345afd5",
+                "ERR188428_sorted.bam:md5,2ba4c1dacd9e556b408f0a5de224a97e",
+                "ERR188428_sorted.bam.bai:md5,9dc07d8a3665d821fa18bb139d7ec281",
+                "ERR188454_sorted.bam:md5,b31f626026ce8bbdb5081b3255042c39",
+                "ERR188454_sorted.bam.bai:md5,7ee5dcbe3fb85f79ebf8fede3950e097",
+                "ERR204916_sorted.bam:md5,c316314ca9c0f08fe075dcae87c548d1",
+                "ERR204916_sorted.bam.bai:md5,06f74b05d47ed6ce5f02b847706ded18",
                 "contrast_GBR-YRI.exprs.csv:md5,b091c7556033b165f942cbfb43407aa0",
                 "contrast_GBR-YRI.usage.exon.csv:md5,90c732efe7f3ce4e68fb8f46ec2c3bf9",
                 "contrast_GBR-YRI.usage.gene.csv:md5,e8a84ad7c6c24cf3f024498648f91281",
@@ -7054,7 +7162,7 @@
                 "events_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453"
             ]
         ],
-        "timestamp": "2026-05-29T20:25:26.945154122",
+        "timestamp": "2026-06-02T08:11:57.075385656",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.1"

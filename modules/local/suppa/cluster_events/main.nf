@@ -3,10 +3,10 @@ process CLUSTEREVENTS {
     label 'process_high'
     stageInMode 'copy'
 
-    conda "bioconda::suppa=2.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/suppa:2.3--py36_0' :
-        'biocontainers/suppa:2.3--py36_0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d8/d887a6a05dec2a1f64fdff0eac40581f9a1ec30301b2c267bde7f564b0f14270/data' :
+        'community.wave.seqera.io/library/suppa:2.4--2612fcca3884f6bc' }"
 
     input:
     tuple val(cond1), val(cond2), path(dpsi), path(psivec), val(group_ranges) // e.g. 1-3,4-6
@@ -22,7 +22,7 @@ process CLUSTEREVENTS {
     output:
     path "*.clustvec"   , emit: clustvec
     path "*.log"        , emit: cluster_log
-    tuple val("${task.process}"), val('suppa'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'suppa\').version)"'), topic: versions, emit: versions_suppa
+    tuple val("${task.process}"), val('suppa'), eval("suppa.py -v | sed '1!d;s/.* //'"), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when
@@ -43,7 +43,7 @@ process CLUSTEREVENTS {
         --eps ${clusterevents_eps} \\
         --metric ${clusterevents_metric} \\
         --min-pts ${clusterevents_min_pts} \\
-        --groups ${group_ranges} \\
+        --groups \$(cat ${group_ranges}) \\
         --clustering ${clusterevents_method} \\
         ${thresh_arg} ${separation_arg} -o ${cond1}-${cond2}_${prefix}_cluster
     """

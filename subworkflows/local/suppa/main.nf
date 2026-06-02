@@ -2,24 +2,24 @@
 // SUPPA Subworkflow
 //
 
-include { GENERATE_EVENTS as GENERATE_EVENTS_IOE } from '../../../modules/local/suppa_generateevents'
-include { GENERATE_EVENTS as GENERATE_EVENTS_IOI } from '../../../modules/local/suppa_generateevents'
+include { GENERATE_EVENTS as GENERATE_EVENTS_IOE } from '../../../modules/local/suppa/generate_events'
+include { GENERATE_EVENTS as GENERATE_EVENTS_IOI } from '../../../modules/local/suppa/generate_events'
 
-include { PSIPEREVENT   } from '../../../modules/local/suppa_psiperevent'
-include { PSIPERISOFORM } from '../../../modules/local/suppa_psiperisoform'
+include { PSIPEREVENT   } from '../../../modules/local/suppa/psi_per_event'
+include { PSIPERISOFORM } from '../../../modules/local/suppa/psi_per_isoform'
 
-include { SPLIT_FILES as SPLIT_FILES_TPM } from '../../../modules/local/suppa_split_files'
-include { SPLIT_FILES as SPLIT_FILES_IOE } from '../../../modules/local/suppa_split_files'
-include { SPLIT_FILES as SPLIT_FILES_IOI } from '../../../modules/local/suppa_split_files'
+include { SPLIT_FILES as SPLIT_FILES_TPM } from '../../../modules/local/split_files'
+include { SPLIT_FILES as SPLIT_FILES_IOE } from '../../../modules/local/split_files'
+include { SPLIT_FILES as SPLIT_FILES_IOI } from '../../../modules/local/split_files'
 
-include { DIFFSPLICE as DIFFSPLICE_IOE } from '../../../modules/local/suppa_diffsplice'
-include { DIFFSPLICE as DIFFSPLICE_IOI } from '../../../modules/local/suppa_diffsplice'
+include { DIFFSPLICE as DIFFSPLICE_IOE } from '../../../modules/local/suppa/diffsplice'
+include { DIFFSPLICE as DIFFSPLICE_IOI } from '../../../modules/local/suppa/diffsplice'
 
-include { CLUSTERGROUPS as CLUSTERGROUPS_IOE } from '../../../modules/local/suppa_clustergroups'
-include { CLUSTERGROUPS as CLUSTERGROUPS_IOI } from '../../../modules/local/suppa_clustergroups'
+include { CLUSTERGROUPS as CLUSTERGROUPS_IOE } from '../../../modules/local/suppa/cluster_groups'
+include { CLUSTERGROUPS as CLUSTERGROUPS_IOI } from '../../../modules/local/suppa/cluster_groups'
 
-include { CLUSTEREVENTS as CLUSTEREVENTS_IOE } from '../../../modules/local/suppa_clusterevents'
-include { CLUSTEREVENTS as CLUSTEREVENTS_IOI } from '../../../modules/local/suppa_clusterevents'
+include { CLUSTEREVENTS as CLUSTEREVENTS_IOE } from '../../../modules/local/suppa/cluster_events'
+include { CLUSTEREVENTS as CLUSTEREVENTS_IOI } from '../../../modules/local/suppa/cluster_events'
 
 workflow SUPPA {
 
@@ -28,33 +28,35 @@ workflow SUPPA {
     ch_gtf
     ch_tpm
     ch_samplesheet
-    ch_contrasts
-    suppa_per_local_event       // params.suppa_per_local_event
-    generateevents_boundary     // params.generateevents_boundary
-    generateevents_threshold    // params.generateevents_threshold
-    generateevents_exon_length  // params.generateevents_exon_length
-    generateevents_event_type   // params.generateevents_event_type
-    generateevents_pool_genes   // params.generateevents_pool_genes
-    psiperevent_total_filter    // params.psiperevent_total_filter
-    diffsplice_local_event      // params.diffsplice_local_event
-    diffsplice_method           // params.diffsplice_method
-    diffsplice_area             // params.diffsplice_area
-    diffsplice_lower_bound      // params.diffsplice_lower_bound
-    diffsplice_alpha            // params.diffsplice_alpha
-    diffsplice_tpm_threshold    // params.diffsplice_tpm_threshold
-    diffsplice_nan_threshold    // params.diffsplice_nan_threshold
-    diffsplice_gene_correction  // params.diffsplice_gene_correction
-    diffsplice_paired           // params.diffsplice_paired
-    diffsplice_median           // params.diffsplice_median
-    clusterevents_local_event   // params.clusterevents_local_event
-    clusterevents_dpsithreshold // params.clusterevents_dpsithreshold
-    clusterevents_eps           // params.clusterevents_eps
-    clusterevents_metric        // params.clusterevents_metric
-    clusterevents_min_pts       // params.clusterevents_min_pts
-    clusterevents_method        // params.clusterevents_method
-    clusterevents_sigthreshold  // params.clusterevents_sigthreshold
-    clusterevents_separation    // params.clusterevents_separation
-    suppa_per_isoform           // params.suppa_per_isoform
+    ch_contrastsheet
+    suppa_per_local_event          // params.suppa_per_local_event
+    generateevents_boundary        // params.generateevents_boundary
+    generateevents_threshold       // params.generateevents_threshold
+    generateevents_exon_length     // params.generateevents_exon_length
+    generateevents_event_type      // params.generateevents_event_type
+    generateevents_pool_genes      // params.generateevents_pool_genes
+    psiperevent_total_filter       // params.psiperevent_total_filter
+    diffsplice_local_event         // params.diffsplice_local_event
+    diffsplice_transcript_event    // params.diffsplice_isoform
+    diffsplice_method              // params.diffsplice_method
+    diffsplice_area                // params.diffsplice_area
+    diffsplice_lower_bound         // params.diffsplice_lower_bound
+    diffsplice_alpha               // params.diffsplice_alpha
+    diffsplice_tpm_threshold       // params.diffsplice_tpm_threshold
+    diffsplice_nan_threshold       // params.diffsplice_nan_threshold
+    diffsplice_gene_correction     // params.diffsplice_gene_correction
+    diffsplice_paired              // params.diffsplice_paired
+    diffsplice_median              // params.diffsplice_median
+    clusterevents_local_event      // params.clusterevents_local_event
+    clusterevents_transcript_event // params.clusterevents_transcript_event
+    clusterevents_dpsithreshold    // params.clusterevents_dpsithreshold
+    clusterevents_eps              // params.clusterevents_eps
+    clusterevents_metric           // params.clusterevents_metric
+    clusterevents_min_pts          // params.clusterevents_min_pts
+    clusterevents_method           // params.clusterevents_method
+    clusterevents_sigthreshold     // params.clusterevents_sigthreshold
+    clusterevents_separation       // params.clusterevents_separation
+    suppa_per_isoform              // params.suppa_per_isoform
 
     main:
 
@@ -138,13 +140,13 @@ workflow SUPPA {
 
             // Create contrasts channel
 
-            ch_suppa_local_contrasts_raw = ch_contrasts
+            ch_suppa_local_contrasts_raw = ch_contrastsheet.splitCsv(header: true)
 
             // Add TPM files to contrasts channel
 
             ch_suppa_tpm_conditions = SPLIT_FILES_TPM.out.tpms
                 .flatten()
-                .map { [it.baseName, it ] }
+                .map { it -> [it.baseName, it ] }
 
             ch_suppa_local_contrasts_tpm1 = ch_suppa_local_contrasts_raw
                 .map { it -> [it['treatment'], it] }
@@ -160,7 +162,7 @@ workflow SUPPA {
 
             ch_suppa_psi_conditions = SPLIT_FILES_IOE.out.psis
                 .flatten()
-                .map { [ it.baseName.toString().replaceAll("local_", ""), it ] }
+                .map { it -> [ it.baseName.toString().replaceAll("local_", ""), it ] }
 
             ch_suppa_local_contrasts_psi1 = ch_suppa_local_contrasts_tpm2
                 .map { it -> [it['treatment'], it] }
@@ -203,7 +205,7 @@ workflow SUPPA {
 
                 CLUSTERGROUPS_IOE ( ch_psivec_local )
 
-                ch_groups_ioe = CLUSTERGROUPS_IOE.out[0]
+                ch_groups_ioe = CLUSTERGROUPS_IOE.out.groups
 
                 // Join channels to ensure consistent order
 
@@ -287,17 +289,17 @@ workflow SUPPA {
 
         // Calculate differential analysis between conditions - Transcript level
 
-        if (params.diffsplice_isoform) {
+        if (diffsplice_transcript_event) {
 
             // Create contrasts channel
 
-            ch_suppa_isoform_contrasts_raw = ch_contrasts
+            ch_suppa_isoform_contrasts_raw = ch_contrastsheet.splitCsv(header: true)
 
             // Add TPM files to contrasts channel
 
             ch_suppa_tpm_conditions = SPLIT_FILES_TPM.out.tpms
                 .flatten()
-                .map { [it.baseName, it ] }
+                .map { it -> [it.baseName, it ] }
 
             ch_suppa_isoform_contrasts_tpm1 = ch_suppa_isoform_contrasts_raw
                 .map { it -> [it['treatment'], it] }
@@ -313,7 +315,7 @@ workflow SUPPA {
 
             ch_suppa_psi_conditions = SPLIT_FILES_IOI.out.psis
                 .flatten()
-                .map { [ it.baseName.toString().replaceAll("transcript_", ""), it ] }
+                .map { it -> [ it.baseName.toString().replaceAll("transcript_", ""), it ] }
 
             ch_suppa_isoform_contrasts_psi1 = ch_suppa_isoform_contrasts_tpm2
                 .map { it -> [it['treatment'], it] }
@@ -331,7 +333,7 @@ workflow SUPPA {
 
             DIFFSPLICE_IOI(
                 ch_ioi_events,
-                ch_split_suppa_tpms_psi,
+                ch_split_suppa_tpms,
                 prefix,
                 diffsplice_method,
                 diffsplice_area,
@@ -347,13 +349,13 @@ workflow SUPPA {
             ch_dpsi_isoform   = DIFFSPLICE_IOI.out.dpsi
             ch_psivec_isoform = DIFFSPLICE_IOI.out.psivec
 
-            if (params.clusterevents_isoform) {
+            if (clusterevents_transcript_event) {
 
                 // Get ranges for cluster analysis
 
                 CLUSTERGROUPS_IOI ( ch_psivec_isoform )
 
-                ch_groups_ioi = CLUSTERGROUPS_IOI.out[0]
+                ch_groups_ioi = CLUSTERGROUPS_IOI.out.groups
 
                 // Join channels to ensure consistent order
 
