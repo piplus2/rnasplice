@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add first steps of leafcutter splicing quantification
 - Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired.
 - Improve documentation for `--rmats_paired_stats`.
+- MultiQC displays summary of rMATS results.
 
 ### Changed
 
