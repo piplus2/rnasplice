@@ -59,7 +59,7 @@ trimgalore/*fastq.gz_trimming_report.txt
 {multiqc,multiqc/**}/multiqc_report.html
 {multiqc,multiqc/**}/multiqc_data/multiqc.parquet
 {multiqc,multiqc/**}/multiqc_data/*.txt
-{multiqc,multiqc/**}/multiqc_report_plots/{pdf,png,svg}/*.{pdf,png,svg}
+{multiqc,multiqc/**}/multiqc_plots/{pdf,png,svg}/*.{pdf,png,svg}
 
 **/fastqc/**/*.{html,zip}
 **/fq_lint/**/*.fq_lint.txt
