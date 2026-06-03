@@ -12,9 +12,9 @@ report_section_order:
 export_plots: true
 disable_version_detection: true
 
-# Order of the modules
+# Order of modules
 top_modules:
-  - fail_trimmed_samples
+  - "fail_trimmed_samples"
 
 # Order of modules
 module_order:

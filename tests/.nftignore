@@ -103,6 +103,7 @@ trimgalore/*fastq.gz_trimming_report.txt
 {salmon,star_salmon}/*/logs/salmon_quant.log
 {salmon,star_salmon}/*/quant.genes.sf
 {salmon,star_salmon}/*/quant.sf
+{salmon,star_salmon}/*/lib_format_counts.json
 {salmon,star_salmon}/salmon.merged.gene_counts.tsv
 {salmon,star_salmon}/salmon.merged.gene_counts_length_scaled.tsv
 {salmon,star_salmon}/salmon.merged.gene_counts_scaled.tsv
