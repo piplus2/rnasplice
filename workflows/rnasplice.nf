@@ -18,7 +18,6 @@ include { SUPPA as SUPPA_SALMON                                           } from
 include { SUPPA as SUPPA_STAR_SALMON                                      } from '../subworkflows/local/suppa'
 include { VISUALISE_MISO                                                  } from '../subworkflows/local/visualize_miso'
 include { LEAFCUTTER                                                      } from '../subworkflows/local/leafcutter'
-include { MQC_RMATS                                                       } from '../modules/local/rmats_mqc'
 
 include { validateInputSamplesheet                                        } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { validateInputContrastsheet                                      } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
@@ -315,8 +314,6 @@ workflow RNASPLICE {
                 params.rmats_max_exon_len,
                 params.rmats_paired_stats,
             )
-
-            ch_rmats_mqc = MQC_RMATS(RMATS.out.rmats_post_summary)
         }
 
         if (params.sashimi_plot == true) {
@@ -553,7 +550,6 @@ workflow RNASPLICE {
 
     // Blend final channel maps
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(ch_rmats_mqc.collect())
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 

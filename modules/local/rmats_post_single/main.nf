@@ -19,7 +19,6 @@ process RMATS_POST_SINGLE {
     output:
     path "rmats_post/*"                             , emit: rmats_post
     path "rmats_post.log"                           , emit: log
-    tuple val(contrast), path("rmats_post/summary.txt") , emit: summary
     tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | head -1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:

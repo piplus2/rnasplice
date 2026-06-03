@@ -210,7 +210,6 @@ workflow RMATS {
         ch_rmats_prep_log     = RMATS_PREP.out.log            //    path: rmats_prep.log
         ch_rmats_post         = RMATS_POST.out.rmats_post     //    path: rmats_post/*
         ch_rmats_post_log     = RMATS_POST.out.log            //    path: rmats_post.log
-        ch_rmats_post_summary = RMATS_POST.out.summary          //    path: *_summary.rmats.txt
 
     }
 
@@ -222,5 +221,4 @@ workflow RMATS {
     rmats_prep_log     = ch_rmats_prep_log    //    path: rmats_prep.log
     rmats_post         = ch_rmats_post        //    path: rmats_post/*
     rmats_post_log     = ch_rmats_post_log    //    path: rmats_post.log
-    rmats_post_summary = ch_rmats_post_summary // path: *_summary.rmats.txt
 }
