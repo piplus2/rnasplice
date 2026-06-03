@@ -25,8 +25,8 @@ include { rmatsReadError                                                  } from
 include { rmatsStrandednessError                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { multiqcTsvFromList                                              } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
 include { paramsSummaryMultiqc                                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML                                          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText                                          } from '../subworkflows/local/utils_nfcore_rnasplice_pipeline'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +45,7 @@ include { FASTQ_FASTQC_UMITOOLS_TRIMGALORE                                } from
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_FORWARD } from '../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig/main'
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_TO_BIGWIG_REVERSE } from '../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig/main'
 include { BAM_SORT_STATS_SAMTOOLS                                         } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
+include { softwareVersionsToYAML                                          } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMap                                                } from 'plugin/nf-schema'
 
 /*
@@ -259,7 +260,7 @@ workflow RNASPLICE {
 
     if (params.source == 'genome_bam' || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')))
     {
-        ch_dexseq_gff = params.dexseq_gff ?: ''
+        ch_dexseq_gff = params.gff_dexseq ?: ''
 
         if (params.dexseq_exon) {
             DEXSEQ_DEU(
