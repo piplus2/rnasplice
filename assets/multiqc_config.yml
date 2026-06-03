@@ -16,6 +16,16 @@ disable_version_detection: true
 top_modules:
   - "fail_trimmed_samples"
 
+# Order of modules
+module_order:
+  - fastqc
+  - trim_galore
+  - fail_trimmed_samples
+  - star
+  - salmon
+  - featurecounts
+  - samtools
+
 custom_data:
   fail_trimmed_samples:
     section_name: "WARNING: Fail Trimming Check"
