@@ -9,94 +9,6 @@
 ----------------------------------------------------------------------------------------
 */
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { RNASPLICE               } from './workflows/rnasplice'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
-include { PREPARE_GENOME          } from './subworkflows/local/prepare_genome'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Explicitly populate structural genome references from institutional profiles using strict syntax attributes
-
-
-
-
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow NFCORE_RNASPLICE {
-
-    main:
-
-    def is_aws_igenome = params.fasta && params.gtf && (file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')
-
-    //
-    // SUBWORKFLOW: Prepare reference genome files
-    //
-    PREPARE_GENOME(
-        params.fasta,
-        params.gtf,
-        params.gff,
-        params.transcript_fasta,
-        params.star_index,
-        params.salmon_index,
-        params.gff_dexseq,
-        params.suppa_tpm,
-        params.gencode,
-        is_aws_igenome,
-    )
-
-    ch_samplesheet = channel.value(file(params.input, checkIfExists: true))
-    ch_contrastsheet = channel.value(file(params.contrasts, checkIfExists: true))
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    RNASPLICE(
-        ch_samplesheet,
-        ch_contrastsheet,
-        PREPARE_GENOME.out.fasta,
-        PREPARE_GENOME.out.gtf,
-        PREPARE_GENOME.out.transcript_fasta,
-        PREPARE_GENOME.out.dexseq_gff,
-        PREPARE_GENOME.out.salmon_index,
-        PREPARE_GENOME.out.star_index,
-        PREPARE_GENOME.out.suppa_tpm,
-        PREPARE_GENOME.out.chrom_sizes,
-        is_aws_igenome,
-        params.multiqc_config,
-        params.multiqc_logo,
-        params.multiqc_methods_description,
-    )
-
-    emit:
-    multiqc_report = RNASPLICE.out.multiqc_report // channel: /path/to/multiqc_report.html
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN MAIN WORKFLOW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
 params {
 
     // Input options
@@ -105,11 +17,10 @@ params {
     source: String = 'fastq'
 
     // References
-    genome: String
     fasta: String = getGenomeAttribute('fasta')
-    transcript_fasta: String = getGenomeAttribute('fasta')
-    gtf: String = getGenomeAttribute('gtf')
-    gff: String = getGenomeAttribute('gff')
+    gtf: String? = getGenomeAttribute('gtf')
+    gff: String? = getGenomeAttribute('gff')
+    transcript_fasta: String
     gtf_extra_attributes: String = 'gene_name'
     gtf_group_features: String = 'gene_id'
     gencode: Boolean
@@ -133,8 +44,8 @@ params {
     bam_csi_index: Boolean
     seq_center: String
     salmon_quant_libtype: String
-    star_index: String = getGenomeAttribute('star')
-    salmon_index: String = getGenomeAttribute('salmon')
+    star_index: String? = getGenomeAttribute('star')
+    salmon_index: String? = getGenomeAttribute('salmon')
     star_ignore_sjdbgtf: Boolean
     skip_alignment: Boolean
     save_unaligned: Boolean
@@ -258,10 +169,88 @@ params {
     validate_params: Boolean = true
 }
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { RNASPLICE               } from './workflows/rnasplice'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnasplice_pipeline'
+include { PREPARE_GENOME          } from './subworkflows/local/prepare_genome'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NAMED WORKFLOWS FOR PIPELINE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// WORKFLOW: Run main analysis pipeline depending on type of input
+//
+workflow NFCORE_RNASPLICE {
+
+    main:
+
+    def is_aws_igenome = params.fasta && params.gtf && (file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')
+
+    //
+    // SUBWORKFLOW: Prepare reference genome files
+    //
+
+    PREPARE_GENOME(
+        params.fasta,
+        params.gtf,
+        params.gff,
+        params.transcript_fasta,
+        params.star_index,
+        params.salmon_index,
+        params.gff_dexseq,
+        params.suppa_tpm,
+        params.gencode,
+        is_aws_igenome,
+    )
+
+    ch_samplesheet = channel.value(file(params.input, checkIfExists: true))
+    ch_contrastsheet = channel.value(file(params.contrasts, checkIfExists: true))
+
+    //
+    // WORKFLOW: Run pipeline
+    //
+    RNASPLICE(
+        ch_samplesheet,
+        ch_contrastsheet,
+        PREPARE_GENOME.out.fasta,
+        PREPARE_GENOME.out.gtf,
+        PREPARE_GENOME.out.transcript_fasta,
+        PREPARE_GENOME.out.dexseq_gff,
+        PREPARE_GENOME.out.salmon_index,
+        PREPARE_GENOME.out.star_index,
+        PREPARE_GENOME.out.suppa_tpm,
+        PREPARE_GENOME.out.chrom_sizes,
+        is_aws_igenome,
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description,
+    )
+
+    emit:
+    multiqc_report = RNASPLICE.out.multiqc_report // channel: /path/to/multiqc_report.html
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RUN MAIN WORKFLOW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
 workflow {
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
+    log.info("params.fasta: {}", params.fasta)
+
     PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
