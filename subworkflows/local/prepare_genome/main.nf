@@ -45,7 +45,7 @@ workflow PREPARE_GENOME {
         ch_fasta = GUNZIP_FASTA.out.gunzip
     }
     else {
-        ch_fasta = channel.value([[:], file(fasta)])
+        ch_fasta = channel.value([[:], file(fasta, checkIfExists: true)])
     }
 
     //
@@ -57,7 +57,7 @@ workflow PREPARE_GENOME {
             ch_gtf = GUNZIP_GTF.out.gunzip
         }
         else {
-            ch_gtf = channel.value([[:], file(gtf)])
+            ch_gtf = channel.value([[:], file(gtf, checkIfExists: true)])
         }
     }
     else if (gff) {
@@ -66,7 +66,7 @@ workflow PREPARE_GENOME {
             ch_gff = GUNZIP_GFF.out.gunzip
         }
         else {
-            ch_gff = channel.value([[:], file(gff)])
+            ch_gff = channel.value([[:], file(gff, checkIfExists: true)])
         }
         ch_gtf = GFFREAD(ch_gff, null).gtf
     }
@@ -80,7 +80,7 @@ workflow PREPARE_GENOME {
             ch_transcript_fasta = GUNZIP_TRANSCRIPT_FASTA.out.gunzip
         }
         else {
-            ch_transcript_fasta = channel.value([[:], file(transcript_fasta)])
+            ch_transcript_fasta = channel.value([[:], file(transcript_fasta, checkIfExists: true)])
         }
         if (gencode) {
             PREPROCESS_TRANSCRIPTS_FASTA_GENCODE(ch_transcript_fasta)
@@ -112,7 +112,7 @@ workflow PREPARE_GENOME {
                 ch_star_index = UNTAR_STAR_INDEX([[:], star_index]).untar
             }
             else {
-                ch_star_index = channel.value([[:], file(star_index)])
+                ch_star_index = channel.value([[:], file(star_index, checkIfExists: true)])
             }
         }
         else {
@@ -135,7 +135,7 @@ workflow PREPARE_GENOME {
                 ch_salmon_index = UNTAR_SALMON_INDEX([[:], salmon_index]).untar.map { _meta, index -> index }
             }
             else {
-                ch_salmon_index = channel.value(file(salmon_index))
+                ch_salmon_index = channel.value([[:], file(salmon_index, checkIfExists: true)])
             }
         }
         else {
@@ -159,7 +159,7 @@ workflow PREPARE_GENOME {
             ch_dexseq_gff = GUNZIP_GFF_DEXSEQ.out.gunzip
         }
         else {
-            ch_dexseq_gff = channel.value([[:], file(gff_dexseq)])
+            ch_dexseq_gff = channel.value([[:], file(gff_dexseq, checkIfExists: true)])
         }
     }
 
@@ -173,7 +173,7 @@ workflow PREPARE_GENOME {
             ch_suppa_tpm = GUNZIP_SUPPA_TPM.out.gunzip.map { _meta, tpm -> tpm }
         }
         else {
-            ch_suppa_tpm = channel.value(file(suppa_tpm))
+            ch_suppa_tpm = channel.value([[:], file(suppa_tpm, checkIfExists: true)])
         }
     }
 

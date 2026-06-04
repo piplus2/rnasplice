@@ -85,7 +85,7 @@ workflow PIPELINE_INITIALISATION {
         before_text,
         after_text,
         command,
-        null,
+        true
     )
 
     //
@@ -99,6 +99,7 @@ workflow PIPELINE_INITIALISATION {
     // Custom validation for pipeline parameters
     //
     validateInputParameters()
+
 }
 
 /*
