@@ -4,7 +4,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { BEDTOOLS_GENOMECOV                                              } from '../modules/local/bedtools_genomecov'
+include { BEDTOOLS_GENOMECOV as BEDTOOLS_GENOMECOV_FORWARD                } from '../modules/nf-core/bedtools/genomecov'
+include { BEDTOOLS_GENOMECOV as BEDTOOLS_GENOMECOV_REVERSE                } from '../modules/nf-core/bedtools/genomecov'
 include { ISOFORMSWITCHANALYZER                                           } from '../modules/local/isoformswitchanalyzer'
 include { ALIGN_STAR                                                      } from '../subworkflows/local/align_star'
 include { TX2GENE_TXIMPORT as TX2GENE_TXIMPORT_SALMON                     } from '../subworkflows/local/tx2gene_tximport'
@@ -57,7 +58,7 @@ include { paramsSummaryMap                                                } from
 workflow RNASPLICE {
     take:
     ch_samplesheet // channel: file(samplesheet)
-    ch_contrastsheet // channel: file(contrastsheet)
+    ch_contrastsheet  // channel: file(contrastsheet)
     ch_fasta // channel: path of genome fasta
     ch_gtf // channel: path of genome gtf
     ch_transcript_fasta // channel: path of transcript fasta
@@ -70,7 +71,6 @@ workflow RNASPLICE {
     multiqc_config // parameter value pass-through
     multiqc_logo // parameter value pass-through
     multiqc_methods_description // parameter value pass-through
-    outdir // parameter value pass-through
 
     main:
 
@@ -81,7 +81,7 @@ workflow RNASPLICE {
     // Create channel from input file provided through params.input
     //
     if (params.source == "fastq") {
-        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+        ch_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
             .map { meta, fastq_1, fastq_2 ->
                 if (!fastq_2) {
                     return [meta.id, meta + [single_end: true], [fastq_1]]
@@ -97,31 +97,27 @@ workflow RNASPLICE {
             .map { meta, fastqs ->
                 return [meta, fastqs.flatten()]
             }
-            .set { ch_reads }
     }
     else if (params.source == "genome_bam") {
-        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_genome_bam.json"))
+        ch_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_genome_bam.json"))
             .map { meta, genome_bam ->
                 def meta_map = [id: meta.id, condition: meta.condition]
                 return [meta_map, [genome_bam]]
             }
-            .set { ch_reads }
     }
     else if (params.source == "transcriptome_bam") {
-        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_transcriptome_bam.json"))
+        ch_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_transcriptome_bam.json"))
             .map { meta, _genome_bam, transcriptome_bam ->
                 def meta_map = [id: meta.id, condition: meta.condition]
                 return [meta_map, [transcriptome_bam]]
             }
-            .set { ch_reads }
     }
     else if (params.source == "salmon_results") {
-        channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_salmon_results.json"))
+        ch_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input_salmon_results.json"))
             .map { meta, salmon_results ->
                 def meta_map = [id: meta.id, condition: meta.condition]
                 return [meta_map, [salmon_results]]
             }
-            .set { ch_reads }
     }
     else {
         error("Invalid --source parameter: '${params.source}'. Must be one of: fastq, genome_bam, transcriptome_bam, salmon_results")
@@ -503,12 +499,18 @@ workflow RNASPLICE {
         )
     }
 
+    //
+    // Module: Generate stranded coverage bigWig files for visualisation in genome browsers
+    //
     if ((params.source == 'genome_bam' && !params.skip_bigwig) || (!params.skip_alignment && !params.skip_bigwig && params.source == 'fastq')) {
-        BEDTOOLS_GENOMECOV(ch_genome_bam)
 
-        BEDGRAPH_TO_BIGWIG_FORWARD(BEDTOOLS_GENOMECOV.out.bedgraph_forward, ch_chrom_sizes)
+        BEDTOOLS_GENOMECOV_FORWARD(
+            ch_genome_bam.map { meta, bam -> [ meta, bam, 0 ]},
+            ch_chrom_sizes.map { _meta, sizes -> sizes }, 'bedGraph', true)
+        BEDTOOLS_GENOMECOV_REVERSE(ch_genome_bam.map { meta, bam -> [ meta, bam, 0]}, ch_chrom_sizes.map { _meta, sizes -> sizes }, 'bedGraph', true)
 
-        BEDGRAPH_TO_BIGWIG_REVERSE(BEDTOOLS_GENOMECOV.out.bedgraph_reverse, ch_chrom_sizes)
+        BEDGRAPH_TO_BIGWIG_FORWARD(BEDTOOLS_GENOMECOV_FORWARD.out.genomecov, ch_chrom_sizes.map { _meta, sizes -> sizes })
+        BEDGRAPH_TO_BIGWIG_REVERSE(BEDTOOLS_GENOMECOV_REVERSE.out.genomecov, ch_chrom_sizes.map { _meta, sizes -> sizes })
     }
 
     // ====================================================================
@@ -533,7 +535,7 @@ workflow RNASPLICE {
         }
 
     def ch_collated_versions = softwareVersionsToYAML(topic_versions_string).collectFile(
-        storeDir: "${outdir}/pipeline_info",
+        storeDir: "${params.outdir}/pipeline_info",
         name: 'nf_core_' + 'rnasplice_software_' + 'mqc_' + 'versions.yml',
         sort: true,
         newLine: true,

@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `HTSeq` to version 2.1.2 for improved performance and bug fixes.
 - Updated `DEXSeq` to version 1.56.0 for improved performance and bug fixes.
 - Update `Suppa` to version 2.4 for improved performance and bug fixes.
+- Bumped `nf-schema` to version 2.7.2
+- Applied static typing to `params` in `main.nf`.
+- Minimum Nextflow version updated to 26.04.0 for static typing support.
 
 ### Fixed
 
