@@ -249,8 +249,6 @@ workflow {
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    log.info("params.fasta: {}", params.fasta)
-
     PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
