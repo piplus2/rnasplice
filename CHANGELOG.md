@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping
 - Pass the correct contrasts channel instead of the samplesheet channel `RMATS` and `SUPPA`
 - Modules `publishDir.saveAS` follow the nf-core standard for conditional output.
+- Add validation for sample names to be compliant with R. See issue #140
 
 ## v1.0.5 - 2024-11-03
 
@@ -51,7 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Dev v1.0.5dev - TBD - TBD
 
 - Add first steps of leafcutter splicing quantification
-- Patch for run_drimseq_filter.R to allow sample names with special characters. See issue #140
 
 ## v1.0.4 - 2024-04-21
 
