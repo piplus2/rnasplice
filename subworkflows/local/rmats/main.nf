@@ -23,8 +23,6 @@ workflow RMATS {
 
     main:
 
-    ch_contrasts = ch_contrastsheet.splitCsv(header: true)
-
     if (is_single_condition) {
 
         //
@@ -46,9 +44,8 @@ workflow RMATS {
         )
 
         ch_prep_ready = ch_contrasts_bamlist
-            .join( CREATE_BAMLIST.out.bamlists, by: 0 )
-            .map { contrast, cond1, meta1, bam1, list_txts ->
-                def bam1_txt = list_txts[0]
+            .join( CREATE_BAMLIST.out.bam_list1, by: 0 )
+            .map { contrast, cond1, meta1, bam1, bam1_txt ->
                 return [ contrast, cond1, meta1, bam1, bam1_txt ]
             }
 
@@ -94,42 +91,61 @@ workflow RMATS {
             // PAIRED SAMPLES
             //
 
+            ch_contrasts_tx   = ch_contrastsheet.splitCsv(header: true)
+            ch_contrasts_ctrl = ch_contrastsheet.splitCsv(header: true)
+
             // Re-parse samplesheet to get stable per-sample index
             // Deduplicating first handles multi-lane samples
             ch_sample_index = ch_samplesheet
                 .splitCsv(header: true)
-                .map { row -> row.sample }
-                .unique()
-                .withIndex()
-                .map { id, idx -> [ id, idx ] }
+                .collect()
+                .flatMap { rows ->
+                    def by_condition = [:]
+                    rows.each { row ->
+                        by_condition.computeIfAbsent(row.condition) { [] } << row.sample
+                    }
+                    by_condition.collectMany { condition, samples ->
+                        samples.withIndex().collect { sample, idx -> [ sample, idx ] }
+                    }
+                }
 
-            // Stamp each BAM with its samplesheet position via meta.id join
-            ch_indexed_bams = ch_genome_bam_conditions
+            ch_genome_bam_conditions
+                .multiMap { condition, meta, bam ->
+                    tx:   [ condition, meta, bam ]
+                    ctrl: [ condition, meta, bam ]
+                }
+                .set { ch_bams_fork }
+
+            ch_indexed_bams_tx = ch_bams_fork.tx
                 .map { condition, meta, bam -> [ meta.id, condition, meta, bam ] }
                 .join( ch_sample_index, by: 0 )
-                .map { _id, condition, meta, bam, idx ->
-                    [ condition, idx, meta, bam ]
-                }
+                .map { _id, condition, meta, bam, idx -> [ condition, idx, meta, bam ] }
+
+            ch_indexed_bams_ctrl = ch_bams_fork.ctrl
+                .map { condition, meta, bam -> [ meta.id, condition, meta, bam ] }
+                .join( ch_sample_index, by: 0 )
+                .map { _id, condition, meta, bam, idx -> [ condition, idx, meta, bam ] }
+
 
             // Build per-contrast pairs keyed by contrast__sample_id
-            ch_tx = ch_contrasts
-                .map { row -> [ row.treatment, row ] }
-                .combine( ch_indexed_bams, by: 0 )
+            ch_tx = ch_contrastsheet.splitCsv(header: true)
+                .map { row -> [ row.treatment, row ] }           // key: treatment condition
+                .combine( ch_indexed_bams_tx, by: 0 )            // match BAMs by condition
                 .map { _condition, row, idx, meta, bam ->
-                    [ "${row.contrast}__${meta.id}", idx, row, meta, bam ]
+                    [ row.contrast, meta.id, idx, row, meta, bam ]  // key: contrast + sample id (separate)
                 }
 
-            ch_ctrl = ch_contrasts
-                .map { row -> [ row.control, row ] }
-                .combine( ch_indexed_bams, by: 0 )
+            ch_ctrl = ch_contrastsheet.splitCsv(header: true)
+                .map { row -> [ row.control, row ] }             // key: control condition
+                .combine( ch_indexed_bams_ctrl, by: 0 )          // match BAMs by condition
                 .map { _condition, row, idx, meta, bam ->
-                    [ "${row.contrast}__${meta.id}", idx, row, meta, bam ]
+                    [ row.contrast, meta.id, idx, row, meta, bam ]  // same contrast + sample id
                 }
 
             // Join treatment and control on contrast__sample_id
             ch_fully_paired = ch_tx
-                .join( ch_ctrl, by: 0 )
-                .map { _pair_key, tx_idx, tx_row, tx_meta, tx_bam, ctrl_idx, _ctrl_row, ctrl_meta, ctrl_bam ->
+                .join( ch_ctrl, by: [0, 2] )  // join on both contrast AND sample id
+                .map { contrast_name, sample_id, tx_idx, tx_row, tx_meta, tx_bam, ctrl_idx, _ctrl_row, ctrl_meta, ctrl_bam ->
                     tx_row + [
                         tx_idx   : tx_idx,
                         tx_meta  : tx_meta,
@@ -170,6 +186,8 @@ workflow RMATS {
             // UNPAIRED SAMPLES
             //
 
+            ch_contrasts = ch_contrastsheet.splitCsv(header: true)
+
             ch_grouped_bams = ch_genome_bam_conditions
                 .groupTuple(by: 0)
 
@@ -193,10 +211,9 @@ workflow RMATS {
         )
 
         ch_prep_ready = ch_contrasts_bamlist
-            .join( CREATE_BAMLIST.out.bamlists, by: 0 )
-            .map { contrast, cond1, meta1, bam1, cond2, meta2, bam2, list_txts ->
-                def bam1_txt = list_txts[0]
-                def bam2_txt = list_txts[1]
+            .join( CREATE_BAMLIST.out.bam_list1, by: 0 )
+            .join( CREATE_BAMLIST.out.bam_list2, by: 0 )
+            .map { contrast, cond1, meta1, bam1, cond2, meta2, bam2, bam1_txt, bam2_txt ->
                 return [ contrast, cond1, meta1, bam1, bam1_txt, cond2, meta2, bam2, bam2_txt ]
             }
 

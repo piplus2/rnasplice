@@ -284,7 +284,6 @@ workflow RNASPLICE {
         if (params.rmats) {
             ch_genome_bam
                 .map { meta, bam -> [meta.condition, meta, bam] }
-                .groupTuple(by: 0)
                 .set { ch_genome_bam_conditions }
 
             def lines
@@ -299,6 +298,7 @@ workflow RNASPLICE {
             def is_single_condition = lines[1..-1].collect { it -> it.split(',')[condition_idx].trim() }.unique().size() == 1
 
             RMATS(
+                channel.value(file(params.input)),
                 ch_contrastsheet,
                 ch_genome_bam_conditions,
                 ch_gtf,
