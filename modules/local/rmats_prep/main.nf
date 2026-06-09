@@ -1,11 +1,11 @@
 process RMATS_PREP {
-    tag "$cond1-$cond2"
+    tag { cond2 ? "${cond1}-${cond2}" : "${cond1}" }
     label 'process_high'
 
-    conda 'bioconda::r-pairadise=1.0.0 bioconda::rmats=4.1.2'
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-8ea76ff0a6a4c7e5c818fd4281abf918f92eeeae:121e48ab4817ec619c157a346458efca1ccf3c0a-0' :
-        'biocontainers/mulled-v2-8ea76ff0a6a4c7e5c818fd4281abf918f92eeeae:121e48ab4817ec619c157a346458efca1ccf3c0a-0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b7a2184a4c9e054a13811c086f2d6095637be0f519191db74c35650085f5c20/data' :
+        'community.wave.seqera.io/library/rmats:4.3.0--177f3a2035a879e5' }"
 
     input:
     path gtf                                     // /path/to/genome.gtf
@@ -25,12 +25,12 @@ process RMATS_PREP {
     task.ext.when == null || task.ext.when
 
     script:
-    output_dir = cond2 ? "$cond1-$cond2" : '.'
+    output_dir = cond2 ? "${cond1}-${cond2}" : '.'
 
      // Only need to take meta1 as samples have same strand and read type info
     // Only need to take meta1 as samples have same strand and read type info
     // - see rnasplice.nf input check for rmats
-    def meta = meta1[0]
+    def meta = meta1 instanceof List ? meta1[0] : meta1
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${cond2 ? "$cond1-$cond2" : '.'}"
 
@@ -49,9 +49,6 @@ process RMATS_PREP {
 
     // Whether user wants to run with novel splice sites flag
     def novel_splice_sites = rmats_novel_splice_site ? '--novelSS' : ''
-
-    // Additional args for when running with --novelSS flag
-    // User defined else defauls to 50, 500
     def min_intron_len = ''
     def max_exon_len   = ''
     if (rmats_novel_splice_site) {
@@ -60,12 +57,11 @@ process RMATS_PREP {
     }
 
     def b1 = bam1_text ? "--b1 ${bam1_text}" : ''
-    def b2 = bam2_text ? "--b2 ${bam2_text}" : ''
+    def b2 = (cond2 && bam2_text) ? "--b2 ${bam2_text}" : ''
 
     """
-    mkdir -p $prefix/rmats_temp
-
-    mkdir -p $prefix/rmats_prep
+    mkdir -p ${prefix}/rmats_temp
+    mkdir -p ${prefix}/rmats_prep
 
     rmats.py \\
         ${args} \\

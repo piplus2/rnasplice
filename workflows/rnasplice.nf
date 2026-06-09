@@ -283,17 +283,18 @@ workflow RNASPLICE {
 
         if (params.rmats) {
             if (params.source == 'genome_bam') {
-                BAM_SORT_STATS_SAMTOOLS.out.bam
-                    .map { meta, bam -> [meta.condition, meta, bam] }
-                    .groupTuple(by: 0)
-                    .set { ch_genome_bam_conditions }
+                ch_sorted_bam = BAM_SORT_STATS_SAMTOOLS.out.bam
+
             }
             else {
-                ALIGN_STAR.out.bam
-                    .map { meta, bam -> [meta.condition, meta, bam] }
-                    .groupTuple(by: 0)
-                    .set { ch_genome_bam_conditions }
+                ch_sorted_bam = ALIGN_STAR.out.bam
             }
+
+            ch_genome_bam_conditions = ch_sorted_bam
+                .map { meta, bam ->
+                    [ meta.condition, meta, bam ]
+            }
+
 
             def lines
             if (params.input.startsWith('http')) {

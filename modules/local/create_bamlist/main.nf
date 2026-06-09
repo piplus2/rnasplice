@@ -7,20 +7,21 @@ process CREATE_BAMLIST {
         'biocontainers/sed:4.7.0' }"
 
     input:
-    tuple val(contrast), val(cond1), val(cond2), path(bam1), path(bam2)
+    tuple val(contrast), val(cond1), path(bam1), val(cond2),path(bam2)
 
     output:
-    tuple val(contrast), path("${cond1}_bamlist.txt"), optional: true, emit: bamlist1
-    tuple val(contrast), path("${cond2}_bamlist.txt"), optional: true, emit: bamlist2
+    tuple val(contrast), path("*_bamlist.txt"), emit: bamlists, optional: true
     tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1'), topic: versions, emit: versions_sed
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def bam2_cmd = cond2 ? "echo ${bam2} | sed 's: :,:g' > ${cond2}_bamlist.txt" : ''
+    def b1_list = bam1 instanceof List ? bam1.join(' ') : bam1
+    def b2_list = bam2 instanceof List ? bam2.join(' ') : bam2
+    def bam2_cmd = (cond2 && b2_list) ? "echo ${b2_list} | sed 's: :,:g' > ${cond2}_bamlist.txt" : ''
     """
-    echo ${bam1} | sed 's: :,:g' > ${cond1}_bamlist.txt
+    echo ${b1_list} | sed 's: :,:g' > ${cond1}_bamlist.txt
     ${bam2_cmd}
     """
 }

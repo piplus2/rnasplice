@@ -1,11 +1,11 @@
 process RMATS_POST {
-    tag "$cond1-$cond2"
+    tag { cond2 ? "${cond1}-${cond2}" : "${cond1}" }
     label 'process_high'
 
-    conda 'bioconda::r-pairadise=1.0.0 bioconda::rmats=4.1.2'
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-8ea76ff0a6a4c7e5c818fd4281abf918f92eeeae:121e48ab4817ec619c157a346458efca1ccf3c0a-0' :
-        'biocontainers/mulled-v2-8ea76ff0a6a4c7e5c818fd4281abf918f92eeeae:121e48ab4817ec619c157a346458efca1ccf3c0a-0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8b/8b7a2184a4c9e054a13811c086f2d6095637be0f519191db74c35650085f5c20/data' :
+        'community.wave.seqera.io/library/rmats:4.3.0--177f3a2035a879e5' }"
 
     input:
     path gtf                                     // /path/to/genome.gtf
@@ -27,34 +27,27 @@ process RMATS_POST {
 
     script:
 
-    output_dir = cond2 ? "$cond1-$cond2" : '.'
+    output_dir = cond2 ? "${cond1}-${cond2}" : '.'
 
      // Only need to take meta1 as samples have same strand and read type info
 
     // Only need to take meta1 as samples have same strand and read type info
     // - see rnasplice.nf input check for rmats
-    def meta = meta1[0]
+    def meta = meta1 instanceof List ? meta1[0] : meta1
     def args = task.ext.args ?: ''
-    def prefix   = task.ext.prefix ?: "${cond2 ? "$cond1-$cond2" : '.'}"
+    def prefix   = task.ext.prefix ?: "${cond2 ? "${cond1}-${cond2}" : '.'}"
 
     // Take single/paired end information from meta
     def read_type = meta.single_end ? 'single' : 'paired'
 
     // Default strandedness to fr-unstranded - also if user supplies "unstranded"
     def strandedness = 'fr-unstranded'
-
-    // Change strandedness based on user samplesheet input
     if (meta.strandedness == 'forward') {
         strandedness  = 'fr-secondstrand'
     } else if (meta.strandedness == 'reverse') {
         strandedness  = 'fr-firststrand'
     }
 
-    // User defined label if samples are paired and paired stats required
-    // Rmats uses bioconductor-pairadise Rscript downstream
-    def paired_stats = rmats_paired_stats ? '--paired-stats' : ''
-
-    // Whether user wants to run with novel splice sites flag
     def novel_splice_sites = rmats_novel_splice_site ? '--novelSS' : ''
 
     // Additional args for when running with --novelSS flag
@@ -67,7 +60,17 @@ process RMATS_POST {
     }
 
     def b1 = bam1_text ? "--b1 ${bam1_text}" : ''
-    def b2 = bam2_text ? "--b2 ${bam2_text}" : ''
+    def b2 = ''
+    def stat_flag = ''
+    def paired_stats = ''
+
+    if (cond2 && bam2_text) {
+        b2 = "--b2 ${bam2_text}"
+        paired_stats = rmats_paired_stats ? '--paired-stats' : ''
+    }
+    else {
+        stat_flag = '--statoff'
+    }
 
     """
     mkdir -p ${prefix}/rmats_post
@@ -91,6 +94,7 @@ process RMATS_POST {
         ${novel_splice_sites} \\
         ${min_intron_len} \\
         ${max_exon_len} \\
+        ${stat_flag} \\
         --allow-clipping \\
         1> ${prefix}/rmats_post.log
     """
