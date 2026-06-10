@@ -18,8 +18,8 @@ process RMATS_POST {
     val rmats_paired_stats                       // val params.rmats_paired_stats
 
     output:
-    path "${output_dir}/*"                   , emit: rmats_post
-    path "${output_dir}/rmats_post.log"      , emit: log
+    path "${output_dir}/${rmats_output_dir}/*"    , emit: rmats_post
+    path "${output_dir}/${logfile}"               , emit: log
     tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:
@@ -27,15 +27,13 @@ process RMATS_POST {
 
     script:
 
-    output_dir = cond2 ? ( rmats_paired_stats ? "${cond1}-${cond2}/rmats_post_paired" : "${cond1}-${cond2}/rmats_post" ) : 'rmats_post'
-
-     // Only need to take meta1 as samples have same strand and read type info
+    output_dir = cond2 ? "${cond1}-${cond2}" : '.'
+    rmats_output_dir = rmats_paired_stats ? "rmats_post_paired" : "rmats_post"
 
     // Only need to take meta1 as samples have same strand and read type info
     // - see rnasplice.nf input check for rmats
     def meta = meta1 instanceof List ? meta1[0] : meta1
     def args = task.ext.args ?: ''
-    def prefix   = task.ext.prefix ?: "${cond2 ? "${cond1}-${cond2}" : '.'}"
 
     // Take single/paired end information from meta
     def read_type = meta.single_end ? 'single' : 'paired'
@@ -52,6 +50,7 @@ process RMATS_POST {
 
     // Additional args for when running with --novelSS flag
     // User defined else defauls to 50, 500
+    // TODO: move these to modules.config
     def min_intron_len = ''
     def max_exon_len   = ''
     if (rmats_novel_splice_site) {
@@ -72,15 +71,17 @@ process RMATS_POST {
         stat_flag = '--statoff'
     }
 
+    logfile = rmats_paired_stats ? "rmats_post_paired.log" : "rmats_post.log"
+
     """
-    mkdir -p ${output_dir}
+    mkdir -p ${output_dir}/${rmats_output_dir}
 
     rmats.py \\
         ${args} \\
         --gtf ${gtf} \\
         ${b1} \\
         ${b2} \\
-        --od ${output_dir} \\
+        --od ${output_dir}/${rmats_output_dir} \\
         --tmp ./ \\
         -t ${read_type} \\
         --libType ${strandedness} \\
@@ -96,7 +97,7 @@ process RMATS_POST {
         ${max_exon_len} \\
         ${stat_flag} \\
         --allow-clipping \\
-        1> ${output_dir}/rmats_post.log
+        1> ${output_dir}/${logfile}
     """
 
 }
