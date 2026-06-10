@@ -40,7 +40,7 @@ The samplesheet can have as many columns as you desire, however, there is a stri
 
 In the case of paired differential splicing analysis (e.g., with `rMATS`), the treatment and control samples order must match:
 
-```console
+```csv
 sample,fastq_1,fastq_2,strandedness,condition
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward,treatment
 CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward,treatment
