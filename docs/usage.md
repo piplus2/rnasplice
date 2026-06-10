@@ -45,9 +45,9 @@ sample,fastq_1,fastq_2,strandedness,condition
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward,treatment
 CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward,treatment
 CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward,treatment
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,reverse,control
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,reverse,control
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,reverse,control
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,AEG588A4_S4_L003_R2_001.fastq.gz,reverse,control
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,AEG588A5_S5_L003_R2_001.fastq.gz,reverse,control
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz,reverse,control
 ```
 
 ### Source configuration
@@ -217,7 +217,7 @@ At current, however, there are some restrictions to running an rMATS analysis:
 
 - Samples need to have the same strandedness and read type (single-end/paired-end).
 
-- The `--rmats_paired_stats` can be set to `true` only if there are two conditions. Samples in samplesheet must follow the paired design order (see Samplesheet input section above).
+- The `--rmats_paired_stats` can be set to `true` only if there are two conditions. Samples in samplesheet must follow the paired design order (see [Samplesheet input section](#samplesheet-input) above).
 
 Furthermore, `--rmats_read_len` has to be set by the user and if the read length is variable, an average or median read length has to be specified.
 
