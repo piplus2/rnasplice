@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add first steps of leafcutter splicing quantification
 - Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired.
 - Improve documentation for `--rmats_paired_stats`.
+- Add test config for unpaired `rMATS`.
 
 ### Changed
 
@@ -26,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped `nf-schema` to version 2.7.2
 - Applied static typing to `params` in `main.nf`.
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
-- `RMATS` paired stats default changed to false, as this is not appropriate for all datasets.
+- `RMATS` paired stats default changed to `false`, as this is not appropriate for all datasets.
 
 ### Fixed
 
