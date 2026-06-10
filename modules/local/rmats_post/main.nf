@@ -18,7 +18,7 @@ process RMATS_POST {
     val rmats_paired_stats                       // val params.rmats_paired_stats
 
     output:
-    path "${output_dir}/rmats_post/*"        , emit: rmats_post
+    path "${output_dir}/*"        , emit: rmats_post
     path "${output_dir}/rmats_post.log"      , emit: log
     tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
@@ -27,7 +27,7 @@ process RMATS_POST {
 
     script:
 
-    output_dir = cond2 ? "${cond1}-${cond2}" : '.'
+    output_dir = cond2 ? { rmats_paired_stats ? "${cond1}-${cond2}/rmats_post_paired" : "${cond1}-${cond2}/rmats_post" } : 'rmats_post'
 
      // Only need to take meta1 as samples have same strand and read type info
 
