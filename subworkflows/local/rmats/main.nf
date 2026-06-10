@@ -91,9 +91,6 @@ workflow RMATS {
             // PAIRED SAMPLES
             //
 
-            ch_contrasts_tx   = ch_contrastsheet.splitCsv(header: true)
-            ch_contrasts_ctrl = ch_contrastsheet.splitCsv(header: true)
-
             // Re-parse samplesheet to get stable per-sample index
             // Deduplicating first handles multi-lane samples
             ch_sample_index = ch_samplesheet
@@ -104,7 +101,7 @@ workflow RMATS {
                     rows.each { row ->
                         by_condition.computeIfAbsent(row.condition) { [] } << row.sample
                     }
-                    by_condition.collectMany { condition, samples ->
+                    by_condition.collectMany { _condition, samples ->
                         samples.withIndex().collect { sample, idx -> [ sample, idx ] }
                     }
                 }
@@ -145,7 +142,7 @@ workflow RMATS {
             // Join treatment and control on contrast__sample_id
             ch_fully_paired = ch_tx
                 .join( ch_ctrl, by: [0, 2] )  // join on both contrast AND sample id
-                .map { contrast_name, sample_id, tx_idx, tx_row, tx_meta, tx_bam, ctrl_idx, _ctrl_row, ctrl_meta, ctrl_bam ->
+                .map { _contrast, _sample_id, tx_idx, tx_row, tx_meta, tx_bam, ctrl_idx, _ctrl_row, ctrl_meta, ctrl_bam ->
                     tx_row + [
                         tx_idx   : tx_idx,
                         tx_meta  : tx_meta,
