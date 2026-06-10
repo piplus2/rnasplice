@@ -7124,11 +7124,9 @@
                 "ERR188454_sorted.bam.bai:md5,7ee5dcbe3fb85f79ebf8fede3950e097",
                 "ERR204916_sorted.bam:md5,c316314ca9c0f08fe075dcae87c548d1",
                 "ERR204916_sorted.bam.bai:md5,06f74b05d47ed6ce5f02b847706ded18",
-                "contrast_GBR-YRI.exprs.csv:md5,b091c7556033b165f942cbfb43407aa0",
                 "contrast_GBR-YRI.usage.exon.csv:md5,90c732efe7f3ce4e68fb8f46ec2c3bf9",
                 "contrast_GBR-YRI.usage.gene.csv:md5,e8a84ad7c6c24cf3f024498648f91281",
                 "contrast_GBR-YRI.usage.simes.csv:md5,015da45693647f9dc1fa359665701cc9",
-                "contrast_YRI-GBR.exprs.csv:md5,e0f7d803353b3e27ffe49d0cc47c4ce4",
                 "contrast_YRI-GBR.usage.exon.csv:md5,d7430c53596e395b3887ad79dd374e14",
                 "contrast_YRI-GBR.usage.gene.csv:md5,d6edbf1a5073b9a9f08d6b97b3b33477",
                 "contrast_YRI-GBR.usage.simes.csv:md5,3c73b5e0ae47b9f443fcb92db68a6841",
@@ -7234,7 +7232,7 @@
                 "events_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453"
             ]
         ],
-        "timestamp": "2026-06-10T11:05:30.204560829",
+        "timestamp": "2026-06-10T11:42:57.784928596",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.1"
