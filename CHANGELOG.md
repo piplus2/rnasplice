@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped `nf-schema` to version 2.7.2
 - Applied static typing to `params` in `main.nf`.
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
+- `RMATS` paired stats default changed to false, as this is not appropriate for all datasets.
 
 ### Fixed
 
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pass the correct contrasts channel instead of the samplesheet channel `RMATS` and `SUPPA`
 - Modules `publishDir.saveAS` follow the nf-core standard for conditional output.
 - Add validation for sample names to be compliant with R. See issue #140
+- Fixed bug in `RMATS` where the order of the samples in the paired model was not correctly determined from the samplesheet.
 
 ## v1.0.5 - 2024-11-03
 
