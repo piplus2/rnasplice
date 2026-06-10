@@ -73,14 +73,14 @@ process RMATS_POST {
     }
 
     """
-    mkdir -p ${prefix}/rmats_post
+    mkdir -p ${output_dir}
 
     rmats.py \\
         ${args} \\
         --gtf ${gtf} \\
         ${b1} \\
         ${b2} \\
-        --od ${prefix}/rmats_post \\
+        --od ${output_dir} \\
         --tmp ./ \\
         -t ${read_type} \\
         --libType ${strandedness} \\
@@ -96,7 +96,7 @@ process RMATS_POST {
         ${max_exon_len} \\
         ${stat_flag} \\
         --allow-clipping \\
-        1> ${prefix}/rmats_post.log
+        1> ${output_dir}/rmats_post.log
     """
 
 }
