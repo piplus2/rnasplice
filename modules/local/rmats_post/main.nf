@@ -1,15 +1,15 @@
 process RMATS_POST {
-    tag "$cond1-$cond2"
+    tag { cond2 ? "${cond1}-${cond2}" : "${cond1}" }
     label 'process_high'
 
-    conda 'bioconda::r-pairadise=1.0.0 bioconda::rmats=4.1.2'
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-8ea76ff0a6a4c7e5c818fd4281abf918f92eeeae:121e48ab4817ec619c157a346458efca1ccf3c0a-0' :
-        'biocontainers/mulled-v2-8ea76ff0a6a4c7e5c818fd4281abf918f92eeeae:121e48ab4817ec619c157a346458efca1ccf3c0a-0' }"
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/46/4697fb2978d58ad7209a2d7b267bc02cf56cb8c256d787767b482c97346330d6/data'
+        : 'community.wave.seqera.io/library/r-pairadise_rmats:4a32921359285283'}"
 
     input:
     path gtf                                     // /path/to/genome.gtf
-    tuple val(contrast), val(cond1), val(cond2), val(meta1), val(meta2), path(bam1), path(bam2), path(bam1_text), path(bam2_text), path(rmats_temp)
+    tuple val(contrast), val(cond1), val(meta1),  path(bam1), path(bam1_text), val(cond2), val(meta2), path(bam2), path(bam2_text), path(rmats_temp)
     val rmats_read_len                           // val params.rmats_read_len
     val rmats_splice_diff_cutoff                 // val params.rmats_splice_diff_cutoff
     val rmats_novel_splice_site                  // val params.rmats_novel_splice_site
@@ -18,47 +18,39 @@ process RMATS_POST {
     val rmats_paired_stats                       // val params.rmats_paired_stats
 
     output:
-    path "${output_dir}/rmats_post/*"        , emit: rmats_post
-    path "${output_dir}/rmats_post.log"      , emit: log
-    tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | head -1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
+    path "${output_dir}/${rmats_output_dir}/*"    , emit: rmats_post
+    path "${output_dir}/${logfile}"               , emit: log
+    tuple val("${task.process}"), val('rmats'), eval('rmats.py --version 2>&1 | sed -e "s/v//g"'), topic: versions, emit: versions_rmats
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
 
-    output_dir = "$cond1-$cond2"
-
-     // Only need to take meta1 as samples have same strand and read type info
+    output_dir = cond2 ? "${cond1}-${cond2}" : '.'
+    rmats_output_dir = rmats_paired_stats ? "rmats_post_paired" : "rmats_post"
 
     // Only need to take meta1 as samples have same strand and read type info
     // - see rnasplice.nf input check for rmats
-    def meta = meta1[0]
+    def meta = meta1 instanceof List ? meta1[0] : meta1
     def args = task.ext.args ?: ''
-    def prefix   = task.ext.prefix ?: "${cond2 ? "$cond1-$cond2" : '.'}"
 
     // Take single/paired end information from meta
     def read_type = meta.single_end ? 'single' : 'paired'
 
     // Default strandedness to fr-unstranded - also if user supplies "unstranded"
     def strandedness = 'fr-unstranded'
-
-    // Change strandedness based on user samplesheet input
     if (meta.strandedness == 'forward') {
         strandedness  = 'fr-secondstrand'
     } else if (meta.strandedness == 'reverse') {
         strandedness  = 'fr-firststrand'
     }
 
-    // User defined label if samples are paired and paired stats required
-    // Rmats uses bioconductor-pairadise Rscript downstream
-    def paired_stats = rmats_paired_stats ? '--paired-stats' : ''
-
-    // Whether user wants to run with novel splice sites flag
     def novel_splice_sites = rmats_novel_splice_site ? '--novelSS' : ''
 
     // Additional args for when running with --novelSS flag
     // User defined else defauls to 50, 500
+    // TODO: move these to modules.config
     def min_intron_len = ''
     def max_exon_len   = ''
     if (rmats_novel_splice_site) {
@@ -67,18 +59,30 @@ process RMATS_POST {
     }
 
     def b1 = bam1_text ? "--b1 ${bam1_text}" : ''
-    def b2 = bam2_text ? "--b2 ${bam2_text}" : ''
+    def b2 = ''
+    def stat_flag = ''
+    def paired_stats = ''
+
+    if (cond2 && bam2_text) {
+        b2 = "--b2 ${bam2_text}"
+        paired_stats = rmats_paired_stats ? '--paired-stats' : ''
+    }
+    else {
+        stat_flag = '--statoff'
+    }
+
+    logfile = rmats_paired_stats ? "rmats_post_paired.log" : "rmats_post.log"
 
     """
-    mkdir -p ${prefix}/rmats_post
+    mkdir -p ${output_dir}/${rmats_output_dir}
 
     rmats.py \\
         ${args} \\
         --gtf ${gtf} \\
         ${b1} \\
         ${b2} \\
-        --od ${prefix}/rmats_post \\
-        --tmp ${rmats_temp} \\
+        --od ${output_dir}/${rmats_output_dir} \\
+        --tmp ./ \\
         -t ${read_type} \\
         --libType ${strandedness} \\
         --readLength ${rmats_read_len} \\
@@ -91,8 +95,9 @@ process RMATS_POST {
         ${novel_splice_sites} \\
         ${min_intron_len} \\
         ${max_exon_len} \\
+        ${stat_flag} \\
         --allow-clipping \\
-        1> ${prefix}/rmats_post.log
+        1> ${output_dir}/${logfile}
     """
 
 }

@@ -431,8 +431,8 @@ If [IsoformSwitchAnalyzeR](https://www.bioconductor.org/packages/release/bioc/ht
 - `rmats/`
   - `{contrast}/rmats_temp/*`: Folder containing .txt and .rmats files which are input for rmats_post step.
   - `{contrast}/rmats_prep.log`: Log file generated for rmats_prep step.
-  - `{contrast}/rmats_post/*`: Folder containing results of differential alternative splicing in .txt files.
-  - `{contrast}/rmats_post.log`: Log file generated for rmats_post step.
+  - `{contrast}/rmats_post{_paired}/*`: Folder containing results of differential alternative splicing in .txt files. A suffix `_paired` is added to the folder name if the paired analysis option is used.
+  - `{contrast}/rmats_post{_paired}.log`: Log file generated for rmats_post step.
 
 </details>
 

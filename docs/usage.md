@@ -38,6 +38,18 @@ The samplesheet can have as many columns as you desire, however, there is a stri
 | `transcriptome_bam` | Full path to aligned transcriptome file, derived from splicing aware mapper (STAR, HiSat, etc). File has to be in ".bam" format.                                                       |
 | `salmon_results`    | Full path to the result folder produced by salmon quantification.                                                                                                                      |
 
+In the case of paired differential splicing analysis (e.g., with `rMATS`), the treatment and control samples order must match:
+
+```csv
+sample,fastq_1,fastq_2,strandedness,condition
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward,treatment
+CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward,treatment
+CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward,treatment
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,AEG588A4_S4_L003_R2_001.fastq.gz,reverse,control
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,AEG588A5_S5_L003_R2_001.fastq.gz,reverse,control
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,AEG588A6_S6_L003_R2_001.fastq.gz,reverse,control
+```
+
 ### Source configuration
 
 The pipeline can be started from four sources of input data. Use this parameter to specify the input source.
@@ -205,7 +217,7 @@ At current, however, there are some restrictions to running an rMATS analysis:
 
 - Samples need to have the same strandedness and read type (single-end/paired-end).
 
-- The `--rmats_paired_stats` can be set to `true` only if there are two conditions.
+- The `--rmats_paired_stats` can be set to `true` only if there are two conditions. Samples in samplesheet must follow the paired design order (see [Samplesheet input section](#samplesheet-input) above).
 
 Furthermore, `--rmats_read_len` has to be set by the user and if the read length is variable, an average or median read length has to be specified.
 
