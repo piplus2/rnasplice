@@ -217,7 +217,7 @@ At current, however, there are some restrictions to running an rMATS analysis:
 
 - Samples need to have the same strandedness and read type (single-end/paired-end).
 
-- The `--rmats_paired_stats` can be set to `true` (default = `false`) only if there are two conditions. Samples in samplesheet must follow the paired design order (see Samplesheet input section above).
+- The `--rmats_paired_stats` can be set to `true` only if there are two conditions. Samples in samplesheet must follow the paired design order (see Samplesheet input section above).
 
 Furthermore, `--rmats_read_len` has to be set by the user and if the read length is variable, an average or median read length has to be specified.
 
