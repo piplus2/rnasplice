@@ -2,5 +2,5 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - rmats=4.3.0
-  - r-pairadise=1.0.0
+  - bioconda::rmats=4.3.0
+  - bioconda::r-pairadise=1.0.0
