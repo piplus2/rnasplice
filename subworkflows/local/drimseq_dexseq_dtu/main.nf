@@ -14,7 +14,6 @@ workflow DRIMSEQ_DEXSEQ_DTU {
     tximport_tx2gene        // path: tximport.tx2gene.tsv
     samplesheet             // path: /path/to/samplesheet.csv
     contrastsheet           // path: contrastsheet
-    n_dexseq_plot           // val: numeric
     min_samps_gene_expr     // params.min_samps_gene_expr
     min_samps_feature_expr  // params.min_samps_feature_expr
     min_samps_feature_prop  // params.min_samps_feature_prop
@@ -47,8 +46,7 @@ workflow DRIMSEQ_DEXSEQ_DTU {
     DEXSEQ_DTU (
         DRIMSEQ_FILTER.out.drimseq_samples_tsv,
         DRIMSEQ_FILTER.out.drimseq_counts_tsv,
-        contrastsheet,
-        n_dexseq_plot
+        contrastsheet
     )
 
     //
