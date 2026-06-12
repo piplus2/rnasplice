@@ -10,7 +10,6 @@ process DEXSEQ_DTU {
     path drimseq_sample_data
     path drimseq_d_counts
     path drimseq_contrast_data
-    val ntop
 
     output:
     path "DEXSeqDataSet.*.rds"  , emit: dexseq_exon_dataset_rds
@@ -28,8 +27,7 @@ process DEXSEQ_DTU {
     """
     run_dexseq_dtu.R ${drimseq_sample_data} \\
         ${drimseq_contrast_data} \\
-        ${drimseq_d_counts} \\
-        ${ntop}
+        ${drimseq_d_counts}
     """
 
 }

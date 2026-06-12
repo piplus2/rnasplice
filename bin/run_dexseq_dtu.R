@@ -14,13 +14,12 @@ BPPARAM <- MulticoreParam(workers = parallel::detectCores() - 1)
 # Parse command arguments
 argv <- commandArgs(trailingOnly = TRUE)
 argc <- length(argv)
-if (argc < 4) {
-  stop("Usage: run_dexseq_dtu.R <samples_table> <contrasts_table> <counts_table> <ntop>")
+if (argc < 3) {
+  stop("Usage: run_dexseq_dtu.R <samples_table> <contrasts_table> <counts_table>")
 }
 samples <- argv[1]
 contrasts <- argv[2]
 counts <- argv[3]
-ntop <- as.integer(argv[4])
 
 #############################
 ## Define helper functions ##
