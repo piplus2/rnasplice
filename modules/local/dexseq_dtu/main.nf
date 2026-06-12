@@ -26,7 +26,10 @@ process DEXSEQ_DTU {
 
     script:
     """
-    run_dexseq_dtu.R $drimseq_sample_data $drimseq_contrast_data $drimseq_d_counts $ntop
+    run_dexseq_dtu.R ${drimseq_sample_data} \\
+        ${drimseq_contrast_data} \\
+        ${drimseq_d_counts} \\
+        ${ntop}
     """
 
 }
