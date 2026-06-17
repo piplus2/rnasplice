@@ -1,0 +1,73 @@
+{
+    "chrX gft - bam": {
+        "content": [
+            {
+                "0": [
+                    "DEXSeq.gff:md5,1dee55f49b03979f8d1c680c665d40a8"
+                ],
+                "1": [
+                    [
+                        "DEXSEQ_ANNOTATION",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ],
+                "gff": [
+                    "DEXSeq.gff:md5,1dee55f49b03979f8d1c680c665d40a8"
+                ],
+                "versions_htseq": [
+                    [
+                        "DEXSEQ_ANNOTATION",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ]
+            },
+            {
+                "versions_htseq": [
+                    [
+                        "DEXSEQ_ANNOTATION",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-13T14:42:06.196529309",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.1"
+        }
+    },
+    "chrX gtf - stub": {
+        "content": [
+            {
+                "0": [
+                    "DEXSeq.gff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    [
+                        "DEXSEQ_ANNOTATION",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ],
+                "gff": [
+                    "DEXSeq.gff:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions_htseq": [
+                    [
+                        "DEXSEQ_ANNOTATION",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-13T12:35:02.387076765",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.1"
+        }
+    }
+}

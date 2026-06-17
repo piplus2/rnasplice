@@ -1,0 +1,63 @@
+// nf-core modules test dexseq/count
+nextflow_process {
+
+    name "Test Process DEXSEQ_ANNOTATION"
+    script "../main.nf"
+    process "DEXSEQ_ANNOTATION"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_"
+    tag "dexseq"
+    tag "dexseq/annotation"
+
+    test("chrX gft - bam") {
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.pipelines_testdata_base_path + 'reference/genes_chrX.gtf', checkIfExists: true)
+                ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+
+    }
+
+
+    test("chrX gtf - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.pipelines_testdata_base_path + 'reference/genes_chrX.gtf', checkIfExists: true)
+                ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}
