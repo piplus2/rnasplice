@@ -1,24 +1,7 @@
 {
-    "dexseq - bam": {
+    "ERR188383 - stub": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "strandedness": "unstranded",
-                            "single_end": true
-                        },
-                        "test.clean.count.txt:md5,3d298b32dfc0a8eafb6870d9fdf74bb5"
-                    ]
-                ],
-                "1": [
-                    [
-                        "DEXSEQ_COUNT",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ],
                 "dexseq_clean_txt": [
                     [
                         {
@@ -26,18 +9,9 @@
                             "strandedness": "unstranded",
                             "single_end": true
                         },
-                        "test.clean.count.txt:md5,3d298b32dfc0a8eafb6870d9fdf74bb5"
+                        "test.clean.count.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "versions_htseq": [
-                    [
-                        "DEXSEQ_COUNT",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ]
-            },
-            {
                 "versions_htseq": [
                     [
                         "DEXSEQ_COUNT",
@@ -47,32 +21,15 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-13T12:21:38.799868413",
+        "timestamp": "2026-06-17T12:35:27.80460067",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.1"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
         }
     },
-    "dexseq - bam - stub": {
+    "ERR188383": {
         "content": [
             {
-                "0": [
-                    [
-                        {
-                            "id": "test",
-                            "strandedness": "unstranded",
-                            "single_end": true
-                        },
-                        "test.clean.count.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    [
-                        "DEXSEQ_COUNT",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ],
                 "dexseq_clean_txt": [
                     [
                         {
@@ -80,7 +37,7 @@
                             "strandedness": "unstranded",
                             "single_end": true
                         },
-                        "test.clean.count.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.clean.count.txt:md5,3d298b32dfc0a8eafb6870d9fdf74bb5"
                     ]
                 ],
                 "versions_htseq": [
@@ -92,10 +49,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-13T12:22:18.128733727",
+        "timestamp": "2026-06-17T12:35:21.990839268",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.1"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
         }
     }
 }

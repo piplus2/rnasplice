@@ -11,7 +11,7 @@ nextflow_process {
     tag "dexseq"
     tag "dexseq/count"
 
-    test("dexseq - bam") {
+    test("ERR188383") {
         when {
             process {
                 """
@@ -35,7 +35,7 @@ nextflow_process {
     }
 
 
-    test("dexseq - bam - stub") {
+    test("ERR188383 - stub") {
 
         options "-stub"
 
