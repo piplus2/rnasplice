@@ -1,5 +1,5 @@
 process DEXSEQ_ANNOTATION {
-    tag "$gtf"
+    tag "${gtf}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -19,13 +19,19 @@ process DEXSEQ_ANNOTATION {
     task.ext.when == null || task.ext.when
 
     script:
-
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "DEXSeq"
-
     def aggregation_arg = aggregation ? '' : '-r no'
-
     """
     dexseq_prepare_annotation.py ${gtf} ${prefix}.gff ${aggregation_arg} ${args}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "DEXSeq"
+    """
+    echo $args
+
+    touch ${prefix}.gff
     """
 }

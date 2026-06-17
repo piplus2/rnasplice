@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "dexseq_exon"
+description: |
+  Differential exon usage analysis using DEXSeq. This module performs differential exon usage analysis using the DEXSeq package in R.
+keywords:
+  - dexseq
+  - differential exon usage
+  - rnaseq
+  - alternative splicing
+tools:
+  - "bioconductor-dexseq":
+      description: "Inference of differential exon usage in RNA-Seq"
+      homepage: "https://bioconductor.org/packages/release/bioc/html/DEXSeq.html"
+      documentation: "https://bioconductor.org/packages/release/bioc/html/DEXSeq.html"
+      tool_dev_url: "https://github.com/Huber-group-EMBL/DEXSeq"
+      doi: "10.18129/B9.bioc.DEXSeq"
+      licence: ["GPL >=3"]
+      identifier: "biotools:dexseq"
+
+input:
+  - dexseq_clean_counts:
+      type: file
+      description: |
+        Input file containing the cleaned count data for the DEXSeq analysis. This file should be in a tab-delimited format and contain the following columns: gene_id, exon_id, sample and count.
+  - gff:
+      type: file
+      description: |
+        Input GFF file containing the gene and exon annotations. This file should be in GFF format and contain the necessary information for the DEXSeq analysis.
+  - samplesheet:
+      type: file
+      description: |
+        Input file containing the sample data for the DEXSeq analysis. This file should be in a tab-delimited format and contain the following columns: sample, condition and sequencing data path.
+  - contrastsheet:
+      type: file
+      description: |
+        Input file containing the contrast data for the DEXSeq analysis. This file should be in a tab-delimited format and contain the following columns: condition and contrast.
+  - ntop:
+      type: integer
+      description: |
+        The number of top genes to plot in the DEXSeq analysis. This parameter specifies how many of the top genes (based on p-value) should be included in the output plots.
+      default: 10
+
+output:
+  dexseq_exon_dataset_rds:
+    - "DEXSeqDataSet.*.rds":
+        type: file
+        description: RDS file containing the DEXSeq exon dataset
+        pattern: "*.{rds}"
+  dexseq_exon_results_rds:
+    - "DEXSeqResults.*.rds":
+        type: file
+        description: RDS file containing the DEXSeq exon results
+        pattern: "*.{rds}"
+  dexseq_gene_results_rds:
+    - "perGeneQValue.*.rds":
+        type: file
+        description: RDS file containing the DEXSeq per gene q-value results
+        pattern: "*.{rds}"
+  dexseq_exon_results_csv:
+    - "DEXSeqResults.*.csv":
+        type: file
+        description: CSV file containing the DEXSeq exon results
+        pattern: "*.{csv}"
+  dexseq_gene_results_csv:
+    - "perGeneQValue.*.csv":
+        type: file
+        description: CSV file containing the DEXSeq per gene q-value results
+        pattern: "*.{csv}"
+  dexseq_plot_results_pdf:
+    - "plotDEXSeq.*.pdf":
+        type: file
+        description: PDF file containing the DEXSeq results plots
+        pattern: "*.{pdf}"
+  versions_R:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - r-base:
+          type: string
+          description: The name of the tool
+      - R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_dexseq:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - bioconductor-dexseq:
+          type: string
+          description: The name of the tool
+      - Rscript -e "library(DEXSeq); cat(as.character(packageVersion(\'DEXSeq\')))":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - r-base:
+          type: string
+          description: The name of the tool
+      - R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//":
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - bioconductor-dexseq:
+          type: string
+          description: The name of the tool
+      - Rscript -e "library(DEXSeq); cat(as.character(packageVersion(\'DEXSeq\')))":
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@bensouthgate"

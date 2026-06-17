@@ -1,5 +1,5 @@
 process DEXSEQ_COUNT {
-    tag "${meta.id}"
+    tag "$meta.id"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -36,5 +36,14 @@ process DEXSEQ_COUNT {
 
     """
     dexseq_count.py ${gff} ${args} ${read_type} -f bam ${bam} -r pos ${prefix}.clean.count.txt -a ${alignment_quality} ${strandedness}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo $args
+
+    touch ${prefix}.clean.count.txt
     """
 }
