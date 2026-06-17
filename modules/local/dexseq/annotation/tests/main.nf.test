@@ -11,7 +11,7 @@ nextflow_process {
     tag "dexseq"
     tag "dexseq/annotation"
 
-    test("chrX gft - bam") {
+    test("chrX gtf") {
         when {
             process {
                 """
@@ -19,6 +19,27 @@ nextflow_process {
                     file(params.pipelines_testdata_base_path + 'reference/genes_chrX.gtf', checkIfExists: true)
                 ]
                 input[1] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(sanitizeOutput(process.out)).match() }
+            )
+        }
+
+    }
+
+    test("chrX gtf aggregate") {
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.pipelines_testdata_base_path + 'reference/genes_chrX.gtf', checkIfExists: true)
+                ]
+                input[1] = true
                 """
             }
         }
@@ -44,6 +65,30 @@ nextflow_process {
                     file(params.pipelines_testdata_base_path + 'reference/genes_chrX.gtf', checkIfExists: true)
                 ]
                 input[1] = false
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(sanitizeOutput(process.out)).match() }
+            )
+        }
+
+    }
+
+    test("chrX gtf aggregate - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file(params.pipelines_testdata_base_path + 'reference/genes_chrX.gtf', checkIfExists: true)
+                ]
+                input[1] = true
                 """
             }
         }
