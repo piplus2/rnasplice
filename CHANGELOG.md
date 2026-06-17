@@ -43,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modules `publishDir.saveAS` follow the nf-core standard for conditional output.
 - Add validation for sample names to be compliant with R. See issue #140
 - Fixed bug in `RMATS` where the order of the samples in the paired model was not correctly determined from the samplesheet.
+- Fixed missing `BPPARAM` argument in `DEXSEQ_DTU` module to run DEXSeq with parallel processing.
+- Removed unused `ntop` argument from `DEXSEQ_DTU` module and script.
 
 ## v1.0.5 - 2024-11-03
 
