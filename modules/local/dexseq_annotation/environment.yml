@@ -1,5 +1,0 @@
-channels:
-  - bioconda
-  - conda-forge
-dependencies:
-  - bioconda::htseq=2.1.2
