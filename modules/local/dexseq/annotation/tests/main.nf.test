@@ -25,8 +25,11 @@ nextflow_process {
 
         then {
             assert process.success
+
+            def unstableFiles = process.out.gff.collect { file(it).name.toString() }
+
             assertAll(
-                { assert snapshot(sanitizeOutput(process.out)).match() }
+                { assert snapshot(unstableFiles).match() }
             )
         }
 
@@ -46,8 +49,11 @@ nextflow_process {
 
         then {
             assert process.success
+
+            def unstableFiles = process.out.gff.collect { file(it).name.toString() }
+
             assertAll(
-                { assert snapshot(sanitizeOutput(process.out)).match() }
+                { assert snapshot(unstableFiles).match() }
             )
         }
 

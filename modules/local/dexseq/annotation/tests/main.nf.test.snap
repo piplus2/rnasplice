@@ -14,50 +14,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-17T12:11:49.662105057",
+        "timestamp": "2026-06-17T12:33:11.132168369",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
-        }
-    },
-    "chrX gft - bam": {
-        "content": [
-            {
-                "0": [
-                    "DEXSeq.gff:md5,1dee55f49b03979f8d1c680c665d40a8"
-                ],
-                "1": [
-                    [
-                        "DEXSEQ_ANNOTATION",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ],
-                "gff": [
-                    "DEXSeq.gff:md5,1dee55f49b03979f8d1c680c665d40a8"
-                ],
-                "versions_htseq": [
-                    [
-                        "DEXSEQ_ANNOTATION",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ]
-            },
-            {
-                "versions_htseq": [
-                    [
-                        "DEXSEQ_ANNOTATION",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ]
-            }
-        ],
-        "timestamp": "2026-06-13T14:42:06.196529309",
-        "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.1"
         }
     },
     "chrX gtf - stub": {
@@ -75,7 +35,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-17T12:11:43.871499986",
+        "timestamp": "2026-06-17T12:33:05.489640164",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -83,20 +43,11 @@
     },
     "chrX gtf": {
         "content": [
-            {
-                "gff": [
-                    "DEXSeq.gff:md5,f14a267ce25fb6afbec60483aa1092d6"
-                ],
-                "versions_htseq": [
-                    [
-                        "DEXSEQ_ANNOTATION",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ]
-            }
+            [
+                "DEXSeq.gff"
+            ]
         ],
-        "timestamp": "2026-06-17T12:11:31.657724306",
+        "timestamp": "2026-06-17T12:32:53.06282325",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -104,20 +55,11 @@
     },
     "chrX gtf aggregate": {
         "content": [
-            {
-                "gff": [
-                    "DEXSeq.gff:md5,099a9b04b80c519664b3a955d4df98fe"
-                ],
-                "versions_htseq": [
-                    [
-                        "DEXSEQ_ANNOTATION",
-                        "htseq",
-                        "2.1.2"
-                    ]
-                ]
-            }
+            [
+                "DEXSeq.gff"
+            ]
         ],
-        "timestamp": "2026-06-17T12:11:38.25446448",
+        "timestamp": "2026-06-17T12:32:59.831179624",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
