@@ -2,9 +2,9 @@
 // DEXSeq DEU subworkflow
 //
 
-include { DEXSEQ_ANNOTATION   } from '../../../modules/local/dexseq_annotation'
-include { DEXSEQ_COUNT        } from '../../../modules/local/dexseq_count'
-include { DEXSEQ_EXON         } from '../../../modules/local/dexseq_exon'
+include { DEXSEQ_ANNOTATION   } from '../../../modules/local/dexseq/annotation'
+include { DEXSEQ_COUNT        } from '../../../modules/local/dexseq/count'
+include { DEXSEQ_EXON         } from '../../../modules/local/dexseq/exon'
 
 workflow DEXSEQ_DEU {
 

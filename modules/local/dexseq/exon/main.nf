@@ -1,4 +1,4 @@
-process DEXSEQ_DTU {
+process DEXSEQ_EXON {
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
@@ -7,16 +7,19 @@ process DEXSEQ_DTU {
         'community.wave.seqera.io/library/bioconductor-dexseq:1.56.0--52df10363b3f1635' }"
 
     input:
-    path drimseq_sample_data
-    path drimseq_d_counts
-    path drimseq_contrast_data
+    path ("dexseq_clean_counts/*")    // path: dexseq_clean_counts
+    path gff                          // path: dexseq_gff
+    path samplesheet                  // path: samplesheet
+    path contrastsheet                // path: contrastsheet
+    val ntop                          // val: n_dexseq_plot
 
     output:
     path "DEXSeqDataSet.*.rds"  , emit: dexseq_exon_dataset_rds
     path "DEXSeqResults.*.rds"  , emit: dexseq_exon_results_rds
-    path "DEXSeqResults.*.tsv"  , emit: dexseq_exon_results_tsv
     path "perGeneQValue.*.rds"  , emit: dexseq_gene_results_rds
-    path "perGeneQValue.*.tsv"  , emit: dexseq_gene_results_tsv
+    path "DEXSeqResults.*.csv"  , emit: dexseq_exon_results_csv
+    path "perGeneQValue.*.csv"  , emit: dexseq_gene_results_csv
+    path "plotDEXSeq.*.pdf"     , emit: dexseq_plot_results_pdf
     tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//"'), topic: versions, emit: versions_R
     tuple val("${task.process}"), val('bioconductor-dexseq'), eval('Rscript -e "library(DEXSeq); cat(as.character(packageVersion(\'DEXSeq\')))"'), topic: versions, emit: versions_dexseq
 
@@ -25,9 +28,20 @@ process DEXSEQ_DTU {
 
     script:
     """
-    run_dexseq_dtu.R ${drimseq_sample_data} \\
-        ${drimseq_contrast_data} \\
-        ${drimseq_d_counts}
+    run_dexseq_exon.R dexseq_clean_counts $gff $samplesheet $contrastsheet $ntop
     """
 
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = "stub"
+    """
+    echo $args
+
+    touch DEXSeqDataSet.${prefix}.rds
+    touch DEXSeqResults.${prefix}.rds
+    touch perGeneQValue.${prefix}.rds
+    touch DEXSeqResults.${prefix}.csv
+    touch perGeneQValue.${prefix}.csv
+    touch plotDEXSeq.${prefix}.pdf
+    """
 }

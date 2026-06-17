@@ -1,4 +1,4 @@
-process DEXSEQ_EXON {
+process DEXSEQ_DTU {
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
@@ -7,19 +7,16 @@ process DEXSEQ_EXON {
         'community.wave.seqera.io/library/bioconductor-dexseq:1.56.0--52df10363b3f1635' }"
 
     input:
-    path ("dexseq_clean_counts/*")    // path: dexseq_clean_counts
-    path gff                          // path: dexseq_gff
-    path samplesheet                  // path: samplesheet
-    path contrastsheet                // path: contrastsheet
-    val ntop                          // val: n_dexseq_plot
+    path drimseq_sample_data
+    path drimseq_d_counts
+    path drimseq_contrast_data
 
     output:
     path "DEXSeqDataSet.*.rds"  , emit: dexseq_exon_dataset_rds
     path "DEXSeqResults.*.rds"  , emit: dexseq_exon_results_rds
+    path "DEXSeqResults.*.tsv"  , emit: dexseq_exon_results_tsv
     path "perGeneQValue.*.rds"  , emit: dexseq_gene_results_rds
-    path "DEXSeqResults.*.csv"  , emit: dexseq_exon_results_csv
-    path "perGeneQValue.*.csv"  , emit: dexseq_gene_results_csv
-    path "plotDEXSeq.*.pdf"     , emit: dexseq_plot_results_pdf
+    path "perGeneQValue.*.tsv"  , emit: dexseq_gene_results_tsv
     tuple val("${task.process}"), val('r-base'), eval('R --version 2>&1 | head -n 1 | sed "s/^.*version //; s/ .*$//"'), topic: versions, emit: versions_R
     tuple val("${task.process}"), val('bioconductor-dexseq'), eval('Rscript -e "library(DEXSeq); cat(as.character(packageVersion(\'DEXSeq\')))"'), topic: versions, emit: versions_dexseq
 
@@ -28,6 +25,24 @@ process DEXSEQ_EXON {
 
     script:
     """
-    run_dexseq_exon.R dexseq_clean_counts $gff $samplesheet $contrastsheet $ntop
+    run_dexseq_dtu.R ${drimseq_sample_data} \\
+        ${drimseq_contrast_data} \\
+        ${drimseq_d_counts}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix1 = task.ext.prefix ?: "DEXSeqDataSet"
+    def prefix2 = task.ext.prefix ?: "DEXSeqResults"
+    def prefix3 = task.ext.prefix ?: "perGeneQValue"
+    """
+    echo $args
+
+    touch ${prefix1}.rds
+    touch ${prefix1}.tsv
+    touch ${prefix2}.rds
+    touch ${prefix2}.tsv
+    touch ${prefix3}.rds
+    touch ${prefix3}.tsv
     """
 }
