@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed bug in `RMATS` where the order of the samples in the paired model was not correctly determined from the samplesheet.
 - Fixed missing `BPPARAM` argument in `DEXSEQ_DTU` module to run DEXSeq with parallel processing.
 - Removed unused `ntop` argument from `DEXSEQ_DTU` module and script.
+- Fixed regex error in `parse_miso_index.py`.
 
 ## v1.0.5 - 2024-11-03
 
