@@ -30,10 +30,6 @@ def main(prefix):
     for filename in glob.glob(prefix + "/genes_to_filenames.shelve.*"):
         os.remove(filename)
 
-    # Remove existing shelve files
-    for filename in glob.glob(prefix + "/genes_to_filenames.shelve.*"):
-        os.remove(filename)
-
     # Create new shelve file with relative paths
     shelve_file = shelve.open(prefix + "/genes_to_filenames.shelve")
     for gene, filename in data:
