@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied static typing to `params` in `main.nf`.
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
 - `RMATS` paired stats default changed to `false`, as this is not appropriate for all datasets. The paired differential splicing test requires a specific paired design in the samplesheet, and users should explicitly enable this option if their dataset meets the requirements. See documentation for details.
+- Refactored `MISO_INDEX` module into `MISOPY_INDEX` to match nf-core module template.
 
 ### Fixed
 
