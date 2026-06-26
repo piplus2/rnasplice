@@ -44,11 +44,9 @@ nextflow_process {
         then {
             assert process.success
 
-            def unstableFiles = process.out.miso.get(0).get(1).collect { file(it).name.toString() }
-
             assertAll(
                 { assert snapshot(
-                    unstableFiles,
+                    sanitizeOutput(process.out, unstableKeys: ["miso"]),
                     process.out.findAll { key, val -> key.startsWith('versions') }
                 ).match() }
             )
