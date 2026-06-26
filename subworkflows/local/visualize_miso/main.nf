@@ -4,7 +4,7 @@
 
 include { GTF_2_GFF3    } from '../../../modules/local/gtf_2_gff3'
 include { MISOPY_INDEX  } from '../../../modules/local/misopy/index'
-include { MISO_RUN      } from '../../../modules/local/miso_run'
+include { MISOPY_RUN      } from '../../../modules/local/misopy/run'
 include { MISO_SETTINGS } from '../../../modules/local/miso_settings'
 include { MISO_SASHIMI  } from '../../../modules/local/miso_sashimi'
 
@@ -16,7 +16,6 @@ workflow VISUALISE_MISO {
     gtf                // path gtf
     ch_genome_bam      // channel: [ val(meta), path(bams) ]
     ch_genome_bai      // channel: [ val(meta), path(bais) ]
-    miso_read_len      // 75
     fig_width          // 7
     fig_height         // 5
     miso_genes         // params.miso_genes
@@ -37,16 +36,15 @@ workflow VISUALISE_MISO {
     MISOPY_INDEX(GTF_2_GFF3.out.gff3.map{ gff -> [ [:], gff ] })
 
     //
-    // MODULE: MISO_RUN
+    // MODULE: MISOPY_RUN
     //
 
     ch_bam_join = ch_genome_bam.join(ch_genome_bai)
-    ch_miso_index =  MISOPY_INDEX.out.miso_index.collect().map{ it -> it[1] }
+    ch_miso_index = MISOPY_INDEX.out.miso_index.collect().map{ it -> it[1] }
 
-    MISO_RUN (
-        ch_miso_index,
+    MISOPY_RUN (
         ch_bam_join,
-        miso_read_len
+        ch_miso_index
     )
 
     //
@@ -54,7 +52,7 @@ workflow VISUALISE_MISO {
     //
 
     ch_bams = ch_genome_bam.collect({it -> it[1]})
-    ch_miso_run = MISO_RUN.out.miso.map{it -> it[1]}.collect()
+    ch_miso_run = MISOPY_RUN.out.miso.map{it -> it[1]}.collect()
 
     MISO_SETTINGS (
         ch_miso_run,

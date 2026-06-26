@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
 - `RMATS` paired stats default changed to `false`, as this is not appropriate for all datasets. The paired differential splicing test requires a specific paired design in the samplesheet, and users should explicitly enable this option if their dataset meets the requirements. See documentation for details.
 - Refactored `MISO_INDEX` module into `MISOPY_INDEX` to match nf-core module template.
+- Refactored `MISO_RUN` module into `MISOPY_RUN` to match nf-core module template.
 
 ### Fixed
 
@@ -47,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed missing `BPPARAM` argument in `DEXSEQ_DTU` module to run DEXSeq with parallel processing.
 - Removed unused `ntop` argument from `DEXSEQ_DTU` module and script.
 - Fixed regex error in `parse_miso_index.py`.
+- Fixed `MISOPY` module to correctly handle paired-end reads and pass the correct BAM files to MISOPY.
 
 ## v1.0.5 - 2024-11-03
 
