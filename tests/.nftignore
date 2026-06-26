@@ -127,5 +127,5 @@ trimgalore/*fastq.gz_trimming_report.txt
 {salmon,star_salmon}/rmats/*/rmats_post/*.txt
 
 # MISO
-{salmon,star_salmon}/miso_data/*/*/*.miso
-**/misopy/**/*.miso
+**/misopy/miso_data/*/*/*.miso
+**/misopy/index/*/*.pickle
