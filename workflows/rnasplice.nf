@@ -317,7 +317,6 @@ workflow RNASPLICE {
                 ch_gtf,
                 ch_genome_bam,
                 ch_genome_bam_index,
-                params.miso_read_len,
                 params.fig_width,
                 params.fig_height,
                 params.miso_genes,
