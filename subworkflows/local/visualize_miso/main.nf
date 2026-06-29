@@ -91,7 +91,7 @@ workflow VISUALISE_MISO {
         ch_miso_index,
         ch_miso_input,
         ch_bam_bai,
-        ch_miso_run,
+        ch_miso_run
     )
 
     emit:
