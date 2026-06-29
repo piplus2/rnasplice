@@ -40,6 +40,11 @@
                         "git_sha": "0902eac3012baaf4f9ab6513c8c55acc9353c96c",
                         "installed_by": ["modules"]
                     },
+                    "misopy/index": {
+                        "branch": "master",
+                        "git_sha": "94be3d403c32cedad9406c6fc2bddc15ffc82507",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "cd0ad387832473916b1f1c80c2ca673a7883bf94",
