@@ -20,7 +20,7 @@ nextflow_process {
                 process {
                 """
                 input[0] = [
-                    [],
+                    [ id: 'human_genome' ],
                     file(params.pipelines_testdata_base_path + 'reference/misopy_index.tar.gz', checkIfExists: true)
                 ]
                 """
@@ -36,7 +36,7 @@ nextflow_process {
                     file(params.pipelines_testdata_base_path + 'testdata/ERR188383.Aligned.out.bam', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'testdata/ERR188383.Aligned.out.bam.bai', checkIfExists: true)
                 ]
-                input[1] = UNTAR_MISO_INDEX.out.untar.map { it[1] }
+                input[1] = UNTAR_MISO_INDEX.out.untar
                 """
             }
         }
@@ -64,7 +64,7 @@ nextflow_process {
                 process {
                 """
                 input[0] = [
-                    [],
+                    [ id: 'human_genome' ],
                     file(params.pipelines_testdata_base_path + 'reference/misopy_index.tar.gz', checkIfExists: true)
                 ]
                 """
@@ -80,7 +80,7 @@ nextflow_process {
                     file(params.pipelines_testdata_base_path + 'testdata/ERR188383.Aligned.out.bam', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'testdata/ERR188383.Aligned.out.bam.bai', checkIfExists: true)
                 ]
-                input[1] = UNTAR_MISO_INDEX.out.untar.map { it[1] }
+                input[1] = UNTAR_MISO_INDEX.out.untar
                 """
             }
         }

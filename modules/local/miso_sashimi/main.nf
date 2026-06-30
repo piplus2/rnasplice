@@ -7,7 +7,7 @@ process MISO_SASHIMI {
         'biocontainers/misopy:0.5.4--py27h9801fc8_5' }"
 
     input:
-    path index_path
+    tuple val(meta), path(index_path)
     tuple path(miso_settings), val(miso_gene)
     path ("bam_files/*")   // Need bam and bai in working directory
     path ("miso_data/*")   // Need Miso files in working directory
@@ -22,7 +22,7 @@ process MISO_SASHIMI {
 
     script:
     """
-    sashimi_plot --plot-event $miso_gene $index_path $miso_settings --output-dir sashimi
+    sashimi_plot --plot-event ${miso_gene} ${index_path} ${miso_settings} --output-dir sashimi
     """
 
 }
