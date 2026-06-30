@@ -49,7 +49,7 @@ workflow VISUALISE_MISO {
     // MODULE: MISO_SETTINGS
     //
 
-    ch_bams = ch_genome_bam.collect { it -> it[1] }
+    ch_bams = ch_genome_bam.collect { _meta, bam -> bam }
     ch_miso_run = MISOPY_RUN.out.miso.map { it -> it[1] }.collect()
 
     MISO_SETTINGS(
