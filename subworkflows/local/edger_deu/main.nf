@@ -2,8 +2,8 @@
 // edgeR DEU subworkflow
 //
 
-include { SUBREAD_FLATTENGTF    } from '../../../modules/local/flattengtf'
-include { SUBREAD_FEATURECOUNTS } from '../../../modules/nf-core/subread/featurecounts/main'
+include { SUBREAD_FLATTENGTF    } from '../../../modules/local/subread/flattengtf'
+include { SUBREAD_FEATURECOUNTS } from '../../../modules/nf-core/subread/featurecounts'
 include { EDGER_EXON            } from '../../../modules/local/edger_exon'
 
 workflow EDGER_DEU {
@@ -18,13 +18,13 @@ workflow EDGER_DEU {
 
     // MODULE: SUBREAD_FLATTENGTF
 
-    SUBREAD_FLATTENGTF(gtf)
+    SUBREAD_FLATTENGTF(gtf.map { file -> [ [id: file.baseName], file ] })
 
     //
     // MODULE: SUBREAD_FEATURECOUNTS
     //
 
-    ch_feature_counts = ch_genome_bam.combine(SUBREAD_FLATTENGTF.out.saf)
+    ch_feature_counts = ch_genome_bam.combine(SUBREAD_FLATTENGTF.out.saf.map { _meta, saf -> saf })
 
     SUBREAD_FEATURECOUNTS(ch_feature_counts)
 
