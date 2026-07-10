@@ -28,7 +28,7 @@ process DEXSEQ_EXON {
 
     script:
     """
-    run_dexseq_exon.R dexseq_clean_counts $gff $samplesheet $contrastsheet $ntop
+    run_dexseq_exon.R dexseq_clean_counts $gff $samplesheet $contrastsheet $ntop ${task.cpus}
     """
 
     stub:

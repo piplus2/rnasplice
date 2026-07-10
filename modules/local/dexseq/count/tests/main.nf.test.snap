@@ -27,6 +27,62 @@
             "nextflow": "26.04.3"
         }
     },
+    "single bam - stub": {
+        "content": [
+            {
+                "dexseq_clean_txt": [
+                    [
+                        {
+                            "id": "test",
+                            "strandedness": "unstranded",
+                            "single_end": true
+                        },
+                        "test.clean.count.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_htseq": [
+                    [
+                        "DEXSEQ_COUNT",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-02T12:30:34.068898906",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "single bam": {
+        "content": [
+            {
+                "dexseq_clean_txt": [
+                    [
+                        {
+                            "id": "test",
+                            "strandedness": "unstranded",
+                            "single_end": true
+                        },
+                        "test.clean.count.txt:md5,3d298b32dfc0a8eafb6870d9fdf74bb5"
+                    ]
+                ],
+                "versions_htseq": [
+                    [
+                        "DEXSEQ_COUNT",
+                        "htseq",
+                        "2.1.2"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-02T12:30:22.711886495",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
     "ERR188383": {
         "content": [
             {
