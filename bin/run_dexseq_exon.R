@@ -8,13 +8,11 @@ library(BiocParallel)
 library(parallel)
 library(DEXSeq)
 
-BPPARAM <- MulticoreParam(workers = parallel::detectCores() - 1)
-
 # Read command arguments
 argv <- commandArgs(trailingOnly = TRUE)
 argc <- length(argv)
 if (argc < 5) {
-  stop("Usage: run_dexseq_exon.R <counts_dir> <annotation_file> <samples_table> <contrasts_table> <ntop>")
+  stop("Usage: run_dexseq_exon.R <counts_dir> <annotation_file> <samples_table> <contrasts_table> <ntop> [ncores]")
 }
 # Parse command arguments
 counts <- argv[1]
@@ -22,6 +20,13 @@ annotation <- argv[2]
 samples <- argv[3]
 contrasts <- argv[4]
 ntop <- as.integer(argv[5])
+ncores <- if (argc >= 6) as.integer(argv[6]) else 1
+
+if (ncores > 1) {
+  BPPARAM <- MulticoreParam(workers = ncores)
+} else {
+  BPPARAM <- SerialParam()
+}
 
 #############################
 ## Define helper functions ##
@@ -39,7 +44,7 @@ splitByContrast <- function(object, contrast) {
 
 DEXSeq_pipeline <- function(object, BPPARAM = BiocParallel::bpparam()) {
   object <- estimateSizeFactors(object)
-  object <- estimateDispersions(object, BPPARAM = BPPARAM)
+  object <- estimateDispersions(object, BPPARAM = SerialParam())
   object <- testForDEU(object, BPPARAM = BPPARAM)
   object <- estimateExonFoldChanges(object, BPPARAM = BPPARAM)
   object
@@ -86,6 +91,7 @@ savePlotDEXSeq <- function(x, file, ntop = 10) {
 
 # Read samples table
 samples <- read.csv(samples, stringsAsFactors = TRUE, check.names = FALSE)
+samples$sample <- as.character(samples$sample)
 samples <- samples[, c("sample", "condition"), drop = FALSE]
 samples <- unique(samples)
 
