@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `MISO_RUN` module into `MISOPY_RUN` to match nf-core module template.
 - Removed `parse_miso_index.py` script, as it is not necessary for misopy to work.
 - Refactored `SUBREAD_FLATTENGTF` to match nf-core module template.
+- Now `DEXSEQ_DTU` module uses `BPPARAM` argument to enable parallel processing, if no `BPPARAM` is provided, it defaults to `SerialParam()`.
 
 ### Fixed
 
