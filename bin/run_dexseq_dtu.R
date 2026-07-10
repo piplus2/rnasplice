@@ -59,6 +59,7 @@ vectorToDataFrame <- function(x) {
 ########################
 
 samples <- read.delim(samples, stringsAsFactors = TRUE, check.names = FALSE)
+samples$sample <- as.character(samples$sample)
 colnames(samples) <- c("sample", "condition")
 
 ##########################
@@ -84,7 +85,8 @@ counts <- round(counts)
 # Reorder count matrix by sample table
 stopifnot(all(samples$sample %in% colnames(counts)))
 stopifnot(all(colnames(counts) %in% samples$sample))
-counts <- counts[, samples$sample, drop = FALSE]
+counts <- counts[, as.character(samples$sample), drop = FALSE]
+stopifnot(all(colnames(counts) == as.character(samples$sample)))
 
 # Create DEXSeqDataSet object
 dexseq_dataset <- DEXSeqDataSet(
