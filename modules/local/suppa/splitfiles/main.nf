@@ -8,7 +8,7 @@ process SPLIT_FILES {
         'biocontainers/r-base:3.4.2' }"
 
     input:
-    path tpm_psi
+    tuple val(meta), path(tpm_psi)
     path samplesheet
     val output_type  // either .tpm or .psi
     val calc_ranges  // true/false calculate ranges

@@ -1,5 +1,5 @@
-process PSIPEREVENT {
-    tag "$tpm"
+process SUPPA_PSIPEREVENT {
+    tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -8,25 +8,36 @@ process PSIPEREVENT {
         'community.wave.seqera.io/library/suppa:2.4--2612fcca3884f6bc' }"
 
     input:
-    path ioe
-    path tpm
-    val psiperevent_total_filter   // val params.psiperevent_total_filter
+    tuple val(meta), path(expression)
+    tuple val(meta2), path(ioe)
+    val total_filter
 
     output:
-    path "suppa_local.psi"    , emit: psi
+    tuple val(meta), path("*.psi"), emit: psi
     tuple val("${task.process}"), val('suppa'), eval("suppa.py -v | sed '1!d;s/.* //'"), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when
 
-    script: // Calculate the psi values of local events
-
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     suppa.py \\
         psiPerEvent \\
-        -i $ioe \\
-        -e $tpm \\
-        -f $psiperevent_total_filter \\
-        -o suppa_local
+        --ioe-file ${ioe} \\
+        --expression-file ${expression} \\
+        --total-filter ${total_filter} \\
+        --output-file ${prefix} \\
+        ${args}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo ${args}
+
+    touch ${prefix}.psi
     """
 }

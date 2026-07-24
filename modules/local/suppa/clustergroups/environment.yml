@@ -1,5 +1,4 @@
 channels:
-  - bioconda
   - conda-forge
 dependencies:
-  - bioconda::suppa=2.4
+  - python=3.14

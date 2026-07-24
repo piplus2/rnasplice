@@ -1,5 +1,5 @@
-process PSIPERISOFORM {
-    tag "$tpm"
+process SUPPA_PSIPERISOFORM {
+    tag "${meta.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -8,22 +8,34 @@ process PSIPERISOFORM {
         'community.wave.seqera.io/library/suppa:2.4--2612fcca3884f6bc' }"
 
     input:
-    path gtf
-    path tpm
+    tuple val(meta), path(expression)
+    tuple val(meta2), path(gtf)
 
     output:
-    path "suppa_isoform.psi"  , emit: psi
+    tuple val(meta), path("*.psi"), emit: psi
     tuple val("${task.process}"), val('suppa'), eval("suppa.py -v | sed '1!d;s/.* //'"), topic: versions, emit: versions_suppa
 
     when:
     task.ext.when == null || task.ext.when
 
-    script: // Calculate the psi values isoform level
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     suppa.py \\
         psiPerIsoform \\
-        -g $gtf \\
-        -e $tpm \\
-        -o suppa
+        --expression ${expression} \\
+        --gtf ${gtf} \\
+        --output-file ${prefix}.psi \\
+        ${args}
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo $args
+
+    touch ${prefix}.psi
     """
 }

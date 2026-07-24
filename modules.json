@@ -115,6 +115,31 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     },
+                    "suppa/clusterevents": {
+                        "branch": "master",
+                        "git_sha": "88b9d0d95d7e3bc5dbac82c2b3da8a3259f9f51c",
+                        "installed_by": ["modules"]
+                    },
+                    "suppa/diffsplice": {
+                        "branch": "master",
+                        "git_sha": "3f2df8501fbed848b9ce51e906c021a56f1f51bc",
+                        "installed_by": ["modules"]
+                    },
+                    "suppa/generateevents": {
+                        "branch": "master",
+                        "git_sha": "760d460250049331d41480fbf32343a386e695c0",
+                        "installed_by": ["modules"]
+                    },
+                    "suppa/psiperevent": {
+                        "branch": "master",
+                        "git_sha": "6a06fc880f6be6eb16f79e929a5ed50b915029dd",
+                        "installed_by": ["modules"]
+                    },
+                    "suppa/psiperisoform": {
+                        "branch": "master",
+                        "git_sha": "e5a841a89c93a4dfae13de26d884a4dd86cd1b8f",
+                        "installed_by": ["modules"]
+                    },
                     "trimgalore": {
                         "branch": "master",
                         "git_sha": "0991b1032cccfcd9245ef59c6e56d6092ac0b3e7",

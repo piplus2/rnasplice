@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `StageR` to version 1.32.0 for improved performance and bug fixes.
 - Updated `HTSeq` to version 2.1.2 for improved performance and bug fixes.
 - Updated `DEXSeq` to version 1.56.0 for improved performance and bug fixes.
-- Update `Suppa` to version 2.4 for improved performance and bug fixes.
 - Bumped `nf-schema` to version 2.7.2
 - Applied static typing to `params` in `main.nf`.
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
@@ -33,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `parse_miso_index.py` script, as it is not necessary for misopy to work.
 - Refactored `SUBREAD_FLATTENGTF` to match nf-core module template.
 - Now `DEXSEQ_DTU` module uses `BPPARAM` argument to enable parallel processing, if no `BPPARAM` is provided, it defaults to `SerialParam()`.
+- Use nf-core modules for `SUPPA`.
 
 ### Fixed
 
