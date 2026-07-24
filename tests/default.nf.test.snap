@@ -4711,13 +4711,6 @@
                 "genes.gff:md5,0ef855fcf03bcb7d49afde3e63577465",
                 "miso_settings.txt:md5,982af0d2a2d3c9a1d12f8c141cbeb1d4",
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
-                "genes_chrX_A3_strict.gtf:md5,3899af4485ce55143c57755e5e8ec064",
-                "genes_chrX_A5_strict.gtf:md5,b8176a54b2033ca9931b4cc3d7577ec5",
-                "genes_chrX_AF_strict.gtf:md5,bf69a81115455645ccfda84066cedfc1",
-                "genes_chrX_AL_strict.gtf:md5,d899db71cc9b0161e5af786594417779",
-                "genes_chrX_MX_strict.gtf:md5,4719c9700e8774153f4a8106c5b180f0",
-                "genes_chrX_RI_strict.gtf:md5,73c86d872a766e9463f2885e71984121",
-                "genes_chrX_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453",
                 "ERR188383_sorted.bam:md5,1bff4b478016421fd0f0eb5df75f3c2c",
                 "ERR188383_sorted.bam.bai:md5,662f7faef48faebfab0dae435345afd5",
                 "ERR188428_sorted.bam:md5,2ba4c1dacd9e556b408f0a5de224a97e",
@@ -4825,20 +4818,13 @@
                 "ERR204916.flagstat:md5,77bbb66e375c4f9083d4aab0d55ddcdd",
                 "ERR204916.idxstats:md5,21ed2e992e836e620991e9a24078f1b6",
                 "ERR204916.stats:md5,afe41925bb20e1679cf8c05f5c52e001",
-                "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
-                "genes_chrX_A3_strict.gtf:md5,3899af4485ce55143c57755e5e8ec064",
-                "genes_chrX_A5_strict.gtf:md5,b8176a54b2033ca9931b4cc3d7577ec5",
-                "genes_chrX_AF_strict.gtf:md5,bf69a81115455645ccfda84066cedfc1",
-                "genes_chrX_AL_strict.gtf:md5,d899db71cc9b0161e5af786594417779",
-                "genes_chrX_MX_strict.gtf:md5,4719c9700e8774153f4a8106c5b180f0",
-                "genes_chrX_RI_strict.gtf:md5,4159973283de6cf34a15ecd8cc02e3b5",
-                "genes_chrX_SE_strict.gtf:md5,40fedd62cd85723392ccc0512e548453"
+                "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6"
             ]
         ],
-        "timestamp": "2026-07-24T15:16:08.37455138",
+        "timestamp": "2026-07-24T20:35:01.460885446",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.4"
         }
     }
 }

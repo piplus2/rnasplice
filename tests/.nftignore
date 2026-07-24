@@ -97,7 +97,7 @@ trimgalore/*fastq.gz_trimming_report.txt
 {salmon,star_salmon}/dexseq_dtu/results/dexseq/{perGeneQValue,DEXSeqResults}.tsv
 
 # SUPPA
-{salmon,star_salmon}/suppa/generate_events/*/*.gtf
+{salmon,star_salmon}/suppa/generate_events/per_local_event/*.gtf
 {salmon,star_salmon}/suppa/clusterevents/*/*.{log,clustvec}
 {salmon,star_salmon}/suppa/diffsplice/*/*.{dpsi,psivec}
 
