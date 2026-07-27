@@ -3,4 +3,4 @@
 channels:
   - conda-forge
 dependencies:
-  - conda-forge::gawk=5.4.1
+  - gawk=5.4.1

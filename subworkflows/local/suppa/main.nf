@@ -5,22 +5,22 @@
 include { SUPPA_GENERATEEVENTS as SUPPA_GENERATEEVENTS_IOE } from '../../../modules/nf-core/suppa/generateevents'
 include { SUPPA_GENERATEEVENTS as SUPPA_GENERATEEVENTS_IOI } from '../../../modules/nf-core/suppa/generateevents'
 
-include { SUPPA_PSIPEREVENT   } from '../../../modules/nf-core/suppa/psiperevent'
-include { SUPPA_PSIPERISOFORM } from '../../../modules/nf-core/suppa/psiperisoform'
+include { SUPPA_PSIPEREVENT                                } from '../../../modules/nf-core/suppa/psiperevent'
+include { SUPPA_PSIPERISOFORM                              } from '../../../modules/nf-core/suppa/psiperisoform'
 
-include { SPLIT_FILES as SPLIT_FILES_TPM } from '../../../modules/local/suppa/splitfiles'
-include { SPLIT_FILES as SPLIT_FILES_IOE } from '../../../modules/local/suppa/splitfiles'
-include { SPLIT_FILES as SPLIT_FILES_IOI } from '../../../modules/local/suppa/splitfiles'
+include { SPLIT_FILES as SPLIT_FILES_TPM                   } from '../../../modules/local/splitfiles'
+include { SPLIT_FILES as SPLIT_FILES_IOE                   } from '../../../modules/local/splitfiles'
+include { SPLIT_FILES as SPLIT_FILES_IOI                   } from '../../../modules/local/splitfiles'
 
-include { SUPPA_DIFFSPLICE as DIFFSPLICE_IOE } from '../../../modules/nf-core/suppa/diffsplice'
-include { SUPPA_DIFFSPLICE as DIFFSPLICE_IOI } from '../../../modules/nf-core/suppa/diffsplice'
+include { SUPPA_DIFFSPLICE as DIFFSPLICE_IOE               } from '../../../modules/nf-core/suppa/diffsplice'
+include { SUPPA_DIFFSPLICE as DIFFSPLICE_IOI               } from '../../../modules/nf-core/suppa/diffsplice'
 
-include { CLUSTERGROUPS as CLUSTERGROUPS_IOE } from '../../../modules/local/suppa/clustergroups'
-include { CLUSTERGROUPS as CLUSTERGROUPS_IOI } from '../../../modules/local/suppa/clustergroups'
-include { SUPPA_MERGEEVENTS                  } from '../../../modules/local/suppa/mergeevents'
+include { CLUSTERGROUPS as CLUSTERGROUPS_IOE               } from '../../../modules/local/clustergroups'
+include { CLUSTERGROUPS as CLUSTERGROUPS_IOI               } from '../../../modules/local/clustergroups'
+include { MERGEEVENTS                                      } from '../../../modules/local/mergeevents'
 
-include { SUPPA_CLUSTEREVENTS as CLUSTEREVENTS_IOE } from '../../../modules/nf-core/suppa/clusterevents'
-include { SUPPA_CLUSTEREVENTS as CLUSTEREVENTS_IOI } from '../../../modules/nf-core/suppa/clusterevents'
+include { SUPPA_CLUSTEREVENTS as CLUSTEREVENTS_IOE         } from '../../../modules/nf-core/suppa/clusterevents'
+include { SUPPA_CLUSTEREVENTS as CLUSTEREVENTS_IOI         } from '../../../modules/nf-core/suppa/clusterevents'
 
 workflow SUPPA {
 
@@ -67,8 +67,7 @@ workflow SUPPA {
         ch_tpm,
         ch_samplesheet,
         ".tpm",
-        false,
-        ''
+        false
     )
 
     ch_split_tpms = SPLIT_FILES_TPM.out.tpms
@@ -87,8 +86,6 @@ workflow SUPPA {
 
     if (suppa_per_local_event) {
 
-        def PREFIX = 'local'
-
         // Generate AS events on the GTF - Local events
 
         SUPPA_GENERATEEVENTS_IOE (
@@ -101,9 +98,7 @@ workflow SUPPA {
             generateevents_exon_length
         )
 
-        ch_events_ioe  = SUPPA_MERGEEVENTS(
-            SUPPA_GENERATEEVENTS_IOE.out.events
-        ).ioe
+        ch_events_ioe  = MERGEEVENTS(SUPPA_GENERATEEVENTS_IOE.out.events).ioe
 
         // Calculate the psi values of Local events (using events file and TPM)
 
@@ -121,8 +116,7 @@ workflow SUPPA {
             ch_events_psi,
             ch_samplesheet,
             '.psi',
-            true,
-            PREFIX
+            true
         )
 
         ch_split_events_psi = SPLIT_FILES_IOE.out.psis
@@ -160,7 +154,7 @@ workflow SUPPA {
 
             SPLIT_FILES_IOE.out.psis
                 .flatten()
-                .map { it -> [ it.baseName.toString().replaceAll(PREFIX + "_", ""), it ] }
+                .map { it -> [ it.baseName.toString().replaceAll('local_', ''), it ] }
                 .multiMap { base, file ->
                     for_psi1: [ base, file ]
                     for_psi2: [ base, file ]
@@ -182,7 +176,7 @@ workflow SUPPA {
             ch_split_tpms_events_psi = ch_suppa_local_contrasts_psi2
                 .map { it ->
                     [
-                        [ id: PREFIX + "_" + it.treatment + "-" + it.control ],
+                        [ id: 'local_' + it.treatment + "-" + it.control ],
                         it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2
                     ]
                 }
@@ -224,12 +218,12 @@ workflow SUPPA {
                 ch_events_dpsi_with_conditions = ch_events_dpsi
                     .join(ch_split_tpms_events_psi, by: 0)
                     .map {
-                        _meta, dpsi, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ treatment, control, dpsi ]
+                        meta, dpsi, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ meta, treatment, control, dpsi ]
                     }
                 ch_events_psivec_with_conditions = ch_events_psivec
                     .join(ch_split_tpms_events_psi, by: 0)
                     .map {
-                        _meta, psivec, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ treatment, control, psivec ]
+                        meta, psivec, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ meta, treatment, control, psivec ]
                     }
 
                 CLUSTERGROUPS_IOE ( ch_events_psivec_with_conditions )
@@ -239,11 +233,11 @@ workflow SUPPA {
                 // Join channels to ensure consistent order
 
                 ch_clusterevents_ioe = ch_events_dpsi_with_conditions
-                    .join(ch_events_psivec_with_conditions, by: [0, 1])
-                    .join(ch_groups_ioe, by: [0, 1])
+                    .join(ch_events_psivec_with_conditions, by: [0, 1, 2])
+                    .join(ch_groups_ioe, by: [0, 1, 2])
                     .map {
-                        cond1, cond2, dpsi, psivec, groups ->
-                            [ [ id: PREFIX + "_" + cond1 + "-" + cond2 ], dpsi, psivec, groups ]
+                        _meta, cond1, cond2, dpsi, psivec, groups ->
+                            [ [ id: 'local_' + cond1 + "-" + cond2 ], dpsi, psivec, groups ]
                     }
 
                 // Run Clustering
@@ -279,8 +273,6 @@ workflow SUPPA {
 
     if (suppa_per_isoform) {
 
-        def PREFIX = 'transcript'
-
         // Generate events - transcript level
 
         SUPPA_GENERATEEVENTS_IOI (
@@ -307,8 +299,7 @@ workflow SUPPA {
             ch_isoform_psi,
             ch_samplesheet,
             '.psi',
-            true,
-            PREFIX
+            true
         )
 
         ch_split_isoform_psi = SPLIT_FILES_IOI.out.psis
@@ -346,7 +337,7 @@ workflow SUPPA {
 
             SPLIT_FILES_IOI.out.psis
                 .flatten()
-                .map { it -> [ it.baseName.toString().replaceAll(PREFIX + "_", ""), it ] }
+                .map { it -> [ it.baseName.toString().replaceAll('transcript_' , ''), it ] }
                 .multiMap { base, file ->
                     for_psi1: [ base, file ]
                     for_psi2: [ base, file ]
@@ -368,7 +359,7 @@ workflow SUPPA {
             ch_split_tpms_isoform_psi = ch_suppa_isoform_contrasts_psi2
                 .map { it ->
                     [
-                        [ id: PREFIX + "_" + it.treatment + "-" + it.control ],
+                        [ id: 'transcript_' + it.treatment + "-" + it.control ],
                         it.treatment, it.control, it.tpm1, it.tpm2, it.psi1, it.psi2
                     ]
                 }
@@ -410,13 +401,13 @@ workflow SUPPA {
                 ch_events_dpsi_with_conditions = ch_isoform_dpsi
                     .join(ch_split_tpms_isoform_psi, by: 0)
                     .map {
-                        _meta, dpsi, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ treatment, control, dpsi ]
+                        meta, dpsi, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ meta, treatment, control, dpsi ]
                     }
 
                 ch_events_psivec_with_conditions = ch_isoform_psivec
                     .join(ch_split_tpms_isoform_psi, by: 0)
                     .map {
-                        _meta, psivec, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ treatment, control, psivec ]
+                        meta, psivec, treatment, control, _tpm1, _tpm2, _psi1, _psi2 -> [ meta, treatment, control, psivec ]
                     }
 
                 CLUSTERGROUPS_IOI ( ch_events_psivec_with_conditions )
@@ -426,11 +417,11 @@ workflow SUPPA {
                 // Join channels to ensure consistent order
 
                 ch_clusterevents_ioi = ch_events_dpsi_with_conditions
-                    .join(ch_events_psivec_with_conditions, by: [0, 1])
-                    .join(ch_groups_ioi, by: [0, 1])
+                    .join(ch_events_psivec_with_conditions, by: [0, 1, 2])
+                    .join(ch_groups_ioi, by: [0, 1, 2])
                     .map {
-                        cond1, cond2, dpsi, psivec, groups ->
-                            [ [ id: PREFIX + "_" + cond1 + "-" + cond2 ], dpsi, psivec, groups ]
+                        _meta, cond1, cond2, dpsi, psivec, groups ->
+                            [ [ id: 'transcript_' + cond1 + "-" + cond2 ], dpsi, psivec, groups ]
                     }
 
                 // Run Clustering

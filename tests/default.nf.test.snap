@@ -8,12 +8,6 @@
                 "CLUSTEREVENTS_IOI": {
                     "suppa": 2.4
                 },
-                "CLUSTERGROUPS_IOE": {
-                    "suppa": 2.4
-                },
-                "CLUSTERGROUPS_IOI": {
-                    "suppa": 2.4
-                },
                 "CREATE_BAMLIST": {
                     "sed": 4.7
                 },
@@ -116,15 +110,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": "1.23.1"
                 },
-                "SPLIT_FILES_IOE": {
-                    "suppa_split_file": "3.4.2"
-                },
-                "SPLIT_FILES_IOI": {
-                    "suppa_split_file": "3.4.2"
-                },
-                "SPLIT_FILES_TPM": {
-                    "suppa_split_file": "3.4.2"
-                },
                 "STAGER": {
                     "stageR": "1.32.0"
                 },
@@ -150,9 +135,6 @@
                 "SUPPA_GENERATEEVENTS_IOI": {
                     "suppa": 2.4
                 },
-                "SUPPA_MERGEEVENTS": {
-                    "gawk": "5.4.1"
-                },
                 "SUPPA_PSIPEREVENT": {
                     "suppa": 2.4
                 },
@@ -170,9 +152,6 @@
                 }
             },
             [
-                "clustergroups",
-                "clustergroups/GBR-YRI_groups.txt",
-                "clustergroups/YRI-GBR_groups.txt",
                 "fastqc",
                 "fastqc/ERR188383_1_fastqc.html",
                 "fastqc/ERR188383_1_fastqc.zip",
@@ -197,6 +176,8 @@
                 "isoformswitchanalyzer/isoformswitchanalyzer_summary.csv",
                 "isoformswitchanalyzer/results",
                 "isoformswitchanalyzer/switchlist.rds",
+                "mergeevents",
+                "mergeevents/genes_chrX.ioe",
                 "misopy",
                 "misopy/genes_chrX_genes.gff3",
                 "misopy/index",
@@ -4102,6 +4083,9 @@
                 "salmon/suppa/clusterevents/per_local_event",
                 "salmon/suppa/clusterevents/per_local_event/local_GBR-YRI.clustvec",
                 "salmon/suppa/clusterevents/per_local_event/local_YRI-GBR.clustvec",
+                "salmon/suppa/clustergroups",
+                "salmon/suppa/clustergroups/GBR-YRI_groups.txt",
+                "salmon/suppa/clustergroups/YRI-GBR_groups.txt",
                 "salmon/suppa/diffsplice",
                 "salmon/suppa/diffsplice/per_isoform",
                 "salmon/suppa/diffsplice/per_isoform/transcript_GBR-YRI.dpsi",
@@ -4116,7 +4100,6 @@
                 "salmon/suppa/generate_events",
                 "salmon/suppa/generate_events/per_isoform",
                 "salmon/suppa/generate_events/per_isoform/genes_chrX.ioi",
-                "salmon/suppa/generate_events/per_isoform/merged_events",
                 "salmon/suppa/generate_events/per_local_event",
                 "salmon/suppa/generate_events/per_local_event/genes_chrX_A3_strict.gtf",
                 "salmon/suppa/generate_events/per_local_event/genes_chrX_A3_strict.ioe",
@@ -4132,8 +4115,6 @@
                 "salmon/suppa/generate_events/per_local_event/genes_chrX_RI_strict.ioe",
                 "salmon/suppa/generate_events/per_local_event/genes_chrX_SE_strict.gtf",
                 "salmon/suppa/generate_events/per_local_event/genes_chrX_SE_strict.ioe",
-                "salmon/suppa/generate_events/per_local_event/merged_events",
-                "salmon/suppa/generate_events/per_local_event/merged_events/genes_chrX.ioe",
                 "salmon/suppa/psi_per_isoform",
                 "salmon/suppa/psi_per_isoform/suppa_tpm.psi_isoform.psi",
                 "salmon/suppa/psi_per_local_event",
@@ -4604,6 +4585,9 @@
                 "star_salmon/suppa/clusterevents/per_local_event",
                 "star_salmon/suppa/clusterevents/per_local_event/local_GBR-YRI.clustvec",
                 "star_salmon/suppa/clusterevents/per_local_event/local_YRI-GBR.clustvec",
+                "star_salmon/suppa/clustergroups",
+                "star_salmon/suppa/clustergroups/GBR-YRI_groups.txt",
+                "star_salmon/suppa/clustergroups/YRI-GBR_groups.txt",
                 "star_salmon/suppa/diffsplice",
                 "star_salmon/suppa/diffsplice/per_isoform",
                 "star_salmon/suppa/diffsplice/per_isoform/transcript_GBR-YRI.dpsi",
@@ -4618,7 +4602,6 @@
                 "star_salmon/suppa/generate_events",
                 "star_salmon/suppa/generate_events/per_isoform",
                 "star_salmon/suppa/generate_events/per_isoform/genes_chrX.ioi",
-                "star_salmon/suppa/generate_events/per_isoform/merged_events",
                 "star_salmon/suppa/generate_events/per_local_event",
                 "star_salmon/suppa/generate_events/per_local_event/genes_chrX_A3_strict.gtf",
                 "star_salmon/suppa/generate_events/per_local_event/genes_chrX_A3_strict.ioe",
@@ -4634,8 +4617,6 @@
                 "star_salmon/suppa/generate_events/per_local_event/genes_chrX_RI_strict.ioe",
                 "star_salmon/suppa/generate_events/per_local_event/genes_chrX_SE_strict.gtf",
                 "star_salmon/suppa/generate_events/per_local_event/genes_chrX_SE_strict.ioe",
-                "star_salmon/suppa/generate_events/per_local_event/merged_events",
-                "star_salmon/suppa/generate_events/per_local_event/merged_events/genes_chrX.ioe",
                 "star_salmon/suppa/psi_per_isoform",
                 "star_salmon/suppa/psi_per_isoform/suppa_tpm.psi_isoform.psi",
                 "star_salmon/suppa/psi_per_local_event",
@@ -4703,13 +4684,13 @@
                 "trimgalore/fastqc/ERR204916_2_val_2_fastqc.zip"
             ],
             [
-                "GBR-YRI_groups.txt:md5,7c4e4b8e31b53e91f5db0db731c9103f",
-                "YRI-GBR_groups.txt:md5,7c4e4b8e31b53e91f5db0db731c9103f",
                 "isoformswitchanalyzer_isoformfeatures.csv:md5,a227d42afbcc590b4e949075cde4a5b6",
                 "isoformswitchanalyzer_summary.csv:md5,4b2ab1b387ded8f479d7cfa96893e93b",
                 "genes_chrX_genes.gff3:md5,1c1ece4ee637e317c0ae6528a253a83f",
                 "genes.gff:md5,0ef855fcf03bcb7d49afde3e63577465",
                 "miso_settings.txt:md5,982af0d2a2d3c9a1d12f8c141cbeb1d4",
+                "GBR-YRI_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
+                "YRI-GBR_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
                 "ERR188383_sorted.bam:md5,1bff4b478016421fd0f0eb5df75f3c2c",
                 "ERR188383_sorted.bam.bai:md5,662f7faef48faebfab0dae435345afd5",
@@ -4818,10 +4799,12 @@
                 "ERR204916.flagstat:md5,77bbb66e375c4f9083d4aab0d55ddcdd",
                 "ERR204916.idxstats:md5,21ed2e992e836e620991e9a24078f1b6",
                 "ERR204916.stats:md5,afe41925bb20e1679cf8c05f5c52e001",
+                "GBR-YRI_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
+                "YRI-GBR_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6"
             ]
         ],
-        "timestamp": "2026-07-24T20:35:01.460885446",
+        "timestamp": "2026-07-27T17:33:25.913061198",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"

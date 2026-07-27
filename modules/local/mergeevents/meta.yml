@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "mergeevents"
+description: "Merge SUPPA alternative splicing events of different types into a single file."
+keywords:
+  - merge
+  - suppa
+  - alternative splicing
+  - genomics
+tools:
+  - "mergeevents":
+      homepage: "https://github.com/nf-core/rnasplice"
+      description: ""
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing events information
+          e.g. `[ id:'events1' ]`
+    - events:
+        type: file
+        description: SUPPA alternative splicing events file
+        pattern: "*.ioe"
+        ontologies: []
+
+output:
+  ioe:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing events information
+            e.g. `[ id:'events1' ]`
+      - "*.ioe":
+          type: file
+          description: Merged SUPPA alternative splicing events file
+          pattern: "*.ioe"
+          ontologies: []
+  versions_gawk:
+    - "versions.yml":
+        type: file
+        description: Versions file for gawk
+
+topics:
+  versions:
+    - "versions.yml":
+        type: file
+        description: Versions file for gawk
+        pattern: "versions.yml"
+authors:
+  - "@lathikaa"
+  - "@piplus2"
+maintainers:
+  - "@piplus2"

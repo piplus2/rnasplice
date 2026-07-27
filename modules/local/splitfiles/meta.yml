@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "splitfiles"
+description: "Utility module to split files based on a column value. This is used in the nf-core/rnasplice pipeline to split the TPM matrix."
+keywords:
+  - suppa
+  - alternative splicing
+  - genomics
+  - helper
+tools:
+  - "suppa_split_file.R":
+      homepage: "https://github.com/nf-core/rnasplice"
+      description: ""
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing samples information
+          e.g. `[ id:'samples1' ]`
+    - tpm_psi:
+        type: file
+        description: TPM or PSI file
+        pattern: "*.{tpm,psi}"
+        ontologies: []
+  - samplesheet:
+      type: file
+      description: Sample sheet with sample information
+      pattern: "*.csv"
+      ontologies: []
+  - output_type:
+      type: string
+      description: Output file type, either '.tpm' or '.psi'
+      ontologies: []
+  - calc_ranges:
+      type: boolean
+      description: Whether to calculate ranges for each condition
+      ontologies: []
+      default: false
+
+output:
+  tpms:
+    - "*.tpm":
+        type: file
+        description: Split TPM files
+        pattern: "*.tpm"
+  psis:
+    - "*.psi":
+        type: file
+        description: Split PSI files
+        pattern: "*.psi"
+  ranges:
+    - "*_ranges.txt":
+        type: file
+        description: Range files
+        pattern: "*_ranges.txt"
+  versions_r:
+    - "versions.yml":
+        type: file
+        description: Versions file
+        pattern: "versions.yml"
+
+topics:
+  versions:
+    - "versions.yml":
+        type: file
+        description: Versions file
+        pattern: "versions.yml"
+authors:
+  - "@lathikaa"
+  - "@piplus2"
+maintainers:
+  - "@piplus2"

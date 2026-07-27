@@ -1,4 +1,4 @@
-process SUPPA_MERGEEVENTS {
+process MERGEEVENTS {
     tag "${meta.id}"
     label 'process_low'
 
@@ -12,7 +12,7 @@ process SUPPA_MERGEEVENTS {
 
     output:
     tuple val(meta), path("*.ioe"), emit: ioe
-    tuple val("${task.process}"), val('gawk'), eval("gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p'"), topic: versions, emit: versions_gawk
+    path "versions.yml", topic: versions, emit: versions_gawk
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,6 +24,11 @@ process SUPPA_MERGEEVENTS {
     mkdir -p source_ioe
     mv *.ioe source_ioe
     awk 'FNR==1 && NR!=1 { while (/^seqname/) getline; }  1 {print}' source_ioe/*.ioe > ${prefix}.ioe
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: "$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
+    END_VERSIONS
     """
 
     stub:
@@ -33,5 +38,10 @@ process SUPPA_MERGEEVENTS {
     echo $args
 
     touch ${prefix}.ioe
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: "$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
+    END_VERSIONS
     """
 }
