@@ -159,7 +159,6 @@ params {
     email: String
     email_on_fail: String
     plaintext_email: Boolean
-    hook_url: String
     help: Boolean
     help_full: Boolean
     show_hidden: Boolean
