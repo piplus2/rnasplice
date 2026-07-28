@@ -105,7 +105,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#9a4bc0c2-df26-446a-9f42-e1bbc330668d"
+                    "@id": "#011b6a84-48b4-46c5-9406-c16f4aca84ce"
                 }
             ],
             "name": "nf-core/rnasplice"
@@ -127,21 +127,17 @@
         },
         {
             "@id": "main.nf",
-            "@type": [
-                "File",
-                "SoftwareSourceCode",
-                "ComputationalWorkflow"
-            ],
-            "author": [
+            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
+            "contributor": [
                 {
-                    "@id": "#75c20894-188f-4c6a-ba62-2044606f98e4"
+                    "@id": "#f33fca8e-04ba-4b12-8275-442b0366ee8c"
                 },
                 {
                     "@id": "https://orcid.org/0000-0002-9921-3270"
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2026-05-25T19:23:42Z",
+            "dateModified": "2026-07-24T12:36:25Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "keywords": [
                 "nf-core",
@@ -163,13 +159,8 @@
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": [
-                "https://github.com/nf-core/rnasplice",
-                "https://nf-co.re/rnasplice/dev/"
-            ],
-            "version": [
-                "1.1.0dev"
-            ]
+            "url": ["https://github.com/nf-core/rnasplice", "https://nf-co.re/rnasplice/dev/"],
+            "version": ["1.1.0dev"]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",
@@ -184,11 +175,11 @@
             "version": "!>=25.10.4"
         },
         {
-            "@id": "#9a4bc0c2-df26-446a-9f42-e1bbc330668d",
+            "@id": "#011b6a84-48b4-46c5-9406-c16f4aca84ce",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#d5b9fc11-624f-40c7-bea1-11064d62d5ef"
+                    "@id": "#7c616bea-c1a9-4cbc-a632-e9b2eb9c65b1"
                 }
             ],
             "mainEntity": {
@@ -197,7 +188,7 @@
             "name": "Test suite for nf-core/rnasplice"
         },
         {
-            "@id": "#d5b9fc11-624f-40c7-bea1-11064d62d5ef",
+            "@id": "#7c616bea-c1a9-4cbc-a632-e9b2eb9c65b1",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing nf-core/rnasplice",
             "resource": "repos/nf-core/rnasplice/actions/workflows/nf-test.yml",
@@ -336,17 +327,14 @@
             "url": "https://nf-co.re/"
         },
         {
-            "@id": "#75c20894-188f-4c6a-ba62-2044606f98e4",
+            "@id": "#f33fca8e-04ba-4b12-8275-442b0366ee8c",
             "@type": "Person",
-            "name": "Ben Southgate",
-            "url": "https://github.com/bensouthgate"
+            "name": "Ben Southgate"
         },
         {
             "@id": "https://orcid.org/0000-0002-9921-3270",
             "@type": "Person",
-            "email": "james.ashmore@zifornd.com",
-            "name": "James Ashmore",
-            "url": "https://github.com/jamesashmore"
+            "name": "James Ashmore"
         }
     ]
 }
