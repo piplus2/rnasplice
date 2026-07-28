@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed regex error in `parse_miso_index.py`.
 - Fixed `MISOPY` module to correctly handle paired-end reads and pass the correct BAM files to MISOPY.
 - Fixed `DEXSEQ_DTU` script to correctly handle the sample IDs (thanks to @albamasmalavila) (issue #223).
+- Fixed wrong branch when input is BAM in `dev` (thanks to @albamasmalavila) (issue #230).
 
 ## v1.0.5 - 2024-11-03
 
