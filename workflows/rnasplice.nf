@@ -230,31 +230,36 @@ workflow RNASPLICE {
         ch_samtools_idxstats = BAM_SORT_STATS_SAMTOOLS.out.idxstats
     }
 
-    if ((params.source == 'fastq' && !params.skip_alignment && params.aligner == 'star') || (params.aligner == 'star_salmon')) {
-        ALIGN_STAR(
-            ch_trim_reads,
-            ch_star_index.map { index -> [[:], index] },
-            ch_gtf.map { gtf -> [[:], gtf] },
-            params.star_ignore_sjdbgtf,
-            '',
-            params.seq_center ?: '',
-            is_aws_igenome,
-            ch_fasta.map { fasta -> [[:], fasta, []] },
-        )
-        ch_genome_bam = ALIGN_STAR.out.bam           // [meta, bam]
-        ch_genome_bam_index = ALIGN_STAR.out.index
-        ch_transcriptome_bam_for_salmon = ALIGN_STAR.out.bam_transcript
-        ch_samtools_stats = ALIGN_STAR.out.stats
-        ch_samtools_flagstat = ALIGN_STAR.out.flagstat
-        ch_samtools_idxstats = ALIGN_STAR.out.idxstats
-        ch_star_multiqc = ALIGN_STAR.out.log_final
+    if (params.source == 'fastq' && !params.skip_alignment) {
+        if (params.aligner == 'star' || params.aligner == 'star_salmon') {
+            ALIGN_STAR(
+                ch_trim_reads,
+                ch_star_index.map { index -> [[:], index] },
+                ch_gtf.map { gtf -> [[:], gtf] },
+                params.star_ignore_sjdbgtf,
+                '',
+                params.seq_center ?: '',
+                is_aws_igenome,
+                ch_fasta.map { fasta -> [[:], fasta, []] },
+            )
+            ch_genome_bam = ALIGN_STAR.out.bam           // [meta, bam]
+            ch_genome_bam_index = ALIGN_STAR.out.index
+            ch_transcriptome_bam_for_salmon = ALIGN_STAR.out.bam_transcript
+            ch_samtools_stats = ALIGN_STAR.out.stats
+            ch_samtools_flagstat = ALIGN_STAR.out.flagstat
+            ch_samtools_idxstats = ALIGN_STAR.out.idxstats
+            ch_star_multiqc = ALIGN_STAR.out.log_final
+        }
     }
 
     // ====================================================================
     // EXON SPLICING ENGINES
     // ====================================================================
 
-    if (params.source == 'genome_bam' || (params.source == 'fastq') && (!params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon')))
+
+    if (params.source == 'genome_bam' ||
+            ( ( params.source == 'fastq') && ( !params.skip_alignment && (params.aligner == 'star' || params.aligner == 'star_salmon') ) )
+        )
     {
         ch_dexseq_gff = params.gff_dexseq ?: ''
 
@@ -334,7 +339,6 @@ workflow RNASPLICE {
     // ====================================================================
 
     if (params.source == 'transcriptome_bam' || ((params.source == 'fastq' && !params.skip_alignment && params.aligner == 'star_salmon'))) {
-        alignment_mode = true
         ch_dummy_salmon_index = channel.value(file("${projectDir}/assets/dummy_file.txt", checkIfExists: true))
 
         SALMON_QUANT_STAR(
@@ -342,7 +346,7 @@ workflow RNASPLICE {
             ch_dummy_salmon_index,
             ch_gtf,
             ch_transcript_fasta,
-            alignment_mode,
+            true,
             params.salmon_quant_libtype ?: '',
         )
         ch_salmon_results = SALMON_QUANT_STAR.out.results
@@ -409,7 +413,6 @@ workflow RNASPLICE {
     }
 
     if (params.source == 'fastq' && params.pseudo_aligner == 'salmon') {
-        alignment_mode = false
         ch_dummy_transcript_fasta = channel.value(file("${projectDir}/assets/dummy_file2.txt", checkIfExists: true))
 
         SALMON_QUANT_SALMON(
@@ -417,7 +420,7 @@ workflow RNASPLICE {
             ch_salmon_index,
             ch_gtf,
             ch_dummy_transcript_fasta,
-            alignment_mode,
+            false,
             params.salmon_quant_libtype ?: '',
         )
         ch_salmon_results = SALMON_QUANT_SALMON.out.results
