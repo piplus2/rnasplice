@@ -54,12 +54,6 @@
                     "type": "boolean",
                     "description": "Save FastQ files after merging re-sequenced libraries in the results directory.",
                     "fa_icon": "fas fa-save"
-                },
-                "pipelines_testdata_base_path": {
-                    "type": "string",
-                    "description": "Base path for the test data directory.",
-                    "fa_icon": "fas fa-database",
-                    "hidden": true
                 }
             }
         },
