@@ -1,0 +1,47 @@
+process MERGEEVENTS {
+    tag "${meta.id}"
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/84/843cccb2542bb0f87d9638a058450c6f891c6af2406a42d5de9efcec3a422c18/data' :
+        'community.wave.seqera.io/library/gawk:5.4.1--8dd22ef9018762ae' }"
+
+    input:
+    tuple val(meta), path(events)
+
+    output:
+    tuple val(meta), path("*.ioe"), emit: ioe
+    path "versions.yml", topic: versions, emit: versions_gawk
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    mkdir -p source_ioe
+    mv *.ioe source_ioe
+    awk 'FNR==1 && NR!=1 { while (/^seqname/) getline; }  1 {print}' source_ioe/*.ioe > ${prefix}.ioe
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: "$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo $args
+
+    touch ${prefix}.ioe
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: "$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
+    END_VERSIONS
+    """
+}

@@ -372,8 +372,8 @@ workflow RNASPLICE {
         if (params.suppa) {
             ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : ch_txi_suppa_tpm
             SUPPA_STAR_SALMON(
-                ch_gtf,
-                ch_suppa_tpm,
+                ch_gtf.map { gtf -> [[ id: gtf.baseName ], gtf] },
+                ch_suppa_tpm.map { tpm_psi -> [[ id: tpm_psi.baseName ], tpm_psi] },
                 ch_samplesheet,
                 ch_contrastsheet,
                 params.suppa_per_local_event,
@@ -448,8 +448,8 @@ workflow RNASPLICE {
         if (params.suppa) {
             ch_suppa_tpm = params.suppa_tpm ? ch_suppa_tpm : ch_txi_suppa_tpm
             SUPPA_SALMON(
-                ch_gtf,
-                ch_suppa_tpm,
+                ch_gtf.map { gtf -> [ [ id: gtf.baseName ] , gtf] },
+                ch_suppa_tpm.map { tpm_psi -> [ [ id: tpm_psi.baseName ] , tpm_psi] },
                 ch_samplesheet,
                 ch_contrastsheet,
                 params.suppa_per_local_event,
