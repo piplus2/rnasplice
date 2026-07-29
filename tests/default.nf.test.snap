@@ -8,6 +8,12 @@
                 "CLUSTEREVENTS_IOI": {
                     "suppa": 2.4
                 },
+                "CLUSTERGROUPS_IOE": {
+                    "python": "3.14.6"
+                },
+                "CLUSTERGROUPS_IOI": {
+                    "python": "3.14.6"
+                },
                 "CREATE_BAMLIST": {
                     "sed": 4.7
                 },
@@ -62,6 +68,9 @@
                     "rsem": "1.3.1",
                     "star": "2.7.10a"
                 },
+                "MERGEEVENTS": {
+                    "gawk": "5.4.1"
+                },
                 "MISOPY_INDEX": {
                     "misopy": "0.5.4",
                     "python": "2.7.15"
@@ -109,6 +118,15 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": "1.23.1"
+                },
+                "SPLIT_FILES_IOE": {
+                    "r-base": "4.6.1"
+                },
+                "SPLIT_FILES_IOI": {
+                    "r-base": "4.6.1"
+                },
+                "SPLIT_FILES_TPM": {
+                    "r-base": "4.6.1"
                 },
                 "STAGER": {
                     "stageR": "1.32.0"
@@ -2890,8 +2908,13 @@
                 "misopy/miso_data/ERR188383/batch-genes/batch-2_genes.txt",
                 "misopy/miso_data/ERR188383/batch-genes/batch-3_genes.txt",
                 "misopy/miso_data/ERR188383/batch-logs",
+                "misopy/miso_data/ERR188383/batch-logs/batch-0-07-29-26_11:02:23.log",
+                "misopy/miso_data/ERR188383/batch-logs/batch-1-07-29-26_11:02:24.log",
+                "misopy/miso_data/ERR188383/batch-logs/batch-2-07-29-26_11:02:25.log",
+                "misopy/miso_data/ERR188383/batch-logs/batch-3-07-29-26_11:02:26.log",
                 "misopy/miso_data/ERR188383/cluster_scripts",
                 "misopy/miso_data/ERR188383/logs",
+                "misopy/miso_data/ERR188383/logs/main.2026-07-29_11-02-18.log",
                 "misopy/miso_data/ERR188383/scripts_output",
                 "misopy/miso_data/ERR188428",
                 "misopy/miso_data/ERR188428/X",
@@ -3191,8 +3214,13 @@
                 "misopy/miso_data/ERR188428/batch-genes/batch-2_genes.txt",
                 "misopy/miso_data/ERR188428/batch-genes/batch-3_genes.txt",
                 "misopy/miso_data/ERR188428/batch-logs",
+                "misopy/miso_data/ERR188428/batch-logs/batch-0-07-29-26_11:01:56.log",
+                "misopy/miso_data/ERR188428/batch-logs/batch-1-07-29-26_11:01:57.log",
+                "misopy/miso_data/ERR188428/batch-logs/batch-2-07-29-26_11:01:58.log",
+                "misopy/miso_data/ERR188428/batch-logs/batch-3-07-29-26_11:01:59.log",
                 "misopy/miso_data/ERR188428/cluster_scripts",
                 "misopy/miso_data/ERR188428/logs",
+                "misopy/miso_data/ERR188428/logs/main.2026-07-29_11-01-50.log",
                 "misopy/miso_data/ERR188428/scripts_output",
                 "misopy/miso_data/ERR188454",
                 "misopy/miso_data/ERR188454/X",
@@ -3514,8 +3542,13 @@
                 "misopy/miso_data/ERR188454/batch-genes/batch-2_genes.txt",
                 "misopy/miso_data/ERR188454/batch-genes/batch-3_genes.txt",
                 "misopy/miso_data/ERR188454/batch-logs",
+                "misopy/miso_data/ERR188454/batch-logs/batch-0-07-29-26_11:02:44.log",
+                "misopy/miso_data/ERR188454/batch-logs/batch-1-07-29-26_11:02:45.log",
+                "misopy/miso_data/ERR188454/batch-logs/batch-2-07-29-26_11:02:46.log",
+                "misopy/miso_data/ERR188454/batch-logs/batch-3-07-29-26_11:02:46.log",
                 "misopy/miso_data/ERR188454/cluster_scripts",
                 "misopy/miso_data/ERR188454/logs",
+                "misopy/miso_data/ERR188454/logs/main.2026-07-29_11-02-38.log",
                 "misopy/miso_data/ERR188454/scripts_output",
                 "misopy/miso_data/ERR204916",
                 "misopy/miso_data/ERR204916/X",
@@ -3830,8 +3863,13 @@
                 "misopy/miso_data/ERR204916/batch-genes/batch-2_genes.txt",
                 "misopy/miso_data/ERR204916/batch-genes/batch-3_genes.txt",
                 "misopy/miso_data/ERR204916/batch-logs",
+                "misopy/miso_data/ERR204916/batch-logs/batch-0-07-29-26_11:02:17.log",
+                "misopy/miso_data/ERR204916/batch-logs/batch-1-07-29-26_11:02:18.log",
+                "misopy/miso_data/ERR204916/batch-logs/batch-2-07-29-26_11:02:19.log",
+                "misopy/miso_data/ERR204916/batch-logs/batch-3-07-29-26_11:02:20.log",
                 "misopy/miso_data/ERR204916/cluster_scripts",
                 "misopy/miso_data/ERR204916/logs",
+                "misopy/miso_data/ERR204916/logs/main.2026-07-29_11-02-11.log",
                 "misopy/miso_data/ERR204916/scripts_output",
                 "misopy/miso_settings.txt",
                 "misopy/sashimi",
@@ -4374,6 +4412,11 @@
                 "star_salmon/rmats/GBR-YRI/rmats_post_paired/tmp/JC_SE/rMATS_result_paired.txt",
                 "star_salmon/rmats/GBR-YRI/rmats_prep.log",
                 "star_salmon/rmats/GBR-YRI/rmats_temp",
+                "star_salmon/rmats/GBR-YRI/rmats_temp/2026-07-29-11_03_05_790591_0.rmats",
+                "star_salmon/rmats/GBR-YRI/rmats_temp/2026-07-29-11_03_05_790591_1.rmats",
+                "star_salmon/rmats/GBR-YRI/rmats_temp/2026-07-29-11_03_05_790591_2.rmats",
+                "star_salmon/rmats/GBR-YRI/rmats_temp/2026-07-29-11_03_05_790591_3.rmats",
+                "star_salmon/rmats/GBR-YRI/rmats_temp/2026-07-29-11_03_05_790591_read_outcomes_by_bam.txt",
                 "star_salmon/rmats/YRI-GBR",
                 "star_salmon/rmats/YRI-GBR/rmats_post_paired",
                 "star_salmon/rmats/YRI-GBR/rmats_post_paired.log",
@@ -4496,6 +4539,11 @@
                 "star_salmon/rmats/YRI-GBR/rmats_post_paired/tmp/JC_SE/rMATS_result_paired.txt",
                 "star_salmon/rmats/YRI-GBR/rmats_prep.log",
                 "star_salmon/rmats/YRI-GBR/rmats_temp",
+                "star_salmon/rmats/YRI-GBR/rmats_temp/2026-07-29-11_03_04_763249_0.rmats",
+                "star_salmon/rmats/YRI-GBR/rmats_temp/2026-07-29-11_03_04_763249_1.rmats",
+                "star_salmon/rmats/YRI-GBR/rmats_temp/2026-07-29-11_03_04_763249_2.rmats",
+                "star_salmon/rmats/YRI-GBR/rmats_temp/2026-07-29-11_03_04_763249_3.rmats",
+                "star_salmon/rmats/YRI-GBR/rmats_temp/2026-07-29-11_03_04_763249_read_outcomes_by_bam.txt",
                 "star_salmon/rmats/bamlist",
                 "star_salmon/rmats/bamlist/GBR_bamlist.txt",
                 "star_salmon/rmats/bamlist/YRI_bamlist.txt",
@@ -4804,7 +4852,7 @@
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6"
             ]
         ],
-        "timestamp": "2026-07-27T17:33:25.913061198",
+        "timestamp": "2026-07-29T13:05:30.529942913",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
