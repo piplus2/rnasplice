@@ -14,12 +14,13 @@ workflow VISUALISE_MISO {
     gtf // path gtf
     ch_genome_bam // channel: [ val(meta), path(bams) ]
     ch_genome_bai // channel: [ val(meta), path(bais) ]
-    fig_width // 7
-    fig_height // 5
-    miso_genes // params.miso_genes
-    miso_genes_file // params.miso_genes_file
 
     main:
+
+    def fig_width = params.fig_width // val: sashimi plot width
+    def fig_height = params.fig_height // val: sashimi plot height
+    def miso_genes = params.miso_genes // val: comma-separated gene ids to plot
+    def miso_genes_file = params.miso_genes_file ?: false // val: file of gene ids to plot
 
     //
     // MODULE: gtf_2_gff3

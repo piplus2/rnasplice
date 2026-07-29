@@ -14,14 +14,16 @@ workflow DRIMSEQ_DEXSEQ_DTU {
     tximport_tx2gene        // path: tximport.tx2gene.tsv
     samplesheet             // path: /path/to/samplesheet.csv
     contrastsheet           // path: contrastsheet
-    min_samps_gene_expr     // params.min_samps_gene_expr
-    min_samps_feature_expr  // params.min_samps_feature_expr
-    min_samps_feature_prop  // params.min_samps_feature_prop
-    min_feature_expr        // params.min_feature_expr
-    min_feature_prop        // params.min_feature_prop
-    min_gene_expr           // params.min_gene_expr
 
     main:
+
+    // DRIMSeq filtering thresholds
+    def min_samps_gene_expr    = params.min_samps_gene_expr
+    def min_samps_feature_expr = params.min_samps_feature_expr
+    def min_samps_feature_prop = params.min_samps_feature_prop
+    def min_feature_expr       = params.min_feature_expr
+    def min_feature_prop       = params.min_feature_prop
+    def min_gene_expr          = params.min_gene_expr
 
     //
     // DEXSEQ FILTER

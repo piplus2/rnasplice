@@ -33,8 +33,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `SUBREAD_FLATTENGTF` to match nf-core module template.
 - Now `DEXSEQ_DTU` module uses `BPPARAM` argument to enable parallel processing, if no `BPPARAM` is provided, it defaults to `SerialParam()`.
 - Use nf-core modules for `SUPPA` and moved `SUPPA` helper modules to `modules/local` using templates.
+- Simplified the `--source` input branching in `workflows/rnasplice.nf`: the samplesheet is now read once through a single table of schema/row-mapper per source, and the repeated `--source`/`--aligner` conditions are resolved into named flags at the top of the workflow.
+- Subworkflows no longer take `params` values as inputs. `ALIGN_STAR`, `DEXSEQ_DEU`, `EDGER_DEU`, `DRIMSEQ_DEXSEQ_DTU`, `RMATS`, `VISUALISE_MISO`, `SUPPA` and `PREPARE_GENOME` now read the options they need from `params` themselves, so their `take:` blocks only declare channels.
+- Added `isAwsIgenome()` and `isSingleCondition()` helpers to `utils_nfcore_rnasplice_pipeline`, replacing the inline iGenome detection in `main.nf` and the inline samplesheet parsing in `workflows/rnasplice.nf`.
+- Removed the unused `INPUT_CHECK` and `CONTRASTS_CHECK` subworkflows, which duplicated the samplesheet/contrastsheet handling now done in `workflows/rnasplice.nf`.
 
 ### Fixed
+
+- `DEXSEQ_DEU` now receives the DEXSeq GFF prepared by `PREPARE_GENOME`, so a gzipped `--gff_dexseq` is decompressed before use instead of being passed through as-is.
+- `SUPPA` now uses the TPM table from its own `TX2GENE_TXIMPORT` invocation. Previously the pseudo-aligner branch reused the `star_salmon` TPM table, and failed outright when the `star_salmon` branch had not run.
 
 - Fixed Nextflow 26+ compatibility: removed deprecated `if/else` blocks from `nextflow.config`
 - Fixed Nextflow 26+ compatibility: migrated `conf/modules.config` from `if` blocks to `ext.when` closures

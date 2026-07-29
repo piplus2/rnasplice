@@ -241,17 +241,40 @@ def validateInputSamplesheet(input) {
 }
 
 //
-// Validate channels from input contrastsheet
+// Validate a single row of the input contrastsheet
 //
-def validateInputContrastsheet(input) {
-    def metas = input[0]
-    def meta = metas[0]
-
+def validateInputContrastsheet(meta) {
     if (meta.treatment == meta.control) {
         error("Please check input contrastsheet -> Treatment and control conditions cannot be the same: ${meta.contrast} (${meta.treatment} vs ${meta.control})")
     }
 
     return meta
+}
+
+//
+// Whether the reference files point at an AWS iGenome, which needs the older
+// version of STAR
+//
+def isAwsIgenome() {
+    if (!params.fasta || !params.gtf) {
+        return false
+    }
+    return (file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')
+}
+
+//
+// Whether every sample in the input samplesheet belongs to the same condition,
+// in which case rMATS runs in single-condition (profiling) mode
+//
+def isSingleCondition() {
+    def lines = params.input.startsWith('http')
+        ? new URL(params.input).text.readLines()
+        : file(params.input).readLines()
+
+    def headers = lines[0].split(',')*.trim()
+    def condition_idx = headers.indexOf('condition')
+
+    return lines[1..-1].collect { line -> line.split(',')[condition_idx].trim() }.unique().size() == 1
 }
 
 //

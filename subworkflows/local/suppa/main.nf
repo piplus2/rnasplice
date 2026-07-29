@@ -30,36 +30,44 @@ workflow SUPPA {
     ch_tpm                         // [ meta, tpm ]
     ch_samplesheet                 // path(samplesheet)
     ch_contrastsheet               // path(contrastsheet)
-    suppa_per_local_event          // params.suppa_per_local_event
-    generateevents_boundary        // params.generateevents_boundary
-    generateevents_threshold       // params.generateevents_threshold
-    generateevents_exon_length     // params.generateevents_exon_length
-    generateevents_event_type      // params.generateevents_event_type
-    generateevents_pool_genes      // params.generateevents_pool_genes
-    psiperevent_total_filter       // params.psiperevent_total_filter
-    diffsplice_local_event         // params.diffsplice_local_event
-    diffsplice_transcript_event    // params.diffsplice_isoform
-    diffsplice_method              // params.diffsplice_method
-    diffsplice_area                // params.diffsplice_area
-    diffsplice_lower_bound         // params.diffsplice_lower_bound
-    diffsplice_alpha               // params.diffsplice_alpha
-    diffsplice_tpm_threshold       // params.diffsplice_tpm_threshold
-    diffsplice_nan_threshold       // params.diffsplice_nan_threshold
-    diffsplice_gene_correction     // params.diffsplice_gene_correction
-    diffsplice_paired              // params.diffsplice_paired
-    diffsplice_median              // params.diffsplice_median
-    clusterevents_local_event      // params.clusterevents_local_event
-    clusterevents_transcript_event // params.clusterevents_transcript_event
-    clusterevents_dpsithreshold    // params.clusterevents_dpsithreshold
-    clusterevents_eps              // params.clusterevents_eps
-    clusterevents_metric           // params.clusterevents_metric
-    clusterevents_min_pts          // params.clusterevents_min_pts
-    clusterevents_method           // params.clusterevents_method
-    clusterevents_sigthreshold     // params.clusterevents_sigthreshold
-    clusterevents_separation       // params.clusterevents_separation
-    suppa_per_isoform              // params.suppa_per_isoform
 
     main:
+
+    // Which analyses to run
+    def suppa_per_local_event          = params.suppa_per_local_event
+    def suppa_per_isoform              = params.suppa_per_isoform
+    def diffsplice_local_event         = params.diffsplice_local_event
+    def diffsplice_transcript_event    = params.diffsplice_isoform
+    def clusterevents_local_event      = params.clusterevents_local_event
+    def clusterevents_transcript_event = params.clusterevents_isoform
+
+    // generateEvents / psiPerEvent options
+    def generateevents_boundary        = params.generateevents_boundary
+    def generateevents_threshold       = params.generateevents_threshold
+    def generateevents_exon_length     = params.generateevents_exon_length
+    def generateevents_event_type      = params.generateevents_event_type
+    def generateevents_pool_genes      = params.generateevents_pool_genes
+    def psiperevent_total_filter       = params.psiperevent_total_filter
+
+    // diffSplice options
+    def diffsplice_method              = params.diffsplice_method
+    def diffsplice_area                = params.diffsplice_area
+    def diffsplice_lower_bound         = params.diffsplice_lower_bound
+    def diffsplice_alpha               = params.diffsplice_alpha
+    def diffsplice_tpm_threshold       = params.diffsplice_tpm_threshold
+    def diffsplice_nan_threshold       = params.diffsplice_nan_threshold
+    def diffsplice_gene_correction     = params.diffsplice_gene_correction
+    def diffsplice_paired              = params.diffsplice_paired
+    def diffsplice_median              = params.diffsplice_median
+
+    // clusterEvents options
+    def clusterevents_dpsithreshold    = params.clusterevents_dpsithreshold
+    def clusterevents_eps              = params.clusterevents_eps
+    def clusterevents_metric           = params.clusterevents_metric
+    def clusterevents_min_pts          = params.clusterevents_min_pts
+    def clusterevents_method           = params.clusterevents_method
+    def clusterevents_sigthreshold     = params.clusterevents_sigthreshold ?: false
+    def clusterevents_separation       = params.clusterevents_separation ?: false
 
     // Split the tpm file (contains all samples) into individual files based on condition
 

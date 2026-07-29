@@ -193,24 +193,11 @@ workflow NFCORE_RNASPLICE {
 
     main:
 
-    def is_aws_igenome = params.fasta && params.gtf && (file(params.fasta).getName() - '.gz' == 'genome.fa') && (file(params.gtf).getName() - '.gz' == 'genes.gtf')
-
     //
     // SUBWORKFLOW: Prepare reference genome files
     //
 
-    PREPARE_GENOME(
-        params.fasta,
-        params.gtf,
-        params.gff,
-        params.transcript_fasta,
-        params.star_index,
-        params.salmon_index,
-        params.gff_dexseq,
-        params.suppa_tpm,
-        params.gencode,
-        is_aws_igenome,
-    )
+    PREPARE_GENOME()
 
     ch_samplesheet = channel.value(file(params.input, checkIfExists: true))
     ch_contrastsheet = channel.value(file(params.contrasts, checkIfExists: true))
@@ -229,10 +216,6 @@ workflow NFCORE_RNASPLICE {
         PREPARE_GENOME.out.star_index,
         PREPARE_GENOME.out.suppa_tpm,
         PREPARE_GENOME.out.chrom_sizes,
-        is_aws_igenome,
-        params.multiqc_config,
-        params.multiqc_logo,
-        params.multiqc_methods_description,
     )
 
     emit:

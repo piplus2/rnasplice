@@ -22,20 +22,21 @@ include { RSEM_PREPAREREFERENCE as MAKE_TRANSCRIPTS_FASTA } from '../../../modul
 include { GTF_GENE_FILTER                                 } from '../../../modules/local/gtf_gene_filter'
 include { PREPROCESS_TRANSCRIPTS_FASTA_GENCODE            } from '../../../modules/local/preprocess_transcripts_fasta_gencode'
 
-workflow PREPARE_GENOME {
-    take:
-    fasta //      file: /path/to/genome.fasta
-    gtf //      file: /path/to/genome.gtf
-    gff //      file: /path/to/genome.gff
-    transcript_fasta //      file: /path/to/transcript.fasta
-    star_index // directory: /path/to/star/index/
-    salmon_index // directory: /path/to/salmon/index/
-    gff_dexseq //      file: /path/to/dexseq/genome.gff
-    suppa_tpm //      file: /path/to/suppa/quant.tpm
-    gencode //   boolean: whether gene annotation is from gencode
-    is_aws_igenome //   boolean: whether the genome files are from AWS iGenomes
+include { isAwsIgenome                                    } from '../utils_nfcore_rnasplice_pipeline'
 
+workflow PREPARE_GENOME {
     main:
+
+    def fasta = params.fasta //      file: /path/to/genome.fasta
+    def gtf = params.gtf //      file: /path/to/genome.gtf
+    def gff = params.gff //      file: /path/to/genome.gff
+    def transcript_fasta = params.transcript_fasta //      file: /path/to/transcript.fasta
+    def star_index = params.star_index // directory: /path/to/star/index/
+    def salmon_index = params.salmon_index // directory: /path/to/salmon/index/
+    def gff_dexseq = params.gff_dexseq //      file: /path/to/dexseq/genome.gff
+    def suppa_tpm = params.suppa_tpm //      file: /path/to/suppa/quant.tpm
+    def gencode = params.gencode //   boolean: whether gene annotation is from gencode
+    def is_aws_igenome = isAwsIgenome() //   boolean: whether the genome files are from AWS iGenomes
 
     //
     // Uncompress genome fasta file if required

@@ -6,18 +6,22 @@ include { STAR_ALIGN              } from '../../../modules/nf-core/star/align/ma
 include { STAR_ALIGN_IGENOMES     } from '../../../modules/local/star_align_igenomes'
 include { BAM_SORT_STATS_SAMTOOLS } from '../../../subworkflows/nf-core/bam_sort_stats_samtools'
 
+include { isAwsIgenome            } from '../utils_nfcore_rnasplice_pipeline'
+
 workflow ALIGN_STAR {
     take:
     reads // channel: [ val(meta), [ reads ] ]
     index // channel: /path/to/star/index/
     gtf // channel: /path/to/genome.gtf
-    star_ignore_sjdbgtf // boolean: when using pre-built STAR indices do not re-extract and use splice junctions from the GTF file
-    seq_platform // string : sequencing platform
-    seq_center // string : sequencing center
-    is_aws_igenome // boolean: whether the genome files are from AWS iGenomes
     fasta // channel: /path/to/fasta
 
     main:
+
+    // boolean: when using pre-built STAR indices do not re-extract and use splice junctions from the GTF file
+    def star_ignore_sjdbgtf = params.star_ignore_sjdbgtf
+    def seq_platform = '' // string : sequencing platform
+    def seq_center = params.seq_center ?: '' // string : sequencing center
+    def is_aws_igenome = isAwsIgenome() // boolean: whether the genome files are from AWS iGenomes
 
     //
     // Map reads with STAR

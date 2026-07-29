@@ -6,6 +6,8 @@ include { CREATE_BAMLIST         } from '../../../modules/local/create_bamlist'
 include { RMATS_PREP             } from '../../../modules/local/rmats_prep'
 include { RMATS_POST             } from '../../../modules/local/rmats_post'
 
+include { isSingleCondition     } from '../utils_nfcore_rnasplice_pipeline'
+
 
 workflow RMATS {
     take:
@@ -13,15 +15,16 @@ workflow RMATS {
     ch_contrastsheet         // channel: path(contrastsheet.csv)
     ch_genome_bam_conditions // channel: [ condition, meta, bam ]
     gtf                      // channel: path(genome.gtf)
-    is_single_condition      // val: true/false
-    rmats_read_len
-    rmats_splice_diff_cutoff
-    rmats_novel_splice_site
-    rmats_min_intron_len
-    rmats_max_exon_len
-    rmats_paired_stats
 
     main:
+
+    def is_single_condition        = isSingleCondition() // val: all samples share one condition
+    def rmats_read_len             = params.rmats_read_len
+    def rmats_splice_diff_cutoff   = params.rmats_splice_diff_cutoff
+    def rmats_novel_splice_site    = params.rmats_novel_splice_site
+    def rmats_min_intron_len       = params.rmats_min_intron_len
+    def rmats_max_exon_len         = params.rmats_max_exon_len
+    def rmats_paired_stats         = params.rmats_paired_stats
 
     if (is_single_condition) {
 

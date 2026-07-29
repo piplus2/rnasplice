@@ -13,13 +13,14 @@ workflow DEXSEQ_DEU {
     gtf                // path gtf
     ch_genome_bam      // bam channel
     ch_dexseq_gff      // path dexseq gff
-    ch_samplesheet     // channel.fromPath(params.input)
-    ch_contrastsheet   // channel.fromPath()
-    n_dexseq_plot      // val: numeric
-    aggregation        // params.aggregation
-    alignment_quality  // params.alignment_quality
+    ch_samplesheet     // channel: path(samplesheet)
+    ch_contrastsheet   // channel: path(contrastsheet)
 
     main:
+
+    def n_dexseq_plot     = params.n_dexseq_plot     // val: number of genes to plot
+    def aggregation       = params.aggregation       // val: aggregate overlapping genes
+    def alignment_quality = params.alignment_quality // val: minimum alignment quality
 
     if (!params.gff_dexseq) {
 
