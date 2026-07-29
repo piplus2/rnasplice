@@ -16,6 +16,10 @@
 **/*.tpm
 **/batch-*.log
 **/main.*.log
+*.log
+
+**/*.rmats
+**/*_read_outcomes_by_bam.txt
 
 **/events_RI_strict.gtf
 **/suppa_tpm.txt
@@ -25,12 +29,11 @@
 
 # MISO specific stochastic/dynamic files
 misopy/
-misopy/miso_data/**/logs/*.log
-misopy/miso_data/**/batch-logs/*.log
-misopy/**/*.miso
-misopy/**/batch-*
-misopy/**/batch-*.log
-misopy/**/batch-logs*.log
+misopy/miso_data/*/logs/*.log
+**/batch-logs/*
+**/*.miso
+**/*.pickle
+**/*.shelve.*
 
 # Salmon specific stochastic files
 **/libParams/flenDist.txt
@@ -120,14 +123,8 @@ trimgalore/*fastq.gz_trimming_report.txt
 # rMATS
 {salmon,star_salmon}/rmats/**/rMATS_result_*.txt
 {salmon,star_salmon}/rmats/**/pairadise_*.txt
-{salmon,star_salmon}/rmats/**/_read_outcomes_by_bam.txt
+{salmon,star_salmon}/rmats/**/*_read_outcomes_by_bam.txt
 {salmon,star_salmon}/rmats/**/*.rmats
-{salmon,star_salmon}/rmats/*/rmats_temp/*_read_outcomes_by_bam.txt
-{salmon,star_salmon}/rmats/*/rmats_temp/*.rmats
+**/rmats_temp/*
 {salmon,star_salmon}/rmats/bamlist/*.txt
 {salmon,star_salmon}/rmats/*/rmats_post/*.txt
-
-# MISO
-**/*.miso
-**/*.pickle
-**/*.shelve.*
