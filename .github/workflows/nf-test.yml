@@ -27,9 +27,13 @@ env:
 jobs:
   nf-test-changes:
     name: nf-test-changes
-    runs-on: # use self-hosted runners
-      - runs-on=${{ github.run_id }}-nf-test-changes
-      - runner=4cpu-linux-x64
+    # NOTE: the template renders self-hosted `runs-on=`/`runner=` labels because
+    # `.nf-core.yml` sets `is_nfcore: true`. Those org-level runners only exist
+    # for repos under the nf-core org, so on this fork the jobs queue until
+    # GitHub cancels them after 24h. This matches what the template itself
+    # emits for `is_nfcore: false` — re-apply it after every template sync.
+    runs-on: # use GitHub runners
+      - "ubuntu-latest"
     outputs:
       shard: ${{ steps.set-shards.outputs.shard }}
       total_shards: ${{ steps.set-shards.outputs.total_shards }}
@@ -61,10 +65,8 @@ jobs:
     name: "${{ matrix.profile }} | ${{ matrix.NXF_VER }} | ${{ matrix.shard }}/${{ needs.nf-test-changes.outputs.total_shards }}"
     needs: [nf-test-changes]
     if: ${{ needs.nf-test-changes.outputs.total_shards != '0' }}
-    runs-on: # use self-hosted runners
-      - runs-on=${{ github.run_id }}-nf-test
-      - runner=4cpu-linux-x64
-      - volume=50gb
+    runs-on: # use GitHub runners
+      - "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
@@ -89,6 +91,29 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+
+      # GitHub-hosted runners only ship ~14 GB of free disk, which is not enough
+      # for the container images pulled by the pipeline tests.
+      - name: Free disk space
+        id: free_disk_space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Check disk space
+        run: df -h
+
+      - name: Prune Docker
+        run: |
+          docker system prune -af
+          docker volume prune -f
+          df -h
 
       - name: Run nf-test
         id: run_nf_test
@@ -133,12 +158,18 @@ jobs:
           name: pr-comment-fragment-${{ strategy.job-index }}
           path: pr-comment-fragment/
 
+      - name: Prune Docker after test
+        if: always()
+        run: |
+          docker system prune -af
+          docker volume prune -f
+          df -h
+
   confirm-pass:
     needs: [nf-test]
     if: always()
-    runs-on: # use self-hosted runners
-      - runs-on=${{ github.run_id }}-confirm-pass
-      - runner=2cpu-linux-x64
+    runs-on: # use GitHub runners
+      - "ubuntu-latest"
     steps:
       - name: One or more tests failed (excluding latest-everything)
         if: ${{ contains(needs.*.result, 'failure') }}
