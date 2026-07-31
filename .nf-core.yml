@@ -13,5 +13,6 @@ lint:
   files_unchanged:
     - .github/PULL_REQUEST_TEMPLATE.md
     - docs/images/nf-core-rnasplice_logo_dark.png
+    - assets/nf-core-rnasplice_logo_light.png
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
