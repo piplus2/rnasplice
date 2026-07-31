@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `SUBREAD_FLATTENGTF` to match nf-core module template.
 - Now `DEXSEQ_DTU` module uses `BPPARAM` argument to enable parallel processing, if no `BPPARAM` is provided, it defaults to `SerialParam()`.
 - Use nf-core modules for `SUPPA` and moved `SUPPA` helper modules to `modules/local` using templates.
+- Synced pipeline with nf-core template 4.0.3
 
 ### Fixed
 
