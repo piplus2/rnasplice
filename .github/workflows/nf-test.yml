@@ -50,7 +50,7 @@ jobs:
         env:
           NFT_VER: ${{ env.NFT_VER }}
         with:
-          max_shards: 7
+          max_shards: 8
 
       - name: debug
         run: |
@@ -89,27 +89,6 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
-
-      - name: Free disk space
-        id: free_disk_space
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
-
-      - name: Check disk space
-        run: df -h
-
-      - name: Prune Docker
-        run: |
-          docker system prune -af
-          docker volume prune -f
-          df -h
 
       - name: Run nf-test
         id: run_nf_test
