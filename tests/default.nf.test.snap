@@ -8,6 +8,12 @@
                 "CLUSTEREVENTS_IOI": {
                     "suppa": 2.4
                 },
+                "CLUSTERGROUPS_IOE": {
+                    "python": "3.14.6"
+                },
+                "CLUSTERGROUPS_IOI": {
+                    "python": "3.14.6"
+                },
                 "CREATE_BAMLIST": {
                     "sed": 4.7
                 },
@@ -62,6 +68,9 @@
                     "rsem": "1.3.1",
                     "star": "2.7.10a"
                 },
+                "MERGEEVENTS": {
+                    "gawk": "5.4.1"
+                },
                 "MISOPY_INDEX": {
                     "misopy": "0.5.4",
                     "python": "2.7.15"
@@ -93,22 +102,31 @@
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
+                },
+                "SPLIT_FILES_IOE": {
+                    "r-base": "4.6.1"
+                },
+                "SPLIT_FILES_IOI": {
+                    "r-base": "4.6.1"
+                },
+                "SPLIT_FILES_TPM": {
+                    "r-base": "4.6.1"
                 },
                 "STAGER": {
                     "stageR": "1.32.0"
@@ -142,7 +160,7 @@
                     "suppa": 2.4
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "2.1.0"
+                    "trimgalore": "2.3.0"
                 },
                 "TXIMPORT": {
                     "tximeta": "1.8.0"
@@ -4692,14 +4710,14 @@
                 "GBR-YRI_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
                 "YRI-GBR_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6",
-                "ERR188383_sorted.bam:md5,1bff4b478016421fd0f0eb5df75f3c2c",
+                "ERR188383_sorted.bam:md5,1c1511027014795c3b9e056d539d0aaf",
                 "ERR188383_sorted.bam.bai:md5,662f7faef48faebfab0dae435345afd5",
-                "ERR188428_sorted.bam:md5,2ba4c1dacd9e556b408f0a5de224a97e",
-                "ERR188428_sorted.bam.bai:md5,9dc07d8a3665d821fa18bb139d7ec281",
-                "ERR188454_sorted.bam:md5,b31f626026ce8bbdb5081b3255042c39",
-                "ERR188454_sorted.bam.bai:md5,7ee5dcbe3fb85f79ebf8fede3950e097",
-                "ERR204916_sorted.bam:md5,c316314ca9c0f08fe075dcae87c548d1",
-                "ERR204916_sorted.bam.bai:md5,06f74b05d47ed6ce5f02b847706ded18",
+                "ERR188428_sorted.bam:md5,65c6c308566434092532f771029824b9",
+                "ERR188428_sorted.bam.bai:md5,25eeb9a15262870367132ab0596c5356",
+                "ERR188454_sorted.bam:md5,e9f43532fdf608f01d9635ae8430f222",
+                "ERR188454_sorted.bam.bai:md5,ce9bc391c8641b2be08f49fd71a156e0",
+                "ERR204916_sorted.bam:md5,d36331de9ea0e8ba104124eafb0f4f64",
+                "ERR204916_sorted.bam.bai:md5,6f11ff9b416b68344f1186af4a53778e",
                 "contrast_GBR-YRI.usage.exon.csv:md5,90c732efe7f3ce4e68fb8f46ec2c3bf9",
                 "contrast_GBR-YRI.usage.gene.csv:md5,e8a84ad7c6c24cf3f024498648f91281",
                 "contrast_GBR-YRI.usage.simes.csv:md5,015da45693647f9dc1fa359665701cc9",
@@ -4789,22 +4807,22 @@
                 "summary.txt:md5,e7b6b66265fee87d7c3291dc094f9b5b",
                 "ERR188383.flagstat:md5,9f0901490aaf2a5e0936d9d16d525dbf",
                 "ERR188383.idxstats:md5,ef2037aa31e732d1319a2f1427d6d7fc",
-                "ERR188383.stats:md5,af2e294843c939e19ae615a0df4db8ab",
+                "ERR188383.stats:md5,3301676be2aec6041d8e8a58d9ecd446",
                 "ERR188428.flagstat:md5,5881d2497aa70f5d82c372e2784833e7",
                 "ERR188428.idxstats:md5,c25a7448de4e4afc312518b28a5031d0",
-                "ERR188428.stats:md5,6fb11156a178c779a47ca3a5a921f64d",
+                "ERR188428.stats:md5,1a3d25122243bc4d7ea724d38ef0414b",
                 "ERR188454.flagstat:md5,91dd255b8ae47dd84d717a5e115512bd",
                 "ERR188454.idxstats:md5,e0dab0008d8b60a8f5c0a11c75eae060",
-                "ERR188454.stats:md5,59091bca41482d204f856df9238ae7b4",
+                "ERR188454.stats:md5,a0258edf9206054a3fa73ccdf832b83e",
                 "ERR204916.flagstat:md5,77bbb66e375c4f9083d4aab0d55ddcdd",
                 "ERR204916.idxstats:md5,21ed2e992e836e620991e9a24078f1b6",
-                "ERR204916.stats:md5,afe41925bb20e1679cf8c05f5c52e001",
+                "ERR204916.stats:md5,f7baf2a47782b99be101c252debc293c",
                 "GBR-YRI_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
                 "YRI-GBR_groups.txt:md5,e9636d1c0a5cb00df8cedc61642a5d52",
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6"
             ]
         ],
-        "timestamp": "2026-07-27T17:33:25.913061198",
+        "timestamp": "2026-07-31T18:40:08.795346602",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
