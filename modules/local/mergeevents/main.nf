@@ -27,7 +27,7 @@ process MERGEEVENTS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gawk: "$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
+        gawk: "\$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
     END_VERSIONS
     """
 
@@ -41,7 +41,7 @@ process MERGEEVENTS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gawk: "$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
+        gawk: "\$(gawk --version | sed -n '1s/GNU Awk \\([0-9.]*\\).*/\\1/p')"
     END_VERSIONS
     """
 }

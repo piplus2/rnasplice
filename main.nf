@@ -159,7 +159,6 @@ params {
     email: String
     email_on_fail: String
     plaintext_email: Boolean
-    hook_url: String
     help: Boolean
     help_full: Boolean
     show_hidden: Boolean
@@ -233,6 +232,7 @@ workflow NFCORE_RNASPLICE {
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
+        params.outdir,
     )
 
     emit:
@@ -258,7 +258,7 @@ workflow {
         params.input,
         params.help,
         params.help_full,
-        params.show_hidden,
+        params.show_hidden
     )
 
     //
@@ -275,7 +275,7 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        NFCORE_RNASPLICE.out.multiqc_report,
+        NFCORE_RNASPLICE.out.multiqc_report
     )
 }
 
