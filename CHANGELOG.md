@@ -8,53 +8,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add first steps of leafcutter splicing quantification
-- Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired.
-- Improve documentation for `--rmats_paired_stats`.
-- Add test config for unpaired `rMATS`.
+- #200 -Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired (by @piplus2)
+- #204 - Improve documentation for `--rmats_paired_stats` (by @piplus2)
+- #212 - Add test config for unpaired `rMATS` (by @piplus2)
 
 ### Changed
 
-- Synced pipeline with nf-core template 4.0.2
-- Migrated samplesheet and contrastsheet validation from Python scripts to nf-schema
-- Replaced deprecated `CUSTOM_GETCHROMSIZES` module with `SAMTOOLS_FAIDX`
-- Migrated all modules to use `topic: versions` pattern for software version tracking
-- Migrated local modules to `TOOL/SUBTOOL/main.nf` directory structure
-- Updated `PIPELINE_INITIALISATION` to handle all 4 input source types (fastq, genome_bam, transcriptome_bam, salmon_results)
-- Updated `StageR` to version 1.32.0 for improved performance and bug fixes.
-- Updated `HTSeq` to version 2.1.2 for improved performance and bug fixes.
-- Updated `DEXSeq` to version 1.56.0 for improved performance and bug fixes.
-- Bumped `nf-schema` to version 2.7.2
-- Applied static typing to `params` in `main.nf`.
+- #195 -Synced pipeline with nf-core template 4.0.2 (by @piplus2)
+- #195 - Migrated samplesheet and contrastsheet validation from Python scripts to nf-schema (by @piplus2)
+- #195 - Replaced deprecated `CUSTOM_GETCHROMSIZES` module with `SAMTOOLS_FAIDX` (by @piplus2)
+- #195 - Migrated all modules to use `topic: versions` pattern for software version tracking (by @piplus2)
+- #195 - Migrated local modules to `TOOL/SUBTOOL/main.nf` directory structure (by @piplus2)
+- #195 - Updated `PIPELINE_INITIALISATION` to handle all 4 input source types (fastq, genome_bam, transcriptome_bam, salmon_results) (by @piplus2)
+- #207 - Updated `StageR` to version 1.32.0 for improved performance and bug fixes (by @piplus2)
+- #207 - Updated `HTSeq` to version 2.1.2 for improved performance and bug fixes (by @piplus2)
+- #207 - Updated `DEXSeq` to version 1.56.0 for improved performance and bug fixes (by @piplus2)
+- #210 - Bumped `nf-schema` to version 2.7.2 (@piplus2)
+- #210 - Applied static typing to `params` in `main.nf` (by @piplus2)
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
-- `RMATS` paired stats default changed to `false`, as this is not appropriate for all datasets. The paired differential splicing test requires a specific paired design in the samplesheet, and users should explicitly enable this option if their dataset meets the requirements. See documentation for details.
+- #212 - `RMATS` paired stats default changed to `false`, as this is not appropriate for all datasets. The paired differential splicing test requires a specific paired design in the samplesheet, and users should explicitly enable this option if their dataset meets the requirements. See documentation for details. (by @piplus2)
+- #215 - Refactored `dexseq` modules to match nf-core schema (by @piplus2)
 - Refactored `MISO_INDEX` module into `MISOPY_INDEX` to match nf-core module template.
-- Refactored `MISO_RUN` module into `MISOPY_RUN` to match nf-core module template.
-- Removed `parse_miso_index.py` script, as it is not necessary for misopy to work.
-- Refactored `SUBREAD_FLATTENGTF` to match nf-core module template.
-- Now `DEXSEQ_DTU` module uses `BPPARAM` argument to enable parallel processing, if no `BPPARAM` is provided, it defaults to `SerialParam()`.
-- Use nf-core modules for `SUPPA` and moved `SUPPA` helper modules to `modules/local` using templates.
-- Synced pipeline with nf-core template 4.0.3
+- #219 Refactored `MISO_RUN` module into `MISOPY_RUN` to match nf-core module template (by @piplus2)
+- #220 - Removed `parse_miso_index.py` script, as it is not necessary for misopy to work (by @piplus2)
+- #221 - Refactored `SUBREAD_FLATTENGTF` to match nf-core module template (by @piplus2)
+- #225 -Now `DEXSEQ_DTU` module uses `BPPARAM` argument to enable parallel processing, if no `BPPARAM` is provided, it defaults to `SerialParam()` (by @piplus2)
+- #229 - Use nf-core modules for `SUPPA` and moved `SUPPA` helper modules to `modules/local` using templates (by @piplus2)
+- #238 - Synced pipeline with nf-core template 4.0.3 (by @piplus2)
 
 ### Fixed
 
-- Fixed Nextflow 26+ compatibility: removed deprecated `if/else` blocks from `nextflow.config`
-- Fixed Nextflow 26+ compatibility: migrated `conf/modules.config` from `if` blocks to `ext.when` closures
-- Fixed Nextflow 26+ compatibility: replaced `switch/case` statements with `if/else if` chains
-- Fixed channel reuse bugs in SUPPA subworkflow
-- Fixed `CREATE_BAMLIST` null path handling for single-condition rMATS runs
-- Fixed `SUBREAD_FLATTENGTF` multi-line version output breaking YAML parsing
-- Fixed `STAR_ALIGN` deprecated `--quantTranscriptomeBan` parameter renamed to `--quantTranscriptomeSAMoutput`
-- Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping
-- Pass the correct contrasts channel instead of the samplesheet channel `RMATS` and `SUPPA`
-- Modules `publishDir.saveAS` follow the nf-core standard for conditional output.
-- Add validation for sample names to be compliant with R. See issue #140
-- Fixed bug in `RMATS` where the order of the samples in the paired model was not correctly determined from the samplesheet.
-- Fixed missing `BPPARAM` argument in `DEXSEQ_DTU` module to run DEXSeq with parallel processing.
-- Removed unused `ntop` argument from `DEXSEQ_DTU` module and script.
-- Fixed regex error in `parse_miso_index.py`.
-- Fixed `MISOPY` module to correctly handle paired-end reads and pass the correct BAM files to MISOPY.
-- Fixed `DEXSEQ_DTU` script to correctly handle the sample IDs (thanks to @albamasmalavila) (issue #223).
-- Fixed wrong branch when input is BAM in `dev` (thanks to @albamasmalavila) (issue #230).
+- #195 - Fixed Nextflow 26+ compatibility: removed deprecated `if/else` blocks from `nextflow.config` (by @piplus2)
+- #195 - Fixed Nextflow 26+ compatibility: migrated `conf/modules.config` from `if` blocks to `ext.when` closures (@piplus2)
+- #195 - Fixed Nextflow 26+ compatibility: replaced `switch/case` statements with `if/else if` chains (by @piplus2)
+- #195 - Fixed channel reuse bugs in SUPPA subworkflow (by @piplus2)
+- #195 - Fixed `CREATE_BAMLIST` null path handling for single-condition rMATS runs (by @piplus2)
+- #195 - Fixed `SUBREAD_FLATTENGTF` multi-line version output breaking YAML parsing (by @piplus2)
+- #195 - Fixed `STAR_ALIGN` deprecated `--quantTranscriptomeBan` parameter renamed to `--quantTranscriptomeSAMoutput` (by @piplus2)
+- #200 - Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping (by @piplus2)
+- #201 - Pass the correct contrasts channel instead of the samplesheet channel `RMATS` and `SUPPA` (by @piplus2)
+- #208 - Modules `publishDir.saveAS` follow the nf-core standard for conditional output by (@piplus2)
+- #140 - Add validation for sample names to be compliant with R (by @fhausmann)
+- #212 - Fixed bug in `RMATS` where the order of the samples in the paired model was not correctly determined from the samplesheet (by @piplus2)
+- #214 - Fixed missing `BPPARAM` argument in `DEXSEQ_DTU` module to run DEXSeq with parallel processing (by @piplus2)
+- #214 - Removed unused `ntop` argument from `DEXSEQ_DTU` module and script (by @piplus2)
+- #218 - Fixed regex error in `parse_miso_index.py` (by @piplus2)
+- #219 - Fixed `MISOPY` module to correctly handle paired-end reads and pass the correct BAM files to MISOPY (by @piplus2)
+- #224 - Fixed `DEXSEQ_DTU` script to correctly handle the sample IDs (thanks to @albamasmalavila) (by @piplus2)
+- #232 - Fixed wrong branch when input is BAM in `dev` (thanks to @albamasmalavila) (by @piplus2)
+- #238 - missing backslash in `mergeevents` command in `dev` branch (by @piplus2)
 
 ## v1.0.5 - 2024-11-03
 
