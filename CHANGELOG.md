@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add first steps of leafcutter splicing quantification
-- #200 -Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired (by @piplus2)
-- #204 - Improve documentation for `--rmats_paired_stats` (by @piplus2)
+- #200 -Ignore transcript version in tximport by default to improve compatibility with tx2gene files from GTFs (e.g., from GENCODE) that may not include version numbers in transcript IDs. This can be overridden with `--ignore_tx_version false` if desired (requested by @Oliverfeudj, done by @piplus2)
+- #204 - Improve documentation for `--rmats_paired_stats` (requested by @mlbonatelli, done by @piplus2)
 - #212 - Add test config for unpaired `rMATS` (by @piplus2)
 
 ### Changed
@@ -45,17 +45,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - #195 - Fixed `CREATE_BAMLIST` null path handling for single-condition rMATS runs (by @piplus2)
 - #195 - Fixed `SUBREAD_FLATTENGTF` multi-line version output breaking YAML parsing (by @piplus2)
 - #195 - Fixed `STAR_ALIGN` deprecated `--quantTranscriptomeBan` parameter renamed to `--quantTranscriptomeSAMoutput` (by @piplus2)
-- #200 - Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping (by @piplus2)
+- #198 - Fixed a bug that passed sorted BAM files to Salmon (reported by @albamasmalavila, fix by @piplus2)
+- #199 - Fixed ignored arguments `--clip_r1` and `--clip_r2` in `TRIMGALORE` module for NextSeq trimming and read clipping (reported by @misiti-1864309, fix by @piplus2)
 - #201 - Pass the correct contrasts channel instead of the samplesheet channel `RMATS` and `SUPPA` (by @piplus2)
-- #208 - Modules `publishDir.saveAS` follow the nf-core standard for conditional output by (@piplus2)
+- #208 - Modules `publishDir.saveAS` follow the nf-core standard for conditional output by (by @piplus2)
 - #140 - Add validation for sample names to be compliant with R (by @fhausmann)
 - #212 - Fixed bug in `RMATS` where the order of the samples in the paired model was not correctly determined from the samplesheet (by @piplus2)
 - #214 - Fixed missing `BPPARAM` argument in `DEXSEQ_DTU` module to run DEXSeq with parallel processing (by @piplus2)
 - #214 - Removed unused `ntop` argument from `DEXSEQ_DTU` module and script (by @piplus2)
 - #218 - Fixed regex error in `parse_miso_index.py` (by @piplus2)
 - #219 - Fixed `MISOPY` module to correctly handle paired-end reads and pass the correct BAM files to MISOPY (by @piplus2)
-- #224 - Fixed `DEXSEQ_DTU` script to correctly handle the sample IDs (thanks to @albamasmalavila) (by @piplus2)
-- #232 - Fixed wrong branch when input is BAM in `dev` (thanks to @albamasmalavila) (by @piplus2)
+- #224 - Fixed `DEXSEQ_DTU` script to correctly handle the sample IDs (reported by @albamasmalavila, fix by @piplus2)
+- #232 - Fixed wrong branch when input is BAM in `dev` (reported by @albamasmalavila, fix by @piplus2)
 - #238 - missing backslash in `mergeevents` command in `dev` branch (by @piplus2)
 
 ## v1.0.5 - 2024-11-03
