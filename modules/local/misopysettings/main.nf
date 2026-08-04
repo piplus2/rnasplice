@@ -1,4 +1,4 @@
-process MISO_SETTINGS {
+process MISOPY_SETTINGS {
     label 'process_single'
 
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?

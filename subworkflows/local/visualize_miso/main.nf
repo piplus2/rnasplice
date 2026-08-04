@@ -6,7 +6,7 @@ include { GTF_2_GFF3         } from '../../../modules/local/gtf_2_gff3'
 include { MISOPY_INDEX       } from '../../../modules/nf-core/misopy/index'
 include { MISOPY_RUN         } from '../../../modules/local/misopy/run'
 include { MISOPY_SASHIMIPLOT } from '../../../modules/local/misopy/sashimiplot'
-include { MISO_SETTINGS      } from '../../../modules/local/misosettings'
+include { MISOPY_SETTINGS    } from '../../../modules/local/misopysettings'
 
 
 workflow VISUALISE_MISO {
@@ -58,7 +58,7 @@ workflow VISUALISE_MISO {
         .map { bams -> [[id: 'miso'], bams] }
         .join(ch_miso_data, by: 0)
 
-    ch_miso_settings = MISO_SETTINGS(
+    ch_miso_settings = MISOPY_SETTINGS(
         ch_miso_settings_input,
         fig_width,
         fig_height,
@@ -107,6 +107,6 @@ workflow VISUALISE_MISO {
     gff3          = GTF_2_GFF3.out.gff3 // path *.gff3
     miso_index    = ch_miso_index // channel: [ ch_miso_index ]
     miso_data     = ch_miso_data // channel: [ ch_miso_data ]
-    miso_settings = MISO_SETTINGS.out.miso_settings // path miso_setting.txt
+    miso_settings = MISOPY_SETTINGS.out.miso_settings // path miso_setting.txt
     miso_sashimi  = MISOPY_SASHIMIPLOT.out.sashimi_plot // path sashimi/*.pdf
 }

@@ -83,7 +83,7 @@
                     "misopy": "0.5.4",
                     "python": "2.7.15"
                 },
-                "MISO_SETTINGS": {
+                "MISOPY_SETTINGS": {
                     "python": "3.14.6"
                 },
                 "RMATS_POST": {
@@ -197,9 +197,6 @@
                 "mergeevents",
                 "mergeevents/genes_chrX.ioe",
                 "misopy",
-                "misopy/ENSG00000004961.pdf",
-                "misopy/ENSG00000005302.pdf",
-                "misopy/ENSG00000147403.pdf",
                 "misopy/genes_chrX_genes.gff3",
                 "misopy/index",
                 "misopy/index/chrX",
@@ -3855,6 +3852,10 @@
                 "misopy/miso_data/ERR204916/logs",
                 "misopy/miso_data/ERR204916/scripts_output",
                 "misopy/miso_settings.txt",
+                "misopy/sashimi",
+                "misopy/sashimi/ENSG00000004961.pdf",
+                "misopy/sashimi/ENSG00000005302.pdf",
+                "misopy/sashimi/ENSG00000147403.pdf",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -4821,7 +4822,7 @@
                 "genes_chrX.ioi:md5,6c9ee3567554e3f74186b4c17ec777d6"
             ]
         ],
-        "timestamp": "2026-08-04T13:30:02.819968118",
+        "timestamp": "2026-08-04T14:20:17.364380913",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
