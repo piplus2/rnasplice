@@ -1,7 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "misopy_sashimiplot"
-description:
-  "Generates sashimi plots for visualizing alternative splicing events using the MISO model."
+description: "Generates sashimi plots for visualizing alternative splicing events using the MISO model."
 keywords:
   - genomics
   - alternative splicing

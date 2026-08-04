@@ -33,11 +33,11 @@ input:
         pattern: "*.miso"
         ontologies: []
   - fig_width:
-        type: integer
-        description: Width of the sashimi plot figure
+      type: integer
+      description: Width of the sashimi plot figure
   - fig_height:
-        type: integer
-        description: Height of the sashimi plot figure
+      type: integer
+      description: Height of the sashimi plot figure
 
 output:
   miso_settings:
