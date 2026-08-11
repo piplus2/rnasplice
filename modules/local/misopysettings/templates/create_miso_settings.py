@@ -60,11 +60,11 @@ def main():
             value = split_args[i + 1] if i + 1 < len(split_args) else None
             ext_args[arg] = value
 
-        if "--bam-prefix" in ext_args:
-            bam_prefix = ext_args["--bam-prefix"]
+        if "--bam_prefix" in ext_args:
+            bam_prefix = ext_args["--bam_prefix"]
 
-        if "--miso-prefix" in ext_args:
-            miso_prefix = ext_args["--miso-prefix"]
+        if "--miso_prefix" in ext_args:
+            miso_prefix = ext_args["--miso_prefix"]
 
     list_bams = str("${bams}").split(" ")
     list_miso_data = str("${miso_data}").split(" ")
