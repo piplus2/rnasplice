@@ -12,7 +12,7 @@ process MISOPY_SASHIMIPLOT {
     tuple val(meta2), path(miso_index)
 
     output:
-    tuple val(meta), path("*.{pdf, png}"), emit: sashimi_plot
+    tuple val(meta), path("*.{pdf,png}"), emit: sashimi_plot
     tuple val("${task.process}"), val('python'), eval('python --version 2>&1 | sed "s/Python //g"'), topic: versions, emit: versions_python
     tuple val("${task.process}"), val('misopy'), eval('python -c "import pkg_resources; print(pkg_resources.get_distribution(\'misopy\').version)"'), topic: versions, emit: versions_misopy
 
