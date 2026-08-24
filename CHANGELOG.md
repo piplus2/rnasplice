@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - #238 - Synced pipeline with nf-core template 4.0.3 (by @piplus2)
 - #242 - Refactored `misopy` modules to match nf-core module template (by @piplus2)
 - #234 - Removed unused workflows `contrast_check` (by @piplus2)
+- #235 - Updated to nf-core template 4.1.0 (by @piplus2)
 
 ### Fixed
 
