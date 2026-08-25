@@ -52,7 +52,10 @@ if (!is.null(args_opt[["ignore_tx_version"]])) {
 }
 
 if (is.na(ignore_tx_version)) {
-  stop("ignore_tx_version must be 'true' or 'false'", call. = FALSE)
+  message(
+    "No --ignore_tx_version argument specified. Defaulting to FALSE."
+  )
+  ignore_tx_version <- FALSE
 }
 
 # Read in tx2gene file
