@@ -139,10 +139,11 @@ gi.ls <- tximport::summarizeToGene(txi,
 # Add in tx ids from salmon quants into tx2gene to ensure Tximport:dtuScaledTPM
 # runs
 
-txi_rownames <- ifelse(
-  ignore_tx_version, sub("[.][0-9]+\$", "", rownames(txi[[1]])),
+txi_rownames <- if (ignore_tx_version) {
+  sub("[.][0-9]+\$", "", rownames(txi[[1]]))
+} else {
   rownames(txi[[1]])
-)
+}
 
 missing_txids <- setdiff(txi_rownames, as.character(tx2gene[["tx"]]))
 
