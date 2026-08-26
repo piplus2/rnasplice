@@ -28,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum Nextflow version updated to 26.04.0 for static typing support.
 - #212 - `RMATS` paired stats default changed to `false`, as this is not appropriate for all datasets. The paired differential splicing test requires a specific paired design in the samplesheet, and users should explicitly enable this option if their dataset meets the requirements. See documentation for details. (by @piplus2)
 - #215 - Refactored `dexseq` modules to match nf-core schema (by @piplus2)
-- #246 - Replaced the local `LEAFCUTTER_CLUSTER` module (and the bundled `bin/leafcutter_cluster_regtools.py` script) with the nf-core `leafcutter/clusterregtools` module (by @piplus2)
 - Refactored `MISO_INDEX` module into `MISOPY_INDEX` to match nf-core module template.
 - #219 Refactored `MISO_RUN` module into `MISOPY_RUN` to match nf-core module template (by @piplus2)
 - #220 - Removed `parse_miso_index.py` script, as it is not necessary for misopy to work (by @piplus2)
@@ -40,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - #243 - Removed unused workflows `contrast_check` (by @piplus2)
 - #244 - Updated to nf-core template 4.1.0 (by @piplus2)
 - #245 - Refactored `TXIMPORT` to match nf-core module template. Update `bioconductor-tximeta` 1.8.0 -> 1.28.2 (plus `bioconductor-tximport` 1.38.2, R 4.0 -> 4.5). Default `--ignore_tx_version` to `FALSE` (by @piplus2)
+- #246 - Replaced the local `LEAFCUTTER_CLUSTER` module (and the bundled `bin/leafcutter_cluster_regtools.py` script) with the nf-core `leafcutter/clusterregtools` module (by @piplus2)
 
 ### Fixed
 
